@@ -1,50 +1,45 @@
-# Welcome to your Expo app 👋
+# INSTALACIÓN
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Juego narrativo de terror psicológico desarrollado en React Native con Expo.
 
-## Get started
+## Concepto
 
-1. Install dependencies
+Despiertas en una instalación científica abandonada.  
+Una inteligencia artificial dañada te guía… pero no siempre dice la verdad.  
+Tu cordura afecta la realidad que percibes.
 
-   ```bash
-   npm install
-   ```
+## Características (en desarrollo)
 
-2. Start the app
+- Exploración por texto
+- Sistema de salas interconectadas
+- Inventario
+- Sistema de cordura (sanity)
+- Eventos narrativos dinámicos
+- Terror psicológico (descripciones variables, mentiras, alucinaciones)
 
-   ```bash
-   npx expo start
-   ```
+## Stack
 
-In the output, you'll find options to open the app in a
+- React Native (Expo)
+- TypeScript
+- Arquitectura desacoplada (UI / Engine)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Estructura
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+app/ → Pantallas (UI)
+engine/ → Lógica del juego
+components/ → Componentes visuales
+hooks/ → Estado y lógica
 
-## Get a fresh project
+yaml
+Copy code
 
-When you're ready, run:
+## Estado actual
 
-```bash
-npm run reset-project
-```
+- Motor base de movimiento
+- Primeras salas
+- Estado del jugador
+- Sistema inicial de cordura
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Proyecto personal para portafolio y crecimiento técnico en desarrollo móvil.
