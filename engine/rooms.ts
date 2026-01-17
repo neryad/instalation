@@ -9,14 +9,9 @@ export interface Room {
     description: string;
   }[];
   minSanityToExist?: number;
+  item?: string;
+  lockedBy?: string; // id de ítem necesario
 }
-
-// export interface Room {
-//   id: string;
-//   baseDescription: string;
-//   connections: Partial<Record<Direction, string>>;
-//   minSanityToExist?: number; // si la cordura es mayor, esta sala NO existe
-// }
 
 export const rooms: Record<string, Room> = {
   awakening: {

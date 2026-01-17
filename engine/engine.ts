@@ -18,6 +18,14 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
 
   let newState = { ...state, currentRoom: next };
 
+  if (nextRoom.item && !newState.inventory.includes(nextRoom.item)) {
+    newState = {
+      ...newState,
+      inventory: [...newState.inventory, nextRoom.item],
+      lastEvent: `Has encontrado: ${nextRoom.item}`,
+    };
+  }
+
   const event = rollMentalEvent();
 
   if (event) {
