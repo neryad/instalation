@@ -1,3 +1,4 @@
+import { aiWhisper } from "@/engine/events";
 import { useState } from "react";
 import { SafeAreaView, StyleSheet, Text, TextInput } from "react-native";
 import { getRoomDescription, move } from "../engine/engine";
@@ -15,7 +16,18 @@ export default function GameScreen() {
 
     if (["north", "south", "east", "west"].includes(lower)) {
       setState((prev) => {
-        const newState = move(prev, lower as any);
+        let newState = move(prev, lower as any);
+
+        // Evento: si entras al pasillo por primera vez
+        if (
+          newState.currentRoom === "hallway_a" &&
+          prev.currentRoom !== "hallway_a"
+        ) {
+          const event = aiWhisper(newState);
+          newState = event.newState;
+          setLog((l) => [...l, event.text]);
+        }
+
         setLog((l) => [...l, getRoomDescription(newState)]);
         return newState;
       });
@@ -30,6 +42,8 @@ export default function GameScreen() {
           {line}
         </Text>
       ))}
+      <Text style={{ color: "#f00" }}>Cordura: {state.sanity}%</Text>
+
       <TextInput
         style={styles.input}
         value={command}

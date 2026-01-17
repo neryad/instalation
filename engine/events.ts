@@ -1,11 +1,9 @@
+import { applySanity } from "./engine";
 import { PlayerState } from "./player";
 
-export function aiWhisper(state: PlayerState): {
-  text: string;
-  sanityEffect: number;
-} {
+export function aiWhisper(state: PlayerState) {
   return {
-    text: 'La voz dice: "Confía en mí... esta es la única salida". Pero su tono suena distorsionado.',
-    sanityEffect: -10,
+    text: 'La IA susurra: "No mires atrás... ya es demasiado tarde."',
+    newState: applySanity(state, -15),
   };
 }

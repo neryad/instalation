@@ -11,23 +11,22 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
 }
 export function getRoomDescription(state: PlayerState): string {
   const room = rooms[state.currentRoom];
-  // if (!room.sanityVariants) return room.baseDescription;
 
-  // const variant = room.sanityVariants.find((v) => state.sanity <= v.minSanity);
-  // return variant ? variant.description : room.baseDescription;
+  if (state.sanity > 60) {
+    return room.baseDescription;
+  }
 
-  if (state.sanity < 40) {
+  if (state.sanity > 30) {
     return (
-      room.baseDescription +
-      " Las paredes parecen latir como si tuvieran pulso."
+      room.baseDescription + " Sientes que algo está mal, pero no sabes qué."
     );
   }
 
-  if (state.sanity < 20) {
-    return "La habitación ya no se parece a nada reconocible. Estás seguro de que alguien te observa.";
+  if (state.sanity > 10) {
+    return "Las paredes se deforman. La voz repite tu nombre aunque no recuerdas haberlo dicho.";
   }
 
-  return room.baseDescription;
+  return "La realidad se fragmenta. Ya no sabes si esta habitación existe.";
 }
 
 export function applySanity(state: PlayerState, amount: number): PlayerState {
