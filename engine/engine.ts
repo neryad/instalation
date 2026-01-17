@@ -46,17 +46,42 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   return newState;
 }
 
+// export function getRoomDescription(state: PlayerState): string {
+//   const room = rooms[state.currentRoom];
+//   let description = room.baseDescription;
+
+//   if (room.sanityVariants) {
+//     const variant = room.sanityVariants
+//       .sort((a, b) => b.minSanity - a.minSanity)
+//       .find((v) => state.sanity <= v.minSanity);
+
+//     if (variant) {
+//       description = variant.description;
+//     }
+//   }
+
+//   if (state.sanity <= 60 && state.sanity > 30) {
+//     description += " Sientes que algo está mal, pero no sabes qué.";
+//   } else if (state.sanity <= 30 && state.sanity > 10) {
+//     description = "Las paredes se deforman. La voz repite tu nombre.";
+//   } else if (state.sanity <= 10) {
+//     description =
+//       "La realidad se fragmenta. Ya no sabes si esta habitación existe.";
+//   }
+
+//   return distortText(description, state.sanity);
+// }
 export function getRoomDescription(state: PlayerState): string {
   const room = rooms[state.currentRoom];
+
   let description = room.baseDescription;
 
-  if (state.sanity <= 60 && state.sanity > 30) {
-    description += " Sientes que algo está mal, pero no sabes qué.";
-  } else if (state.sanity <= 30 && state.sanity > 10) {
-    description = "Las paredes se deforman. La voz repite tu nombre.";
-  } else if (state.sanity <= 10) {
-    description =
-      "La realidad se fragmenta. Ya no sabes si esta habitación existe.";
+  if (room.sanityVariants) {
+    const variant = room.sanityVariants
+      .sort((a, b) => b.minSanity - a.minSanity)
+      .find((v) => state.sanity <= v.minSanity);
+
+    if (variant) description = variant.description;
   }
 
   return distortText(description, state.sanity);
