@@ -16,6 +16,13 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     return state; // No existe para una mente sana
   }
 
+  if (nextRoom.lockedBy && !state.inventory.includes(nextRoom.lockedBy)) {
+    return {
+      ...state,
+      lastEvent: "La puerta no responde. Falta algo...",
+    };
+  }
+
   let newState = { ...state, currentRoom: next };
 
   if (nextRoom.item && !newState.inventory.includes(nextRoom.item)) {

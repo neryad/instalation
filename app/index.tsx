@@ -68,7 +68,11 @@ export default function GameScreen() {
         </ScrollView>
 
         {/* HUD de cordura */}
-        <Text style={styles.sanity}>Cordura: {state.sanity}%</Text>
+        <Text style={styles.sanity}>
+          {" "}
+          Cordura: {state.sanity} | Items:{" "}
+          {state.inventory.join(", ") || "ninguno"}
+        </Text>
 
         {/* Input */}
         <TextInput
