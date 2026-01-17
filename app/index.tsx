@@ -1,4 +1,3 @@
-import { aiWhisper } from "@/engine/events";
 import { useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -26,31 +25,27 @@ export default function GameScreen() {
 
     if (["north", "south", "east", "west"].includes(lower)) {
       setState((prev) => {
-        let newState = move(prev, lower as any);
+        const newState = move(prev, lower as any);
 
-        // Si la sala no existe (alucinación bloqueada)
+        // Si no se pudo mover (alucinación o pared)
         if (newState.currentRoom === prev.currentRoom) {
           setLog((l) => [...l, "No hay nada en esa dirección... o eso crees."]);
           return prev;
         }
 
-        // Evento: si entras al pasillo por primera vez
-        if (
-          newState.currentRoom === "hallway_a" &&
-          prev.currentRoom !== "hallway_a"
-        ) {
-          const event = aiWhisper(newState);
-          newState = event.newState;
-          setLog((l) => [...l, event.text]);
-        }
+        setLog((l) => [
+          ...l,
+          getRoomDescription(newState),
+          ...(newState.lastEvent ? [newState.lastEvent] : []),
+        ]);
 
-        setLog((l) => [...l, getRoomDescription(newState)]);
         return newState;
       });
     }
 
     setCommand("");
   };
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}

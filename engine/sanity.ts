@@ -1,3 +1,5 @@
+import { PlayerState } from "./player";
+
 export function distortText(text: string, sanity: number): string {
   if (sanity > 60) return text;
 
@@ -13,4 +15,11 @@ export function distortText(text: string, sanity: number): string {
   }
 
   return "No estás seguro de que esto sea real.";
+}
+
+export function applySanity(state: PlayerState, amount: number): PlayerState {
+  return {
+    ...state,
+    sanity: Math.max(0, Math.min(100, state.sanity + amount)),
+  };
 }

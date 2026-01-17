@@ -1,3 +1,4 @@
+import { rollMentalEvent } from "./events";
 import { PlayerState } from "./player";
 import { Direction, rooms } from "./rooms";
 import { distortText } from "./sanity";
@@ -15,8 +16,21 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     return state; // No existe para una mente sana
   }
 
-  return { ...state, currentRoom: next };
+  let newState = { ...state, currentRoom: next };
+
+  const event = rollMentalEvent();
+
+  if (event) {
+    newState = {
+      ...newState,
+      sanity: Math.max(0, Math.min(100, newState.sanity + event.sanityChange)),
+      lastEvent: event.text,
+    };
+  }
+
+  return newState;
 }
+
 export function getRoomDescription(state: PlayerState): string {
   const room = rooms[state.currentRoom];
   let description = room.baseDescription;
@@ -31,11 +45,4 @@ export function getRoomDescription(state: PlayerState): string {
   }
 
   return distortText(description, state.sanity);
-}
-
-export function applySanity(state: PlayerState, amount: number): PlayerState {
-  return {
-    ...state,
-    sanity: Math.max(0, Math.min(100, state.sanity + amount)),
-  };
 }
