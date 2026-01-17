@@ -8,7 +8,15 @@ export interface Room {
     minSanity: number;
     description: string;
   }[];
+  minSanityToExist?: number;
 }
+
+// export interface Room {
+//   id: string;
+//   baseDescription: string;
+//   connections: Partial<Record<Direction, string>>;
+//   minSanityToExist?: number; // si la cordura es mayor, esta sala NO existe
+// }
 
 export const rooms: Record<string, Room> = {
   awakening: {
@@ -29,6 +37,14 @@ export const rooms: Record<string, Room> = {
     id: "hallway_a",
     baseDescription:
       "Un pasillo estrecho. Las paredes están cubiertas de símbolos que no recuerdas haber visto.",
-    connections: { south: "awakening" },
+    connections: { south: "awakening", east: "shadow_lab" },
+  },
+
+  shadow_lab: {
+    id: "shadow_lab",
+    baseDescription:
+      "Un laboratorio cubierto de sombras. Ves tu reflejo moverse con retraso.",
+    connections: { south: "hallway_a" },
+    minSanityToExist: 30,
   },
 };

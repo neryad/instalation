@@ -7,6 +7,13 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
 
   if (!next) return state;
 
+  const nextRoom = rooms[next];
+
+  // Sala ilusoria
+  if (nextRoom.minSanityToExist && state.sanity > nextRoom.minSanityToExist) {
+    return state; // No existe para una mente sana
+  }
+
   return { ...state, currentRoom: next };
 }
 export function getRoomDescription(state: PlayerState): string {
