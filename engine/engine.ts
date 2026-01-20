@@ -112,6 +112,32 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   // 11. Movimiento de la Entidad
   newState = moveEntity(newState);
 
+  // 11. FINALES
+  if (newState.currentRoom === "core") {
+    // Final malo
+    if (newState.sanity <= 20) {
+      return {
+        ...newState,
+        sanity: 0,
+        gameOver: true,
+        endingType: "bad",
+        lastEvent:
+          "La IA deja de observar. Ahora escucha. La presencia ya no está detrás de ti. Está dentro. 'Proceso completado. Sujeto integrado.'",
+      };
+    }
+
+    // Final “bueno” (escape falso)
+    if (newState.sanity > 20 && newState.entityAwareness < 50) {
+      return {
+        ...newState,
+        gameOver: true,
+        endingType: "good",
+        lastEvent:
+          "La IA duda. Las luces parpadean. Corres. Sientes aire frío. Estás fuera... pero sigues escuchando pasos detrás de ti.",
+      };
+    }
+  }
+
   // 12. Encuentro indirecto
   if (newState.entityRoom === newState.currentRoom && newState.sanity < 70) {
     newState = {

@@ -12,11 +12,14 @@ export interface PlayerState {
 
   // Memoria del jugador (para predicción futura)
   lastDirections: Direction[];
+
+  gameOver?: boolean;
+  endingType?: "good" | "bad";
 }
 
 export const initialPlayerState: PlayerState = {
   currentRoom: "awakening",
-  sanity: 100,
+  sanity: 30,
   inventory: [],
   lastEvent: undefined,
 
@@ -24,4 +27,5 @@ export const initialPlayerState: PlayerState = {
   entityAwareness: 0,
 
   lastDirections: [],
+  gameOver: false,
 };
