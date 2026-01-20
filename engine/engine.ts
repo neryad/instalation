@@ -50,7 +50,11 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     };
   }
 
-  let newState = { ...state, currentRoom: next };
+  let newState = {
+    ...state,
+    currentRoom: next,
+    lastDirections: [...state.lastDirections, dir].slice(-5), // guarda últimos 5 movimientos
+  };
 
   // 7. Ítems
   if (nextRoom.item && !newState.inventory.includes(nextRoom.item)) {
