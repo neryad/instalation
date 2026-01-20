@@ -12,6 +12,7 @@ export interface Room {
   minSanityToExist?: number;
   item?: string;
   lockedBy?: string;
+  fakeConnections?: Partial<Record<Direction, string>>;
 }
 
 export const rooms: Record<string, Room> = {
@@ -158,5 +159,9 @@ export const rooms: Record<string, Room> = {
         description: "La IA susurra: 'No hay salida. Yo te traje aquí.'",
       },
     ],
+    fakeConnections: {
+      north: "shadow_lab",
+      west: "awakening",
+    },
   },
 };
