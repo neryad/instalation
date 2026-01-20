@@ -40,6 +40,22 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     }
   }
 
+  const allPossibleDirs = Object.keys(connections) as Direction[];
+  // Si hay salidas pero todas están en la lista de bloqueadas
+  const isTrapped =
+    allPossibleDirs.length > 0 &&
+    allPossibleDirs.every((d) => blockedByEntity.includes(d));
+
+  if (isTrapped) {
+    return {
+      ...state,
+      gameOver: true,
+      endingType: "bad",
+      lastEvent:
+        "No hay salida. El aire se vuelve pesado y frío. Las sombras de la habitación se desprenden de las paredes. Te ha encontrado.",
+    };
+  }
+
   // 4. Salida bloqueada por la entidad
   if (blockedByEntity.includes(dir)) {
     return {
@@ -100,12 +116,12 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   }
 
   // 10. Eventos mentales
-  const event = rollMentalEvent();
+  const event = rollMentalEvent(newState);
   if (event) {
     newState = {
       ...newState,
       sanity: Math.max(0, Math.min(100, newState.sanity + event.sanityChange)),
-      lastEvent: event.text,
+      lastEvent: event.text(newState), // Llamamos a la función text
     };
   }
 

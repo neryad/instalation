@@ -22,6 +22,26 @@ export default function GameScreen() {
     getRoomDescription(initialPlayerState),
   ]);
 
+  // Dentro de GameScreen.tsx
+  const [isGlitchActive, setIsGlitchActive] = useState(false);
+
+  useEffect(() => {
+    // Solo activamos el intervalo si la cordura es muy baja
+    if (state.sanity < 15 && !state.gameOver) {
+      const interval = setInterval(
+        () => {
+          // Cambia entre estado normal y glitch aleatoriamente
+          setIsGlitchActive((prev) => !prev);
+        },
+        Math.random() * 200 + 50,
+      ); // Ritmo irregular y nervioso
+
+      return () => clearInterval(interval);
+    } else {
+      setIsGlitchActive(false);
+    }
+  }, [state.sanity, state.gameOver]);
+
   useEffect(() => {
     if (state.gameOver && state.endingType) {
       router.replace(`/FinalScreen?type=${state.endingType}` as any);
@@ -55,7 +75,13 @@ export default function GameScreen() {
 
     setCommand("");
   };
-
+  const glitchStyle = isGlitchActive
+    ? {
+        backgroundColor: "#1a0000", // Rojo muy oscuro
+        opacity: 0.8,
+        paddingLeft: 2, // Desfase visual para simular error
+      }
+    : {};
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -70,11 +96,32 @@ export default function GameScreen() {
             scrollRef.current?.scrollToEnd({ animated: true })
           }
         >
-          {log.map((line, i) => (
+          {log.map((line, i) => {
+            const isWhisper =
+              line.includes("Escuchas") ||
+              line.includes("IA") ||
+              line.includes("susurra");
+            return (
+              <Text
+                key={i}
+                style={[
+                  styles.text,
+                  isWhisper && {
+                    color: "#ff4444",
+                    fontStyle: "italic",
+                    paddingLeft: 10,
+                  },
+                ]}
+              >
+                {isWhisper ? `> ${line}` : line}
+              </Text>
+            );
+          })}
+          {/* {log.map((line, i) => (
             <Text key={i} style={styles.text}>
               {line}
             </Text>
-          ))}
+          ))} */}
         </ScrollView>
 
         {/* HUD de cordura */}
