@@ -27,16 +27,10 @@ export default function GameScreen() {
       setState((prev) => {
         const newState = move(prev, lower as any);
 
-        // Si no se pudo mover (alucinación o pared)
-        if (newState.currentRoom === prev.currentRoom) {
-          setLog((l) => [...l, "No hay nada en esa dirección... o eso crees."]);
-          return prev;
-        }
-
         setLog((l) => [
           ...l,
-          getRoomDescription(newState),
           ...(newState.lastEvent ? [newState.lastEvent] : []),
+          getRoomDescription(newState),
         ]);
 
         return newState;

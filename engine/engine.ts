@@ -19,43 +19,52 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     }
   }
 
-  // 3. BLOQUEO POR LA ENTIDAD (AQUÍ)
-  if (state.entityRoom && state.sanity < 35) {
-    const blocked: Direction[] = [];
+  // 3. BLOQUEO POR LA ENTIDAD (SIN BORRAR CONEXIONES)
+  const blockedByEntity: Direction[] = [];
 
+  if (state.entityRoom && state.sanity < 35) {
     // Si está contigo, bloquea una salida al azar
     if (state.entityRoom === state.currentRoom) {
       const dirs = Object.keys(connections) as Direction[];
-      const random = dirs[Math.floor(Math.random() * dirs.length)];
-      blocked.push(random);
+      if (dirs.length > 0) {
+        const random = dirs[Math.floor(Math.random() * dirs.length)];
+        blockedByEntity.push(random);
+      }
     }
 
     // Si está cerca, bloquea otra
     const near = Object.values(connections).includes(state.entityRoom);
     if (near) {
-      blocked.push(Object.keys(connections)[0] as Direction);
+      const firstDir = Object.keys(connections)[0] as Direction;
+      if (firstDir) blockedByEntity.push(firstDir);
     }
-
-    blocked.forEach((d) => delete connections[d]);
   }
 
-  // 4. Ahora sí leemos la dirección REAL
+  // 4. Salida bloqueada por la entidad
+  if (blockedByEntity.includes(dir)) {
+    return {
+      ...state,
+      lastEvent: "Una presencia oscura bloquea esa salida. No puedes pasar.",
+    };
+  }
+
+  // 5. Ahora sí validamos si la conexión existe realmente
   const next = connections[dir];
   if (!next) {
     return {
       ...state,
-      lastEvent: "Algo invisible bloquea el paso. No puedes avanzar.",
+      lastEvent: "No hay nada en esa dirección.",
     };
   }
 
   const nextRoom = rooms[next];
 
-  // 4. Sala ilusoria
+  // 6. Sala ilusoria
   if (nextRoom.minSanityToExist && state.sanity > nextRoom.minSanityToExist) {
     return state;
   }
 
-  // 5. Manipulación directa de la IA (mentira activa)
+  // 7. Manipulación directa de la IA (mentira activa)
   if (room.fakeConnections && state.sanity < 30) {
     const fake = room.fakeConnections[dir];
     if (fake) {
@@ -67,7 +76,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     }
   }
 
-  // 6. Puertas bloqueadas
+  // 8. Puertas bloqueadas por ítems
   if (nextRoom.lockedBy && !state.inventory.includes(nextRoom.lockedBy)) {
     return {
       ...state,
@@ -78,10 +87,10 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   let newState = {
     ...state,
     currentRoom: next,
-    lastDirections: [...state.lastDirections, dir].slice(-5), // guarda últimos 5 movimientos
+    lastDirections: [...state.lastDirections, dir].slice(-5),
   };
 
-  // 7. Ítems
+  // 9. Ítems
   if (nextRoom.item && !newState.inventory.includes(nextRoom.item)) {
     newState = {
       ...newState,
@@ -90,7 +99,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     };
   }
 
-  // 8. Eventos mentales
+  // 10. Eventos mentales
   const event = rollMentalEvent();
   if (event) {
     newState = {
@@ -99,10 +108,11 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
       lastEvent: event.text,
     };
   }
-  // 9. Movimiento de la Entidad (presencia que te sigue)
+
+  // 11. Movimiento de la Entidad
   newState = moveEntity(newState);
 
-  // 10. Si la entidad está en la misma sala que el jugador
+  // 12. Encuentro indirecto
   if (newState.entityRoom === newState.currentRoom && newState.sanity < 70) {
     newState = {
       ...newState,
