@@ -77,6 +77,15 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   // 9. Movimiento de la Entidad (presencia que te sigue)
   newState = moveEntity(newState);
 
+  // 10. Si la entidad está en la misma sala que el jugador
+  if (newState.entityRoom === newState.currentRoom && newState.sanity < 70) {
+    newState = {
+      ...newState,
+      entityAwareness: newState.entityAwareness + 1,
+      lastEvent: "Sientes que llegaste tarde. Algo estuvo aquí antes que tú.",
+    };
+  }
+
   return newState;
 }
 
