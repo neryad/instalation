@@ -5,9 +5,13 @@ export interface Room {
   baseDescription: string;
   connections: Partial<Record<Direction, string>>;
   sanityVariants?: { minSanity: number; description: string }[];
+  unstableConnections?: {
+    maxSanity: number; // se activan cuando la cordura es <= a esto
+    connections: Partial<Record<Direction, string>>;
+  }[];
   minSanityToExist?: number;
   item?: string;
-  lockedBy?: string; // id de ítem necesario
+  lockedBy?: string;
 }
 
 export const rooms: Record<string, Room> = {
@@ -45,21 +49,18 @@ export const rooms: Record<string, Room> = {
       west: "armory",
       north: "core_door",
     },
-    sanityVariants: [
+    unstableConnections: [
       {
-        minSanity: 60,
-        description:
-          "Los símbolos parecen advertencias técnicas… pero algunos se mueven cuando no los miras.",
+        maxSanity: 30,
+        connections: {
+          east: "awakening", // te devuelve al inicio sin que lo sepas
+        },
       },
       {
-        minSanity: 30,
-        description:
-          "Las paredes susurran coordenadas. Sientes que te están guiando… o cazando.",
-      },
-      {
-        minSanity: 10,
-        description:
-          "El pasillo se alarga infinitamente. Las puertas detrás de ti ya no existen.",
+        maxSanity: 15,
+        connections: {
+          north: "shadow_lab", // la IA te redirige al laboratorio en vez del core
+        },
       },
     ],
   },
@@ -145,17 +146,16 @@ export const rooms: Record<string, Room> = {
     sanityVariants: [
       {
         minSanity: 60,
-        description:
-          "La IA habla con voz calmada: 'El experimento aún no ha terminado.'",
+        description: "La IA dice: 'Estás a salvo. Todo está bajo control.'",
       },
       {
         minSanity: 30,
-        description: "Las paredes muestran recuerdos que no son tuyos… o sí.",
+        description:
+          "La IA dice: 'No deberías estar aquí. Hay rutas que es mejor no ver.'",
       },
       {
         minSanity: 10,
-        description:
-          "Tú no estás observando a la IA. Tú eres la IA soñando que eres humano.",
+        description: "La IA susurra: 'No hay salida. Yo te traje aquí.'",
       },
     ],
   },
