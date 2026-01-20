@@ -19,7 +19,7 @@ export interface PlayerState {
 
 export const initialPlayerState: PlayerState = {
   currentRoom: "awakening",
-  sanity: 30,
+  sanity: 100,
   inventory: [],
   lastEvent: undefined,
 
