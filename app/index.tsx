@@ -74,6 +74,8 @@ export default function GameScreen() {
           {state.inventory.join(", ") || "ninguno"}
         </Text>
 
+        {state.lastEvent && <Text>{state.lastEvent}</Text>}
+
         {/* Input */}
         <TextInput
           style={styles.input}

@@ -7,10 +7,10 @@ import { distortText } from "./sanity";
 export function move(state: PlayerState, dir: Direction): PlayerState {
   const room = rooms[state.currentRoom];
 
-  // 1. Partimos de las conexiones base
-  let connections = room.connections;
+  // 1. Conexiones base
+  let connections = { ...room.connections };
 
-  // 2. Aplicamos distorsiones por cordura
+  // 2. Distorsiones por cordura
   if (room.unstableConnections) {
     for (const variant of room.unstableConnections) {
       if (state.sanity <= variant.maxSanity) {
@@ -19,9 +19,34 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     }
   }
 
-  // 3. Ahora sí leemos la dirección real
+  // 3. BLOQUEO POR LA ENTIDAD (AQUÍ)
+  if (state.entityRoom && state.sanity < 35) {
+    const blocked: Direction[] = [];
+
+    // Si está contigo, bloquea una salida al azar
+    if (state.entityRoom === state.currentRoom) {
+      const dirs = Object.keys(connections) as Direction[];
+      const random = dirs[Math.floor(Math.random() * dirs.length)];
+      blocked.push(random);
+    }
+
+    // Si está cerca, bloquea otra
+    const near = Object.values(connections).includes(state.entityRoom);
+    if (near) {
+      blocked.push(Object.keys(connections)[0] as Direction);
+    }
+
+    blocked.forEach((d) => delete connections[d]);
+  }
+
+  // 4. Ahora sí leemos la dirección REAL
   const next = connections[dir];
-  if (!next) return state;
+  if (!next) {
+    return {
+      ...state,
+      lastEvent: "Algo invisible bloquea el paso. No puedes avanzar.",
+    };
+  }
 
   const nextRoom = rooms[next];
 
