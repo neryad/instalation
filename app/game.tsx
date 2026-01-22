@@ -1,162 +1,161 @@
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-} from "react-native";
+import { useEffect, useState } from "react";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { CRTOverlay } from "../components/game/CRTOverlay";
+import { SanityBar } from "../components/game/SanityBar";
+import { TerminalInput } from "../components/game/TerminalInput";
+import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import { getRoomDescription, move } from "../engine/engine";
 import { initialPlayerState } from "../engine/player";
+import { Direction } from "../engine/rooms";
+
+const generateId = () => Math.random().toString(36).substr(2, 9);
+const getTimestamp = () => {
+  const now = new Date();
+  return `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes()
+    .toString()
+    .padStart(2, "0")}`;
+};
 
 export default function GameScreen() {
-  const scrollRef = useRef<ScrollView>(null);
   const router = useRouter();
 
   const [state, setState] = useState(initialPlayerState);
-  const [command, setCommand] = useState("");
-  const [log, setLog] = useState<string[]>([
-    getRoomDescription(initialPlayerState),
+
+  const [logMessages, setLogMessages] = useState<LogMessage[]>([
+    {
+      id: generateId(),
+      text: "SYSTEM ONLINE. NEURAL INTERFACE CONNECTED.",
+      type: "system",
+      timestamp: getTimestamp(),
+    },
+    {
+      id: generateId(),
+      text: getRoomDescription(initialPlayerState),
+      type: "narrative",
+      timestamp: getTimestamp(),
+    },
   ]);
 
-  // Dentro de GameScreen.tsx
   const [isGlitchActive, setIsGlitchActive] = useState(false);
 
   useEffect(() => {
-    // Solo activamos el intervalo si la cordura es muy baja
     if (state.sanity < 15 && !state.gameOver) {
       const interval = setInterval(
         () => {
-          // Cambia entre estado normal y glitch aleatoriamente
           setIsGlitchActive((prev) => !prev);
         },
-        Math.random() * 200 + 50,
-      ); // Ritmo irregular y nervioso
-
+        Math.random() * 200 + 50
+      );
       return () => clearInterval(interval);
     } else {
       setIsGlitchActive(false);
     }
   }, [state.sanity, state.gameOver]);
 
+  // Handle final redirection
   useEffect(() => {
     if (state.gameOver && state.endingType) {
-      router.replace(`/FinalScreen?type=${state.endingType}` as any);
+      // Small delay to let the user read the final message in the terminal
+      setTimeout(() => {
+        router.replace(`/FinalScreen?type=${state.endingType}` as any);
+      }, 3000);
     }
   }, [state.gameOver]);
-  const onSubmit = () => {
+
+  const addLog = (
+    text: string,
+    type: LogMessage["type"] = "narrative",
+    timestamp = getTimestamp()
+  ) => {
+    setLogMessages((prev) => [
+      ...prev,
+      { id: generateId(), text, type, timestamp },
+    ]);
+  };
+
+  const handleCommand = (cmd: string) => {
     if (state.gameOver) return;
 
-    const lower = command.toLowerCase();
+    // Log user input
+    addLog(cmd, "player");
 
+    const lower = cmd.toLowerCase();
+    
+    // Movement
     if (["north", "south", "east", "west"].includes(lower)) {
       setState((prev) => {
-        const newState = move(prev, lower as any);
+        const newState = move(prev, lower as Direction);
 
-        setLog((l) => [
-          ...l,
-          getRoomDescription(newState),
-          ...(newState.lastEvent ? [newState.lastEvent] : []),
-          ...(newState.gameOver
-            ? [
-                newState.endingType === "bad"
-                  ? "FIN — LA IA TE POSEE"
-                  : "FIN — HAS ESCAPADO (¿O NO?)",
-              ]
-            : []),
-        ]);
+        // Room description
+        addLog(getRoomDescription(newState), "narrative");
+
+        // Events
+        if (newState.lastEvent) {
+            // Check if event is critical/warning
+            const isWarning = newState.lastEvent.includes("IA") || newState.lastEvent.includes("presencia");
+            addLog(newState.lastEvent, isWarning ? "warning" : "narrative");
+        }
+
+        // Game Over messages
+        if (newState.gameOver) {
+            const finalMsg = newState.endingType === "bad"
+            ? "CRITICAL FAILURE. SUBJECT INTEGRATION COMPLETE."
+            : "CONNECTION LOST. SUBJECT HAS LEFT THE PERIMETER.";
+            addLog(finalMsg, newState.endingType === "bad" ? "error" : "system");
+        }
 
         return newState;
       });
+      return;
     }
 
-    setCommand("");
+    // Interactive commands (look, help, etc) could go here
+    if (lower === "help") {
+        addLog("AVAILABLE COMMANDS: NORTH, SOUTH, EAST, WEST, HELP", "system");
+        return;
+    }
+
+    addLog("COMMAND NOT RECOGNIZED", "error");
   };
-  const glitchStyle = isGlitchActive
-    ? {
-        backgroundColor: "#1a0000", // Rojo muy oscuro
-        opacity: 0.8,
-        paddingLeft: 2, // Desfase visual para simular error
-      }
-    : {};
+
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <SafeAreaView style={styles.container}>
-        {/* Scroll del log */}
-        <ScrollView
-          ref={scrollRef}
-          style={{ flex: 1 }}
-          onContentSizeChange={() =>
-            scrollRef.current?.scrollToEnd({ animated: true })
-          }
+    <View style={styles.container}>
+      <CRTOverlay />
+      <SafeAreaView style={styles.safeArea}>
+        <SanityBar sanity={state.sanity} />
+        
+        <View style={styles.terminalContainer}>
+            <TerminalLog messages={logMessages} />
+        </View>
+
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
         >
-          {log.map((line, i) => {
-            const isWhisper =
-              line.includes("Escuchas") ||
-              line.includes("IA") ||
-              line.includes("susurra");
-            return (
-              <Text
-                key={i}
-                style={[
-                  styles.text,
-                  isWhisper && {
-                    color: "#ff4444",
-                    fontStyle: "italic",
-                    paddingLeft: 10,
-                  },
-                ]}
-              >
-                {isWhisper ? `> ${line}` : line}
-              </Text>
-            );
-          })}
-          {/* {log.map((line, i) => (
-            <Text key={i} style={styles.text}>
-              {line}
-            </Text>
-          ))} */}
-        </ScrollView>
-
-        {/* HUD de cordura */}
-        <Text style={styles.sanity}>
-          {" "}
-          Cordura: {state.sanity} | Items:{" "}
-          {state.inventory.join(", ") || "ninguno"}
-        </Text>
-
-        {state.lastEvent && <Text>{state.lastEvent}</Text>}
-
-        {/* Input */}
-        <TextInput
-          editable={!state.gameOver}
-          style={styles.input}
-          value={command}
-          onChangeText={setCommand}
-          onSubmitEditing={onSubmit}
-          placeholder="Escribe una dirección..."
-          placeholderTextColor="#555"
-        />
+          <TerminalInput onSubmit={handleCommand} editable={!state.gameOver} />
+        </KeyboardAvoidingView>
       </SafeAreaView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000", padding: 20 },
-  text: { color: "#0f0", fontSize: 16, marginBottom: 20 },
-  input: { borderBottomWidth: 1, borderBottomColor: "#0f0", color: "#0f0" },
-  sanity: {
-    color: "#ff0033",
-    fontSize: 14,
-    marginBottom: 6,
-    fontWeight: "bold",
-    textAlign: "right",
+  container: {
+    flex: 1,
+    backgroundColor: "#000500", // Very dark green background
   },
+  safeArea: {
+    flex: 1,
+    marginHorizontal: 10,
+    marginBottom: 5,
+  },
+  terminalContainer: {
+    flex: 1,
+    borderColor: "#003300",
+    borderWidth: 1,
+    backgroundColor: "rgba(0, 20, 0, 0.5)",
+    marginBottom: 10,
+  }
 });
