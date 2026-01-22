@@ -145,36 +145,38 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     }
   }
 
-  // 11. Movimiento de la Entidad
+  // 12. Movimiento de la Entidad
   newState = moveEntity(newState);
 
-  // 11. FINALES
+  // 13. FINALES
   if (newState.currentRoom === "core") {
-    // Final malo
+    // FINAL MALO: Asimilación Total (Sanity <= 20)
     if (newState.sanity <= 20) {
+      const lastAction =
+        newState.lastDirections[newState.lastDirections.length - 1] ||
+        "moverse";
       return {
         ...newState,
         sanity: 0,
         gameOver: true,
         endingType: "bad",
-        lastEvent:
-          "La IA deja de observar. Ahora escucha. La presencia ya no está detrás de ti. Está dentro. 'Proceso completado. Sujeto integrado.'",
+        lastEvent: `La IA procesa tu último intento de ${lastAction}. Ya no eres un sujeto, eres datos. 'Gracias por la actualización, ${newState.inventory.length > 0 ? "portador de la " + newState.inventory[0] : "Sujeto 00"}'.`,
       };
     }
 
-    // Final “bueno” (escape falso)
+    // FINAL "BUENO": El Salto de Fe (Sanity > 20)
+    // Ahora es una victoria real pero con una sombra de duda narrativa.
     if (newState.sanity > 20 && newState.entityAwareness < 50) {
       return {
         ...newState,
         gameOver: true,
         endingType: "good",
         lastEvent:
-          "La IA duda. Las luces parpadean. Corres. Sientes aire frío. Estás fuera... pero sigues escuchando pasos detrás de ti.",
+          "El Núcleo se apaga. Las puertas de seguridad se liberan por un fallo sistémico. Caminas hacia la luz del exterior. El silencio es absoluto. Eres libre, o al menos, has elegido creer en esta salida.",
       };
     }
   }
-
-  // 12. Encuentro indirecto
+  // 14. Encuentro indirecto
   if (newState.entityRoom === newState.currentRoom && newState.sanity < 70) {
     newState = {
       ...newState,
