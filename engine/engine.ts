@@ -76,8 +76,15 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   const nextRoom = rooms[next];
 
   // 6. Sala ilusoria
-  if (nextRoom.minSanityToExist && state.sanity > nextRoom.minSanityToExist) {
-    return state;
+  if (nextRoom.minSanityToExist) {
+    if (state.sanity > nextRoom.minSanityToExist) {
+      // Si tienes demasiada cordura, la sala ilusoria simplemente no está ahí.
+      return {
+        ...state,
+        lastEvent:
+          "Intentas avanzar, pero el camino parece desvanecerse ante tus ojos. No hay nada allí.",
+      };
+    }
   }
 
   // 7. Manipulación directa de la IA (mentira activa)
@@ -123,6 +130,19 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
       sanity: Math.max(0, Math.min(100, newState.sanity + event.sanityChange)),
       lastEvent: event.text(newState), // Llamamos a la función text
     };
+  }
+
+  // 11. Feedback de Predicción (NUEVO)
+  if (newState.lastDirections.length >= 3) {
+    const history = newState.lastDirections;
+    const last = history[history.length - 1];
+    const prev2 = history[history.length - 3];
+
+    // Si el jugador hace A -> B -> A, la IA lo nota
+    if (last === prev2 && history[history.length - 2] !== last) {
+      newState.lastEvent =
+        "Sientes un escalofrío. La IA ha detectado un patrón en tus pasos.";
+    }
   }
 
   // 11. Movimiento de la Entidad
