@@ -86,7 +86,7 @@ export const rooms: Record<string, Room> = {
       {
         minSanity: 10,
         description:
-          "No hay laboratorio. Solo estás dentro de tu propio cráneo abierto.",
+          "Las paredes de metal se vuelven traslúcidas. Sientes que si dejas de creer en este lugar, caerás al vacío.",
       },
     ],
   },
