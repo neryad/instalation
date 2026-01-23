@@ -282,9 +282,16 @@ export default function GameScreen() {
           <TerminalLog messages={logMessages} />
         </View>
 
-        <KeyboardAvoidingView
+        {/* <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
+          
+        > */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          // Aumentamos el offset para que el input no choque con el teclado
+          keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 20}
+          style={{ flex: 1 }}
         >
           <TerminalInput onSubmit={handleCommand} editable={!state.gameOver} />
         </KeyboardAvoidingView>
@@ -309,5 +316,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: "rgba(0, 20, 0, 0.5)",
     marginBottom: 10,
+    paddingBottom: 20,
   },
 });

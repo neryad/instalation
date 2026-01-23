@@ -16,12 +16,8 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
-    // Scroll to end when messages change
-    // Using a small timeout to ensure layout is done
-    const timer = setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
-    return () => clearTimeout(timer);
+    // Esto hace que siempre veamos lo último al recibir mensajes
+    scrollViewRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 
   const getStyle = (type: LogMessage["type"]) => {
@@ -83,6 +79,8 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingVertical: 10,
+    paddingTop: 40, // Espacio arriba para que no choque con el nivel de cordura
+    paddingBottom: 20,
   },
   messageRow: {
     flexDirection: "row",
