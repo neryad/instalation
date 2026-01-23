@@ -1,5 +1,16 @@
 ````
-# S A N I T Y 👁️💻
+_  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _
+      |                                                                 |
+      |   ███████╗ █████╗ ███╗   ██╗██╗████████╗██╗   ██╗               |
+      |   ██╔════╝██╔══██╗████╗  ██║██║╚══██╔══╝╚██╗ ██╔╝               |
+      |   ███████╗███████║██╔██╗ ██║██║   ██║    ╚████╔╝                |
+      |   ╚════██║██╔══██║██║╚██╗██║██║   ██║     ╚██╔╝                 |
+      |   ███████║██║  ██║██║ ╚████║██║   ██║      ██║                  |
+      |   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝   ╚═╝      ╚═╝                  |
+      |                                                                 |
+      |   > PROTOCOLO DE CORDURA ACTIVADO...                            |
+      |   > INTERFAZ NEURONAL ESTABLECIDA...                            |
+      |_  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _ |
 
 **S A N I T Y** es un motor de juego narrativo de terror psicológico construido con **React Native** y **Expo**. El proyecto explora cómo la lógica de estado y la "cordura" del jugador pueden manipular directamente el sistema de navegación y la percepción del entorno.
 
@@ -26,9 +37,8 @@ El núcleo del juego gestiona:
 
 ## 🛠️ Stack Tecnológico
 * **Framework:** React Native + Expo (SDK 50+)
+* **Audio & Haptics:** Expo-AV y Expo-Haptics para retroalimentación física y auditiva. [NUEVO]
 * **Lenguaje:** TypeScript (Tipado estricto para la definición de salas e ítems)
-* **Navegación:** Expo Router utilizando **Hash Routing** para compatibilidad con hosting estático.
-* **Deployment:** Automatizado en Netlify.
 
 ## 📂 Estructura del Proyecto
 ```text
@@ -39,6 +49,16 @@ El núcleo del juego gestiona:
 └── assets/            # Configuración visual y fuentes retro
 
 ````
+
+## ⌨️ Protocolos de Comando
+
+El sistema acepta entradas de lenguaje natural simplificado. Los comandos principales incluyen:
+
+| Comando                          | Acción                             | Impacto en el Juego                    |
+| :------------------------------- | :--------------------------------- | :------------------------------------- |
+| `NORTH`, `SOUTH`, `EAST`, `WEST` | Desplazamiento entre sectores      | Gasta -1% de Cordura.                  |
+| `INVESTIGAR` / `LOOK`            | Analiza la sala actual             | Puede revelar ítems o alertar a la IA. |
+| `HELP`                           | Despliega protocolos de emergencia | Muestra la guía de supervivencia.      |
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M31DTPAL)
 
@@ -86,8 +106,9 @@ El núcleo del juego gestiona:
 ## 🧬 Hoja de Ruta (Roadmap)
 
 - [x] Motor de movimiento base.
-- [x] Sistema de inventario y objetos clave (tarjeta de acceso).
+- [x] Sistema de inventario y objetos clave.
 - [x] IA Predictiva inicial.
+- [x] **Capa de Inmersión:** Retroalimentación háptica y efectos sonoros de terminal. [LOGRADO]
 - [ ] Generación procedimental de salas basada en el nivel de cordura.
 - [ ] Efectos de sonido ambientales generativos.
 
