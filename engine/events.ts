@@ -1,46 +1,3 @@
-// import { PlayerState } from "./player";
-// import { applySanity } from "./sanity";
-
-// export interface MentalEvent {
-//   id: string;
-//   text: string;
-//   sanityChange: number;
-//   probability: number; // 0 a 1
-// }
-
-// export function aiWhisper(state: PlayerState) {
-//   return {
-//     text: 'La IA susurra: "No mires atrás... ya es demasiado tarde."',
-//     newState: applySanity(state, -15),
-//   };
-// }
-
-// export const mentalEvents: MentalEvent[] = [
-//   {
-//     id: "whisper",
-//     text: "Escuchas un susurro detrás de ti, pero estás solo.",
-//     sanityChange: -5,
-//     probability: 0.3,
-//   },
-//   {
-//     id: "shadow",
-//     text: "Una sombra cruza el pasillo, aunque no hay nada que proyecte sombra.",
-//     sanityChange: -8,
-//     probability: 0.2,
-//   },
-//   {
-//     id: "memory",
-//     text: "Recuerdas una habitación que nunca visitaste.",
-//     sanityChange: -4,
-//     probability: 0.4,
-//   },
-// ];
-// export function rollMentalEvent(): MentalEvent | null {
-//   for (const e of mentalEvents) {
-//     if (Math.random() < e.probability) return e;
-//   }
-//   return null;
-// }
 import { PlayerState } from "./player";
 import { rooms } from "./rooms";
 
@@ -74,6 +31,28 @@ export const mentalEvents: MentalEvent[] = [
     },
     sanityChange: -4,
     probability: (state) => 0.2,
+  },
+  // En events.ts añade este nuevo evento:
+  {
+    id: "item_hallucination",
+    text: (state) => {
+      const item = state.inventory[0];
+      return `Miras la ${item} en tu mano. Por un segundo, parece un ojo abierto parpadeando hacia ti.`;
+    },
+    sanityChange: -7,
+    probability: (state) =>
+      state.inventory.length > 0 && state.sanity < 30 ? 0.5 : 0,
+  },
+
+  {
+    id: "item_corruption",
+    text: (state) => {
+      const item = state.inventory[0] || "tus manos";
+      return `Miras fijamente la ${item}. Por un instante, parece estar hecha de píxeles que se desvanecen.`;
+    },
+    sanityChange: -5,
+    probability: (state) =>
+      state.sanity < 25 && state.inventory.length > 0 ? 0.4 : 0,
   },
 ];
 

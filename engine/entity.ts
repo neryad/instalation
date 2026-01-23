@@ -1,13 +1,20 @@
 import { PlayerState } from "./player";
 
 export function moveEntity(state: PlayerState): PlayerState {
-  if (state.sanity > 40) return state;
-
   let awareness = state.entityAwareness + 10;
   const predicted = predictNextDirection(state.lastDirections);
 
-  // Te espera
-  if (predicted && state.sanity < 25) {
+  // 1. Lógica de "Acecho Silencioso" (Cordura Alta > 60)
+  if (state.sanity > 60) {
+    return {
+      ...state,
+      entityAwareness: Math.max(0, awareness - 2), // Te pierde el rastro si estás calmado
+    };
+  }
+
+  // 2. Lógica de "Predicción" (La IA se adelanta)
+  // Si eres predecible, ella te espera en la siguiente sala.
+  if (predicted && state.sanity < 40) {
     const room = rooms[state.currentRoom];
     const target = room.connections[predicted];
 
@@ -15,25 +22,27 @@ export function moveEntity(state: PlayerState): PlayerState {
       return {
         ...state,
         entityRoom: target,
-        entityAwareness: awareness,
-        lastEvent: "Algo se adelantó a ti. Te estaba esperando.",
+        entityAwareness: awareness + 15,
+        lastEvent:
+          "Un zumbido eléctrico recorre el aire. Algo sabe a dónde vas.",
       };
     }
   }
 
-  // Te sigue normalmente
-  if (state.entityRoom && state.sanity < 30) {
+  // 3. Lógica de "Persecución" (Cordura Baja < 30)
+  // La entidad se mueve a tu misma sala.
+  if (state.sanity < 30) {
     return {
       ...state,
       entityRoom: state.currentRoom,
-      entityAwareness: awareness,
-      lastEvent: "Escuchas pasos que imitan los tuyos.",
+      entityAwareness: awareness + 10,
+      lastEvent: "Escuchas pasos metálicos que imitan perfectamente tu ritmo.",
     };
   }
 
   return {
     ...state,
-    entityAwareness: awareness,
+    entityAwareness: awareness + 5,
   };
 }
 
@@ -41,15 +50,15 @@ import { Direction, rooms } from "./rooms";
 
 function predictNextDirection(history: Direction[]): Direction | null {
   if (history.length < 3) return null;
-
   const last = history[history.length - 1];
   const prev = history[history.length - 2];
-  const prev2 = history[history.length - 3];
+  const antePrev = history[history.length - 3];
 
-  // Patrón simple: A-B-A
-  if (prev2 === last && prev !== last) {
-    return prev; // es probable que vuelvas al medio
-  }
+  // Patrón de ida y vuelta (A-B-A)
+  if (last === antePrev && last !== prev) return prev;
+
+  // Patrón de repetición (A-A-A)
+  if (last === prev && prev === antePrev) return last;
 
   return null;
 }

@@ -155,6 +155,11 @@ export const rooms: Record<string, Room> = {
           "La IA dice: 'No deberías estar aquí. Hay rutas que es mejor no ver.'",
       },
       {
+        minSanity: 20,
+        description:
+          "La IA susurra: 'Yo te traje aquí'. Notas que han aparecido nuevas aberturas al NORTE y al OESTE que no deberían existir.",
+      },
+      {
         minSanity: 10,
         description: "La IA susurra: 'No hay salida. Yo te traje aquí.'",
       },
