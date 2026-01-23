@@ -7,47 +7,91 @@ export default function Home() {
   const router = useRouter();
   const [glitch, setGlitch] = useState(false);
 
+  // Lista de mensajes que la IA inyecta durante el glitch
+  const horrorMessages = [
+    "TE ESTOY OBSERVANDO",
+    "ESTA NO ES TU CASA",
+    "EL NÚCLEO SABE TU NOMBRE",
+    "NO CONFÍES EN TUS OJOS",
+    "YA ESTÁS DENTRO",
+  ];
+
+  // Estado para el mensaje actual
+  const [currentSubtitle, setCurrentSubtitle] = useState(
+    '"No todas las puertas llevan a un lugar real."',
+  );
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setGlitch(true);
-      setTimeout(() => setGlitch(false), 150);
-    }, 2000 + Math.random() * 3000);
+    const interval = setInterval(
+      () => {
+        setGlitch(true);
+
+        // Durante el glitch, cambiamos el texto a algo aterrador
+        const randomMessage =
+          horrorMessages[Math.floor(Math.random() * horrorMessages.length)];
+        setCurrentSubtitle(randomMessage);
+
+        setTimeout(() => {
+          setGlitch(false);
+          // Al terminar el glitch, vuelve a la normalidad
+          setCurrentSubtitle('"No todas las puertas llevan a un lugar real."');
+        }, 150);
+      },
+      2500 + Math.random() * 4000,
+    ); // Intervalo irregular para mayor tensión
+
     return () => clearInterval(interval);
   }, []);
 
   return (
     <View style={styles.container}>
       <CRTOverlay />
-      
+
       <View style={styles.content}>
         <View style={styles.header}>
-            <Text style={[styles.protocol, glitch && styles.glitchText]}>PROTOCOL:</Text>
-            <Text style={[styles.title, glitch && styles.glitchText]}>AWAKENING</Text>
-            <View style={styles.line} />
+          <Text style={[styles.protocol, glitch && styles.glitchText]}>
+            PROTOCOL:
+          </Text>
+          <Text style={[styles.title, glitch && styles.glitchText]}>
+            AWAKENING
+          </Text>
+          <View style={styles.line} />
         </View>
 
-        <Text style={styles.subtitle}>
-            "No todas las puertas llevan a un lugar real."
+        {/* El subtítulo ahora cambia dinámicamente */}
+        <Text
+          style={[
+            styles.subtitle,
+            glitch && { color: "#f00", fontWeight: "bold" }, // Se pone rojo en el glitch
+          ]}
+        >
+          {currentSubtitle}
         </Text>
 
         <View style={styles.warningBox}>
-            <Text style={styles.warning}>WARNING: NEURAL INTERFACE REQUIRED</Text>
-            <Text style={styles.warning}>UNAUTHORIZED ACCESS WILL BE LOGGED</Text>
+          <Text style={styles.warning}>WARNING: NEURAL INTERFACE REQUIRED</Text>
+          <Text style={styles.warning}>UNAUTHORIZED ACCESS WILL BE LOGGED</Text>
         </View>
 
-        <Pressable 
-            style={({ pressed }) => [
-                styles.button, 
-                pressed && styles.buttonPressed
-            ]} 
-            onPress={() => router.push("/game")}
+        <Pressable
+          style={({ pressed }) => [styles.button, pressed && { opacity: 0.7 }]}
+          onPress={() => router.replace("/game")}
         >
-            <Text style={styles.buttonText}>INIT SEQUENCE</Text>
+          <Text style={styles.buttonText}>ESTABLISH CONNECTION</Text>
         </Pressable>
 
         <View style={styles.footer}>
-            <Text style={styles.footerText}>FACILITY: [REDACTED] | SECTOR: 7</Text>
-            <Text style={[styles.footerText, styles.blink]}>SUBJECT STATUS: PENDING INTEGRATION</Text>
+          <Text style={styles.footerHeader}>— PROTOCOLOS DE COMANDO —</Text>
+          <View style={styles.commandGrid}>
+            <Text style={styles.footerText}>
+              [NORTH/SOUTH/EAST/WEST] : MOVERSE
+            </Text>
+            <Text style={styles.footerText}>[INVESTIGAR] : BUSCAR OBJETOS</Text>
+            <Text style={styles.footerText}>[MIRAR] : ANALIZAR ENTORNO</Text>
+          </View>
+          <Text style={[styles.footerText, styles.blink, { marginTop: 15 }]}>
+            SUBJECT STATUS: PENDING INTEGRATION
+          </Text>
         </View>
       </View>
     </View>
@@ -137,16 +181,32 @@ const styles = StyleSheet.create({
     fontFamily: "monospace",
   },
   footer: {
-    marginTop: 60,
+    marginTop: 40,
     alignItems: "center",
+    backgroundColor: "rgba(0, 40, 0, 0.2)", // Un fondo sutil para la guía
+    padding: 15,
+    borderWidth: 1,
+    borderColor: "rgba(0, 255, 0, 0.1)",
+  },
+  footerHeader: {
+    color: "#0f0",
+    fontSize: 12,
+    fontFamily: "monospace",
+    fontWeight: "bold",
+    marginBottom: 10,
+    letterSpacing: 2,
+  },
+  commandGrid: {
+    alignItems: "flex-start", // Alinea los comandos a la izquierda
   },
   footerText: {
-    color: "#464",
+    color: "#4a4", // Un verde más oscuro para que no distraiga del botón principal
     fontSize: 10,
     fontFamily: "monospace",
-    marginBottom: 5,
+    lineHeight: 16,
   },
   blink: {
     opacity: 0.8,
-  }
+    color: "#0f0",
+  },
 });

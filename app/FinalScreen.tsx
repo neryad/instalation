@@ -1,3 +1,4 @@
+import { CRTOverlay } from "@/components/game/CRTOverlay";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -9,6 +10,7 @@ export default function FinalScreen() {
 
   return (
     <View style={styles.container}>
+      <CRTOverlay />
       <Text style={[styles.title, isGood ? styles.good : styles.bad]}>
         {isGood ? "ESCAPASTE" : "TE ENCONTRÓ"}
       </Text>
