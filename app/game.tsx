@@ -1,3 +1,5 @@
+import { Audio } from "expo-av";
+import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
@@ -9,7 +11,6 @@ import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import { getRoomDescription, investigate, move } from "../engine/engine";
 import { initialPlayerState } from "../engine/player";
 import { Direction } from "../engine/rooms";
-
 const generateId = () => Math.random().toString(36).substr(2, 9);
 const getTimestamp = () => {
   const now = new Date();
@@ -110,6 +111,28 @@ export default function GameScreen() {
       ...prev,
       { id: generateId(), text, type, timestamp },
     ]);
+
+    // --- Lógica de Vibración (Haptics) ---
+    if (type === "error") {
+      // Vibración de error (doble pulso fuerte)
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    } else if (type === "warning") {
+      // Vibración de advertencia
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    } else {
+      // Un toque sutil para mensajes normales y narrativa
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+
+    // Lo llamamos sin 'await' para que no bloquee la UI
+    playBeep().catch((err) => console.log("Error de audio:", err));
+  };
+
+  const playBeep = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../assets/sounds/beep2.mp3"), // Necesitarás un archivo de sonido corto
+    );
+    await sound.playAsync();
   };
 
   const handleCommand = (cmd: string) => {
