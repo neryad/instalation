@@ -14,7 +14,7 @@ export interface PlayerState {
 
 export const initialPlayerState: PlayerState = {
   currentRoom: "awakening",
-  sanity: 32,
+  sanity: 100,
   inventory: [],
   entityAwareness: 0,
   lastDirections: [],
