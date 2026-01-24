@@ -54,6 +54,20 @@ export const mentalEvents: MentalEvent[] = [
     probability: (state) =>
       state.sanity < 25 && state.inventory.length > 0 ? 0.4 : 0,
   },
+  {
+    id: "command_mimic",
+    text: (state) =>
+      `IA: "¿De verdad crees que tú escribiste ese último comando?"`,
+    sanityChange: -8,
+    probability: (state) => (state.sanity < 40 ? 0.15 : 0),
+  },
+  {
+    id: "false_item_pickup",
+    text: (state) =>
+      `Crees ver una salida al final del pasillo, pero desaparece cuando parpadeas.`,
+    sanityChange: -5,
+    probability: (state) => (state.sanity < 30 ? 0.3 : 0),
+  },
 ];
 
 export function rollMentalEvent(state: PlayerState): MentalEvent | null {

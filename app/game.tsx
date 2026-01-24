@@ -327,14 +327,13 @@ export default function GameScreen() {
     const lower = cmd.toLowerCase().trim();
     const args = lower.split(" ");
 
-    // --- LÓGICA DE LOCURA EXTREMA ---
+    // --- LÓGICA DE LOCURA EXTREMA (Se mantiene igual) ---
     if (state.sanity <= 0) {
-      const glitched = ["VOID", "ERROR", "0110100", "HELP ME", "HELP ME"];
+      const glitched = ["VOID", "ERROR", "0110100", "HELP ME"];
       addLog(
         `SISTEMA CRÍTICO: ${glitched[Math.floor(Math.random() * glitched.length)]}`,
         "error",
       );
-      // Aquí podrías forzar un movimiento aleatorio si quisieras
     }
 
     // --- 1. AYUDA ---
@@ -346,9 +345,21 @@ export default function GameScreen() {
       return;
     }
 
-    // --- 2. MIRAR ---
+    // --- 2. MIRAR (Consolidado) ---
     if (lower === "look" || lower === "mirar") {
+      // Primero la descripción real
       addLog(getRoomDescription(state), "narrative");
+
+      // Intervención de la IA (Solo si hay mucha conciencia/acecho)
+      if (state.entityAwareness > 60) {
+        // Un pequeño retraso para que parezca que la IA "responde" a tu mirada
+        setTimeout(() => {
+          addLog(
+            'IA: "Busca todo lo que quieras. El escenario no va a cambiar por mucho que mires."',
+            "warning",
+          );
+        }, 600);
+      }
       return;
     }
 
@@ -383,7 +394,7 @@ export default function GameScreen() {
         const newState = forceDoor(prev, dirInput);
         if (newState.currentRoom !== prev.currentRoom) {
           addLog(getRoomDescription(newState), "narrative");
-          addLog(newState.lastEvent || "", "warning");
+          if (newState.lastEvent) addLog(newState.lastEvent, "warning");
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         } else {
           addLog(newState.lastEvent || "No hay nada que forzar ahí.", "system");
@@ -398,20 +409,19 @@ export default function GameScreen() {
       setState((prev) => {
         const newState = move(prev, lower as Direction);
 
-        // CASO A: El jugador se movió con éxito
         if (newState.currentRoom !== prev.currentRoom) {
+          // ÉXITO: Mostramos descripción de la nueva sala
           addLog(getRoomDescription(newState), "narrative");
 
-          // Si moveEntity o la sala generaron un evento (ej: acecho de IA)
+          // Eventos de la IA o de la sala (Ej: "Algo sabe a dónde vas")
           if (newState.lastEvent) {
             const isWarning =
               newState.lastEvent.includes("IA") ||
               newState.lastEvent.includes("sabe");
             addLog(newState.lastEvent, isWarning ? "warning" : "narrative");
           }
-        }
-        // CASO B: El jugador NO se movió (Bloqueo o Pared)
-        else {
+        } else {
+          // BLOQUEO: No se movió
           if (newState.lastEvent?.includes("sellada")) {
             addLog(newState.lastEvent, "warning");
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -420,7 +430,7 @@ export default function GameScreen() {
           }
         }
 
-        // CHEQUEO DE GAME OVER
+        // GAME OVER
         if (newState.gameOver) {
           const finalMsg =
             newState.endingType === "bad"
@@ -428,28 +438,29 @@ export default function GameScreen() {
               : "ALERTA: BRECHA DE SEGURIDAD. SUJETO HA ESCAPADO.";
           addLog(finalMsg, newState.endingType === "bad" ? "error" : "system");
         }
-
         return newState;
       });
       return;
     }
 
-    // --- 6. USAR (Opcional por si tienes sedantes) ---
+    // --- 6. USAR ---
     if (lower.startsWith("usar") || lower.startsWith("use")) {
       const item = args[1];
       if (!item) {
         addLog("SISTEMA: ¿Qué deseas usar?", "error");
         return;
       }
-      // Aquí llamarías a una función useItem en tu engine
-      addLog(`No puedes usar ${item} en este momento.`, "system");
+      // Lógica para usar el sedante u otros ítems
+      addLog(
+        `El sistema no reconoce la interacción con ${item.toUpperCase()}.`,
+        "system",
+      );
       return;
     }
 
     // COMANDO DESCONOCIDO
     addLog("ERROR: COMANDO NO RECONOCIDO. ESCRIBE 'HELP'.", "error");
   };
-
   // const handleCommand = (cmd: string) => {
   //   if (state.gameOver) return;
 
