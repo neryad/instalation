@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { Animated, StyleSheet, Text, View } from "react-native";
 
 interface SanityBarProps {
   sanity: number;
@@ -7,7 +7,7 @@ interface SanityBarProps {
 
 export const SanityBar = ({ sanity }: SanityBarProps) => {
   const percentage = Math.max(0, Math.min(100, sanity));
-
+  const shakeAnim = useRef(new Animated.Value(0)).current;
   let color = "#00ff00"; // Stable
   let status = "STABLE";
 
@@ -20,26 +20,56 @@ export const SanityBar = ({ sanity }: SanityBarProps) => {
     status = "CRITICAL";
   }
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.label}>SANITY_LEVEL</Text>
-        <Text style={[styles.status, { color }]}>[{status}]</Text>
-      </View>
+  useEffect(() => {
+    if (sanity < 30) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(shakeAnim, {
+            toValue: 2,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shakeAnim, {
+            toValue: -2,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shakeAnim, {
+            toValue: 0,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+        ]),
+      ).start();
+    } else {
+      shakeAnim.setValue(0);
+    }
+  }, [sanity]);
 
-      <View style={styles.barContainer}>
-        <View
-          style={[
-            styles.fill,
-            { width: `${percentage}%`, backgroundColor: color },
-          ]}
-        />
+  return (
+    <Animated.View
+      style={[styles.container, { transform: [{ translateX: shakeAnim }] }]}
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.label}>SANITY_LEVEL</Text>
+          <Text style={[styles.status, { color }]}>[{status}]</Text>
+        </View>
+
+        <View style={styles.barContainer}>
+          <View
+            style={[
+              styles.fill,
+              { width: `${percentage}%`, backgroundColor: color },
+            ]}
+          />
+        </View>
+        <View style={styles.footer}>
+          <Text style={styles.value}>{Math.round(sanity)}%</Text>
+          <Text style={styles.max}>100%</Text>
+        </View>
       </View>
-      <View style={styles.footer}>
-        <Text style={styles.value}>{Math.round(sanity)}%</Text>
-        <Text style={styles.max}>100%</Text>
-      </View>
-    </View>
+    </Animated.View>
   );
 };
 

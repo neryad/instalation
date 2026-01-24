@@ -530,6 +530,8 @@
 //     paddingBottom: 20,
 //   },
 // });
+import { InventoryHUD } from "@/components/game/inventoryHud";
+import { QuickActions } from "@/components/game/quickActions";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
@@ -814,6 +816,23 @@ export default function GameScreen() {
       <CRTOverlay isGlitchActive={isGlitchActive} />
       <SafeAreaView style={styles.safeArea}>
         <SanityBar sanity={state.sanity} />
+        <InventoryHUD items={state.inventory} />
+        <View style={styles.terminalContainer}>
+          <TerminalLog messages={logMessages} />
+        </View>
+
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+        >
+          {/* Las acciones rápidas justo encima del input */}
+          <QuickActions onAction={handleCommand} disabled={state.gameOver} />
+
+          <TerminalInput onSubmit={handleCommand} editable={!state.gameOver} />
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+      {/* <SafeAreaView style={styles.safeArea}>
+        <SanityBar sanity={state.sanity} />
         <View style={styles.terminalContainer}>
           <TerminalLog messages={logMessages} />
         </View>
@@ -822,9 +841,10 @@ export default function GameScreen() {
           keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 20}
           style={{ flex: 1 }}
         >
+          <QuickActions onAction={handleCommand} disabled={state.gameOver} />
           <TerminalInput onSubmit={handleCommand} editable={!state.gameOver} />
         </KeyboardAvoidingView>
-      </SafeAreaView>
+      </SafeAreaView> */}
     </View>
   );
 }

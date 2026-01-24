@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Animated, ScrollView, StyleSheet, Text, View } from "react-native";
 
 export interface LogMessage {
   id: string;
@@ -74,6 +74,23 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
     }
   };
 
+  const FadeInView = (props: any) => {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    useEffect(() => {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    }, []);
+
+    return (
+      <Animated.View style={{ opacity: fadeAnim }}>
+        {props.children}
+      </Animated.View>
+    );
+  };
+
   return (
     <ScrollView
       ref={scrollViewRef}
@@ -81,24 +98,36 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
       contentContainerStyle={styles.content}
     >
       {messages.map((msg) => (
-        <View key={msg.id} style={styles.messageRow}>
-          {msg.timestamp && (
-            <Text style={styles.timestamp}>[{msg.timestamp}] </Text>
-          )}
-          <View style={{ flex: 1 }}>
-            {renderStyledText(`${getPrefix(msg.type)}${msg.text}`, [
-              styles.text,
-              getStyle(msg.type),
-            ])}
+        <FadeInView key={msg.id}>
+          <View key={msg.id} style={styles.messageRow}>
+            {msg.timestamp && (
+              <Text style={styles.timestamp}>[{msg.timestamp}] </Text>
+            )}
+            <View style={{ flex: 1 }}>
+              {renderStyledText(`${getPrefix(msg.type)}${msg.text}`, [
+                styles.text,
+                getStyle(msg.type),
+              ])}
+            </View>
           </View>
-        </View>
+        </FadeInView>
       ))}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  // ... (tus estilos existentes)
+  terminalContainer: {
+    flex: 1,
+    margin: 10,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "rgba(0, 255, 0, 0.2)",
+    backgroundColor: "rgba(0, 5, 0, 0.3)",
+    // Este es el truco: un borde redondeado muy leve para simular el cristal del monitor
+    borderRadius: 15,
+    overflow: "hidden",
+  },
   container: { flex: 1, backgroundColor: "transparent" },
   content: { paddingVertical: 10, paddingTop: 40, paddingBottom: 20 },
   messageRow: { flexDirection: "row", marginBottom: 8, paddingHorizontal: 5 },
@@ -114,10 +143,10 @@ const styles = StyleSheet.create({
 
   // --- ESTILO PARA RESALTAR DIRECCIONES ---
   highlightedDirection: {
-    color: "#ffffff", // Blanco puro para que brille sobre el verde
+    color: "#00ff00",
     fontWeight: "bold",
-    textShadowColor: "rgba(255, 255, 255, 0.5)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 5, // Efecto de brillo (glow)
+    textShadowColor: "rgba(0, 255, 0, 0.8)",
+    textShadowRadius: 8,
+    textDecorationLine: "underline", // Ayuda a que parezca un "link" táctil
   },
 });

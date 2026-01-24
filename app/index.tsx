@@ -6,92 +6,91 @@ import { CRTOverlay } from "../components/game/CRTOverlay";
 export default function Home() {
   const router = useRouter();
   const [glitch, setGlitch] = useState(false);
-
-  // Lista de mensajes que la IA inyecta durante el glitch
-  const horrorMessages = [
-    "TE ESTOY OBSERVANDO",
-    "ESTA NO ES TU CASA",
-    "EL NÚCLEO SABE TU NOMBRE",
-    "NO CONFÍES EN TUS OJOS",
-    "YA ESTÁS DENTRO",
-  ];
-
-  // Estado para el mensaje actual
   const [currentSubtitle, setCurrentSubtitle] = useState(
-    '"No todas las puertas llevan a un lugar real."',
+    "Análisis Sistemático de Integridad Neural",
   );
+
+  const horrorMessages = [
+    "S.ISTEMA A.UTÓNOMO N.EURAL I.NTEGRADO T.OTAL Y.IELD",
+    "SOLO HAY OSCURIDAD AQUÍ",
+    "NO PUEDES DESCONECTARTE",
+    "¿ESTÁS SEGURO DE QUE ERES TÚ?",
+    "EL NÚCLEO TE NECESITA",
+  ];
 
   useEffect(() => {
     const interval = setInterval(
       () => {
         setGlitch(true);
-
-        // Durante el glitch, cambiamos el texto a algo aterrador
         const randomMessage =
           horrorMessages[Math.floor(Math.random() * horrorMessages.length)];
         setCurrentSubtitle(randomMessage);
 
         setTimeout(() => {
           setGlitch(false);
-          // Al terminar el glitch, vuelve a la normalidad
-          setCurrentSubtitle('"No todas las puertas llevan a un lugar real."');
-        }, 150);
+          setCurrentSubtitle("Análisis Sistemático de Integridad Neural");
+        }, 180);
       },
-      2500 + Math.random() * 4000,
-    ); // Intervalo irregular para mayor tensión
+      3000 + Math.random() * 5000,
+    );
 
     return () => clearInterval(interval);
   }, []);
 
   return (
     <View style={styles.container}>
-      <CRTOverlay />
+      <CRTOverlay isGlitchActive={glitch} />
 
       <View style={styles.content}>
+        {/* TÍTULO PRINCIPAL EVOLUCIONADO */}
         <View style={styles.header}>
-          <Text style={[styles.protocol, glitch && styles.glitchText]}>
-            PROTOCOL:
-          </Text>
           <Text style={[styles.title, glitch && styles.glitchText]}>
-            AWAKENING
+            S.A.N.I.T.Y.
           </Text>
-          <View style={styles.line} />
+          <View style={styles.scanlineTitle} />
+          <Text style={styles.version}>v2.0.26_CORE</Text>
         </View>
 
-        {/* El subtítulo ahora cambia dinámicamente */}
-        <Text
-          style={[
-            styles.subtitle,
-            glitch && { color: "#f00", fontWeight: "bold" }, // Se pone rojo en el glitch
-          ]}
-        >
-          {currentSubtitle}
-        </Text>
+        {/* SUBTÍTULO CON ESTILO DE CARGA */}
+        <View style={styles.subtitleContainer}>
+          <Text style={[styles.subtitle, glitch && styles.glitchSubtitle]}>
+            {currentSubtitle}
+          </Text>
+        </View>
 
+        {/* CAJA DE ADVERTENCIA MEJORADA */}
         <View style={styles.warningBox}>
-          <Text style={styles.warning}>WARNING: NEURAL INTERFACE REQUIRED</Text>
-          <Text style={styles.warning}>UNAUTHORIZED ACCESS WILL BE LOGGED</Text>
+          <View style={styles.warningLine} />
+          <Text style={styles.warningText}>
+            ESTADO: FALLO DE MEMORIA DETECTADO
+          </Text>
+          <Text style={styles.warningText}>
+            PROCESO DE INTEGRACIÓN PENDIENTE...
+          </Text>
+          <View style={styles.warningLine} />
         </View>
 
+        {/* BOTÓN DE ACCIÓN */}
         <Pressable
-          style={({ pressed }) => [styles.button, pressed && { opacity: 0.7 }]}
-          onPress={() => router.replace("/game")}
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonPressed,
+          ]}
+          onPress={() => router.push("/intro")} // Suponiendo que llamas al archivo app/intro.tsx
         >
-          <Text style={styles.buttonText}>ESTABLISH CONNECTION</Text>
+          <Text style={styles.buttonText}>INICIAR SECUENCIA</Text>
         </Pressable>
-
+        {/* GUÍA DE COMANDOS ESTILO TERMINAL */}
         <View style={styles.footer}>
-          <Text style={styles.footerHeader}>— PROTOCOLOS DE COMANDO —</Text>
-          <View style={styles.commandGrid}>
-            <Text style={styles.footerText}>
-              [NORTH/SOUTH/EAST/WEST] : MOVERSE
-            </Text>
-            <Text style={styles.footerText}>[INVESTIGAR] : BUSCAR OBJETOS</Text>
-            <Text style={styles.footerText}>[MIRAR] : ANALIZAR ENTORNO</Text>
+          <Text style={styles.footerHeader}>// MANUAL_DE_OPERACIONES</Text>
+          <View style={styles.commandRow}>
+            <Text style={styles.cmd}>MOV:</Text>
+            <Text style={styles.cmdDesc}>[N, S, E, W]</Text>
           </View>
-          <Text style={[styles.footerText, styles.blink, { marginTop: 15 }]}>
-            SUBJECT STATUS: PENDING INTEGRATION
-          </Text>
+          <View style={styles.commandRow}>
+            <Text style={styles.cmd}>ACT:</Text>
+            <Text style={styles.cmdDesc}>[INVESTIGAR, MIRAR, USAR]</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -101,112 +100,130 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000800",
+    backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
   },
   content: {
-    zIndex: 10,
     alignItems: "center",
     width: "100%",
-    padding: 20,
+    padding: 30,
   },
   header: {
     alignItems: "center",
-    marginBottom: 40,
-  },
-  protocol: {
-    color: "#0f0",
-    fontSize: 24,
-    letterSpacing: 4,
-    fontFamily: "monospace",
-    marginBottom: 10,
+    marginBottom: 50,
   },
   title: {
     color: "#0f0",
-    fontSize: 48,
-    letterSpacing: 8,
-    fontWeight: "bold",
+    fontSize: 56,
+    fontWeight: "900",
     fontFamily: "monospace",
-    textShadowColor: "rgba(0, 255, 0, 0.5)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    letterSpacing: 12,
+    textShadowColor: "rgba(0, 255, 0, 0.8)",
+    textShadowRadius: 20,
   },
-  glitchText: {
-    transform: [{ translateX: -2 }],
-    textShadowColor: "#f00",
-    textShadowOffset: { width: 2, height: 0 },
-    textShadowRadius: 0,
-  },
-  line: {
-    height: 1,
-    width: 200,
-    backgroundColor: "#0f0",
-    opacity: 0.5,
-    marginTop: 20,
-  },
-  subtitle: {
-    color: "#686",
-    fontSize: 14,
-    fontStyle: "italic",
-    marginBottom: 60,
-    textAlign: "center",
-    fontFamily: "monospace",
-  },
-  warningBox: {
-    marginBottom: 40,
-    alignItems: "center",
-  },
-  warning: {
-    color: "#ff3333",
+  version: {
+    color: "#050",
     fontSize: 10,
     fontFamily: "monospace",
+    marginTop: 5,
+  },
+  glitchText: {
+    color: "#f00",
+    transform: [{ scale: 1.05 }, { skewX: "5deg" }],
+    textShadowColor: "#0f0",
+  },
+  subtitleContainer: {
+    height: 40,
+    justifyContent: "center",
+    marginBottom: 60,
+  },
+  subtitle: {
+    color: "#4a4",
+    fontSize: 12,
+    textAlign: "center",
+    fontFamily: "monospace",
+    textTransform: "uppercase",
     letterSpacing: 1,
   },
+  glitchSubtitle: {
+    color: "#f00",
+    fontWeight: "bold",
+  },
+  warningBox: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 50,
+  },
+  warningLine: {
+    height: 1,
+    width: 100,
+    backgroundColor: "#300",
+    marginVertical: 10,
+  },
+  warningText: {
+    color: "#600",
+    fontSize: 10,
+    fontFamily: "monospace",
+    marginBottom: 4,
+  },
   button: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "#0f0",
-    paddingHorizontal: 40,
+    paddingHorizontal: 30,
     paddingVertical: 15,
-    backgroundColor: "rgba(0, 20, 0, 0.5)",
+    backgroundColor: "transparent",
   },
   buttonPressed: {
-    backgroundColor: "rgba(0, 50, 0, 0.8)",
+    backgroundColor: "rgba(0, 255, 0, 0.1)",
   },
   buttonText: {
     color: "#0f0",
-    fontSize: 20,
-    letterSpacing: 4,
-    fontWeight: "bold",
+    fontSize: 18,
+    letterSpacing: 3,
     fontFamily: "monospace",
+    fontWeight: "bold",
   },
   footer: {
-    marginTop: 40,
-    alignItems: "center",
-    backgroundColor: "rgba(0, 40, 0, 0.2)", // Un fondo sutil para la guía
-    padding: 15,
-    borderWidth: 1,
-    borderColor: "rgba(0, 255, 0, 0.1)",
+    marginTop: 60,
+    width: "100%",
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(0,255,0,0.1)",
   },
   footerHeader: {
-    color: "#0f0",
-    fontSize: 12,
-    fontFamily: "monospace",
-    fontWeight: "bold",
-    marginBottom: 10,
-    letterSpacing: 2,
-  },
-  commandGrid: {
-    alignItems: "flex-start", // Alinea los comandos a la izquierda
-  },
-  footerText: {
-    color: "#4a4", // Un verde más oscuro para que no distraiga del botón principal
+    color: "#252",
     fontSize: 10,
     fontFamily: "monospace",
-    lineHeight: 16,
+    marginBottom: 10,
   },
-  blink: {
-    opacity: 0.8,
-    color: "#0f0",
+  commandRow: {
+    flexDirection: "row",
+    marginBottom: 5,
+  },
+  cmd: {
+    color: "#0a0",
+    width: 50,
+    fontSize: 11,
+    fontFamily: "monospace",
+  },
+  cmdDesc: {
+    color: "#464",
+    fontSize: 11,
+    fontFamily: "monospace",
+  },
+
+  // ... (tus otros estilos)
+
+  scanlineTitle: {
+    position: "absolute",
+    bottom: 5,
+    width: "120%", // Un poco más ancho que el título
+    height: 2,
+    backgroundColor: "rgba(0, 255, 0, 0.2)",
+    shadowColor: "#0f0",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
   },
 });
