@@ -356,13 +356,8 @@ import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
 import { SanityBar } from "../components/game/SanityBar";
 import { TerminalInput } from "../components/game/TerminalInput";
@@ -383,6 +378,7 @@ const getTimestamp = () => {
 };
 
 export default function GameScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const [state, setState] = useState(initialPlayerState);
   const [logMessages, setLogMessages] = useState<LogMessage[]>([]);
@@ -501,35 +497,66 @@ export default function GameScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          // Aplicamos el padding superior dinámicamente según el dispositivo
+          paddingTop: Math.max(insets.top, 20),
+          paddingBottom: insets.bottom,
+        },
+      ]}
+    >
       <CRTOverlay isGlitchActive={isGlitchActive} />
-      <SafeAreaView style={styles.safeArea}>
+
+      {/* HEADER: Sanidad e Inventario */}
+      <View style={styles.header}>
         <SanityBar sanity={state.sanity} />
         <InventoryHUD items={state.inventory} />
+      </View>
 
-        <View style={styles.terminalContainer}>
-          <TerminalLog messages={logMessages} />
-        </View>
+      {/* CUERPO: La Terminal (flex: 1 para que empuje lo demás) */}
+      <View style={styles.terminalContainer}>
+        <TerminalLog messages={logMessages} />
+      </View>
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <QuickActions onAction={handleCommand} disabled={state.gameOver} />
-          <TerminalInput onSubmit={handleCommand} editable={!state.gameOver} />
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+      {/* PIE: Controles y Teclado */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        // Si el input se queda muy abajo, ajusta este offset
+        keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
+      >
+        <QuickActions onAction={handleCommand} disabled={state.gameOver} />
+        <TerminalInput onSubmit={handleCommand} editable={!state.gameOver} />
+      </KeyboardAvoidingView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000500" },
+  //container: { flex: 1, backgroundColor: "#000500" },
   safeArea: { flex: 1, marginHorizontal: 10 },
+  // terminalContainer: {
+  //   flex: 1,
+  //   borderColor: "#003300",
+  //   borderWidth: 1,
+  //   backgroundColor: "rgba(0, 15, 0, 0.3)",
+  //   marginVertical: 10,
+  // },
+
+  container: {
+    flex: 1,
+    backgroundColor: "#000500",
+    paddingHorizontal: 15, // Un poco de aire a los lados
+  },
+  header: {
+    marginBottom: 10,
+  },
   terminalContainer: {
     flex: 1,
     borderColor: "#003300",
     borderWidth: 1,
     backgroundColor: "rgba(0, 15, 0, 0.3)",
-    marginVertical: 10,
+    marginBottom: 10,
   },
 });

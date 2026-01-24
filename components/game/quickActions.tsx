@@ -21,8 +21,8 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
     { label: "S", cmd: "SOUTH" },
     { label: "E", cmd: "EAST" },
     { label: "W", cmd: "WEST" },
-    { label: "🔍 INVESTIGAR", cmd: "INVESTIGAR" },
-    { label: "👁️ MIRAR", cmd: "LOOK" },
+    { label: "INVESTIGAR", cmd: "INVESTIGAR" },
+    { label: "MIRAR", cmd: "LOOK" },
   ];
 
   return (

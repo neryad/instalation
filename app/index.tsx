@@ -114,13 +114,25 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   title: {
-    color: "#0f0",
-    fontSize: 56,
-    fontWeight: "900",
+    //color: "#0f0",
+    // fontSize: 56,
+    // fontWeight: "900",
     fontFamily: "monospace",
-    letterSpacing: 12,
+    // letterSpacing: 12,
     textShadowColor: "rgba(0, 255, 0, 0.8)",
     textShadowRadius: 20,
+    fontSize: 40,
+    fontWeight: "bold",
+    color: "#0f0",
+    letterSpacing: 6,
+    textAlign: "center",
+    width: "100%",
+  },
+  titleContainer: {
+    flex: 2, // Le damos más peso al área del título
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 10, // Evita que las letras rocen los bordes
   },
   version: {
     color: "#050",
