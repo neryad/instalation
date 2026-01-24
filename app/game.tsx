@@ -356,11 +356,10 @@ import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
 import { SanityBar } from "../components/game/SanityBar";
-import { TerminalInput } from "../components/game/TerminalInput";
 import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import {
   forceDoor,
@@ -501,34 +500,32 @@ export default function GameScreen() {
       style={[
         styles.container,
         {
-          // Aplicamos el padding superior dinámicamente según el dispositivo
           paddingTop: Math.max(insets.top, 20),
-          paddingBottom: insets.bottom,
+          paddingBottom: Math.max(insets.bottom, 20),
         },
       ]}
     >
       <CRTOverlay isGlitchActive={isGlitchActive} />
 
-      {/* HEADER: Sanidad e Inventario */}
+      {/* HUD Superior */}
       <View style={styles.header}>
         <SanityBar sanity={state.sanity} />
         <InventoryHUD items={state.inventory} />
       </View>
 
-      {/* CUERPO: La Terminal (flex: 1 para que empuje lo demás) */}
+      {/* TERMINAL: Ahora ocupa todo el centro */}
       <View style={styles.terminalContainer}>
         <TerminalLog messages={logMessages} />
       </View>
 
-      {/* PIE: Controles y Teclado */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        // Si el input se queda muy abajo, ajusta este offset
-        keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
-      >
-        <QuickActions onAction={handleCommand} disabled={state.gameOver} />
-        <TerminalInput onSubmit={handleCommand} editable={!state.gameOver} />
-      </KeyboardAvoidingView>
+      {/* ACCIONES: Solo botones, sin input */}
+      <View style={styles.controlsContainer}>
+        <QuickActions
+          onAction={handleCommand}
+          disabled={state.gameOver}
+          hasSedative={state.inventory.includes("sedative")}
+        />
+      </View>
     </View>
   );
 }
@@ -552,11 +549,22 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 10,
   },
+  // terminalContainer: {
+  //   flex: 1,
+  //   borderColor: "#003300",
+  //   borderWidth: 1,
+  //   backgroundColor: "rgba(0, 15, 0, 0.3)",
+  //   marginBottom: 10,
+  // },
   terminalContainer: {
-    flex: 1,
+    flex: 1, // Se expande para llenar el hueco
     borderColor: "#003300",
     borderWidth: 1,
     backgroundColor: "rgba(0, 15, 0, 0.3)",
-    marginBottom: 10,
+    marginBottom: 15,
+  },
+  controlsContainer: {
+    paddingBottom: 10,
+    // Aquí podrías añadir un fondo sutil para los botones
   },
 });
