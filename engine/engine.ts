@@ -171,33 +171,72 @@ import { PlayerState } from "./player";
 import { Direction, rooms } from "./rooms";
 import { distortText } from "./sanity";
 
+// export function move(state: PlayerState, dir: Direction): PlayerState {
+//   const room = rooms[state.currentRoom];
+//   let connections = { ...room.connections };
+
+//   // 1. Limpieza inicial: Creamos un nuevo estado base SIN el evento anterior
+//   // Esto evita que "Encontraste keycard" se arrastre eternamente.
+//   let newState: PlayerState = {
+//     ...state,
+//     lastEvent: undefined,
+//   };
+
+//   // 2. Aplicar inestabilidad espacial
+//   if (room.unstableConnections) {
+//     room.unstableConnections.forEach((u) => {
+//       if (state.sanity <= u.maxSanity)
+//         connections = { ...connections, ...u.connections };
+//     });
+//   }
+
+//   const nextRoomId = connections[dir];
+
+//   // Si no hay conexión, devolvemos el estado previo con el aviso
+//   if (!nextRoomId) {
+//     return { ...newState, lastEvent: "No puedes ir por ahí." };
+//   }
+
+//   // 3. Validación de Sala Ilusoria
+//   const nextRoomData = rooms[nextRoomId];
+//   if (
+//     nextRoomData.minSanityToExist &&
+//     state.sanity > nextRoomData.minSanityToExist
+//   ) {
+//     return {
+//       ...newState,
+//       lastEvent:
+//         "Intentas avanzar, pero el camino parece desvanecerse ante tus ojos. No hay nada allí.",
+//     };
+//   }
+
 export function move(state: PlayerState, dir: Direction): PlayerState {
   const room = rooms[state.currentRoom];
   let connections = { ...room.connections };
 
-  // 1. Limpieza inicial: Creamos un nuevo estado base SIN el evento anterior
-  // Esto evita que "Encontraste keycard" se arrastre eternamente.
+  // 1. Limpieza inicial y preparación del estado base
   let newState: PlayerState = {
     ...state,
     lastEvent: undefined,
   };
 
-  // 2. Aplicar inestabilidad espacial
+  // 2. Aplicar inestabilidad espacial (Salas que aparecen/desaparecen según cordura)
   if (room.unstableConnections) {
     room.unstableConnections.forEach((u) => {
-      if (state.sanity <= u.maxSanity)
+      if (state.sanity <= u.maxSanity) {
         connections = { ...connections, ...u.connections };
+      }
     });
   }
 
   const nextRoomId = connections[dir];
 
-  // Si no hay conexión, devolvemos el estado previo con el aviso
+  // Si no hay conexión física o inestable
   if (!nextRoomId) {
     return { ...newState, lastEvent: "No puedes ir por ahí." };
   }
 
-  // 3. Validación de Sala Ilusoria
+  // 3. Validación de Sala Ilusoria (minSanityToExist)
   const nextRoomData = rooms[nextRoomId];
   if (
     nextRoomData.minSanityToExist &&
@@ -210,113 +249,99 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     };
   }
 
-  // 4. Validación de Puertas Bloqueadas
+  // 4. Validación de Puertas Bloqueadas (Keycards y Data Links)
   if (nextRoomData.lockedBy) {
     const hasKey = state.inventory.includes(nextRoomData.lockedBy);
     if (!hasKey) {
       return {
         ...newState,
-        lastEvent: `La entrada a ${nextRoomId} está sellada. Necesitas: ${nextRoomData.lockedBy}. (Podrías intentar FORZARLA, pero a un gran costo...)`,
+        lastEvent: `La entrada a ${nextRoomId.toUpperCase()} está sellada. Requiere: ${nextRoomData.lockedBy.toUpperCase()}.`,
       };
     }
   }
 
-  // 5. Mover y actualizar estado (ÉXITO DE MOVIMIENTO)
+  // 5. Mover y actualizar métricas de estado
   newState = {
     ...newState,
     currentRoom: nextRoomId,
     lastDirections: [...state.lastDirections, dir].slice(-5),
-    sanity: Math.max(0, state.sanity - 1),
+    sanity: Math.max(0, state.sanity - 2), // El movimiento agota mentalmente
   };
 
-  // 6. Turno de la IA (La IA puede generar su propio lastEvent como "Algo sabe a dónde vas")
+  // 6. Turno de la IA (Ella decide si te embosca o te habla en la nueva sala)
   newState = moveEntity(newState);
 
-  // 7. Chequeo de Finales
+  // 7. CHEQUEO DE FINAL DEL JUEGO (Llegada al Core)
   if (newState.currentRoom === "core") {
-    const favorite = getMostFrequentDirection(newState.lastDirections);
-    if (newState.sanity < 20) {
+    // Escenario A: ASIMILACIÓN (La IA te tiene rodeado o estás quebrado)
+    if (newState.entityAwareness >= 90 || newState.sanity <= 10) {
       return {
         ...newState,
         gameOver: true,
         endingType: "bad",
-        lastEvent: `La IA te asimila. '¿Buscabas algo al ${favorite}? Ya no importa.'`,
+        lastEvent:
+          "CRITICAL FAILURE: La IA cierra todas las salidas. Tu conciencia es fragmentada y cargada en el servidor central. Ya no hay 'ti'.",
       };
     }
-    if (newState.entityAwareness < 50) {
+
+    // Escenario B: LOCURA TOTAL (Llegas, pero tu mente está perdida)
+    if (newState.sanity < 45) {
       return {
         ...newState,
         gameOver: true,
-        endingType: "good",
-        lastEvent: "El Núcleo se apaga. Eres libre.",
+        endingType: "insane",
+        lastEvent:
+          "IA: 'Has llegado... pero tus ojos ya no ven la realidad. El código es tu nuevo hogar.' Bienvenido a la eternidad, Sujeto 00.",
       };
     }
+
+    // Escenario C: ESCAPE PERFECTO (Victoria total)
+    return {
+      ...newState,
+      gameOver: true,
+      endingType: "good",
+      lastEvent:
+        "ALERTA: Brecha de seguridad irreversible. El Núcleo se apaga y las compuertas de emergencia se abren. Eres libre.",
+    };
   }
 
-  // Final por locura
+  // 8. Final por colapso mental fuera del Core
   if (newState.sanity <= 0) {
     return {
       ...newState,
       gameOver: true,
       endingType: "bad",
-      lastEvent: "Tu mente se fragmenta. Eres parte del sistema ahora.",
+      lastEvent:
+        "Tu mente se colapsa bajo la presión del terminal. No queda nada de tu identidad original.",
     };
   }
 
   return newState;
 }
 
-// export function move(state: PlayerState, dir: Direction): PlayerState {
-//   const room = rooms[state.currentRoom];
-//   let connections = { ...room.connections };
-
-//   // 1. Aplicar inestabilidad espacial (Salas que cambian según cordura)
-//   if (room.unstableConnections) {
-//     room.unstableConnections.forEach((u) => {
-//       if (state.sanity <= u.maxSanity)
-//         connections = { ...connections, ...u.connections };
-//     });
-//   }
-
-//   const nextRoomId = connections[dir];
-//   if (!nextRoomId) return { ...state, lastEvent: "No puedes ir por ahí." };
-
-//   // 2. Validación de Sala Ilusoria (minSanityToExist)
-//   const nextRoomData = rooms[nextRoomId];
-//   if (
-//     nextRoomData.minSanityToExist &&
-//     state.sanity > nextRoomData.minSanityToExist
-//   ) {
-//     return {
-//       ...state,
-//       lastEvent:
-//         "Intentas avanzar, pero el camino parece desvanecerse ante tus ojos. No hay nada allí.",
-//     };
-//   }
-
-//   // 3. Validación de Puertas Bloqueadas
+//   // 4. Validación de Puertas Bloqueadas
 //   if (nextRoomData.lockedBy) {
 //     const hasKey = state.inventory.includes(nextRoomData.lockedBy);
 //     if (!hasKey) {
 //       return {
-//         ...state,
+//         ...newState,
 //         lastEvent: `La entrada a ${nextRoomId} está sellada. Necesitas: ${nextRoomData.lockedBy}. (Podrías intentar FORZARLA, pero a un gran costo...)`,
 //       };
 //     }
 //   }
 
-//   // 4. Mover y actualizar estado
-//   let newState: PlayerState = {
-//     ...state,
+//   // 5. Mover y actualizar estado (ÉXITO DE MOVIMIENTO)
+//   newState = {
+//     ...newState,
 //     currentRoom: nextRoomId,
 //     lastDirections: [...state.lastDirections, dir].slice(-5),
-//     sanity: state.sanity - 1, // Moverse cansa la mente
+//     sanity: Math.max(0, state.sanity - 1),
 //   };
 
-//   // 5. Turno de la IA (Mover la entidad)
+//   // 6. Turno de la IA (La IA puede generar su propio lastEvent como "Algo sabe a dónde vas")
 //   newState = moveEntity(newState);
 
-//   // 6. Chequeo de Finales
+//   // 7. Chequeo de Finales
 //   if (newState.currentRoom === "core") {
 //     const favorite = getMostFrequentDirection(newState.lastDirections);
 //     if (newState.sanity < 20) {
@@ -355,16 +380,38 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
  */
 export function investigate(state: PlayerState): PlayerState {
   const room = rooms[state.currentRoom];
+
+  // Si no hay ítem o ya lo tenemos
   if (!room.item || state.inventory.includes(room.item)) {
-    return { ...state, lastEvent: "No hay nada nuevo aquí." };
+    // Incluso si no hay nada, investigar hace ruido y la IA se mueve
+    return moveEntity({
+      ...state,
+      entityAwareness: state.entityAwareness + 5,
+      lastEvent: "Rebuscas entre los escombros... No hay nada nuevo aquí.",
+    });
   }
 
-  let newState = {
+  // Personalizamos el mensaje según el ítem para ayudar al jugador
+  let itemMessage = `Encontraste ${room.item.toUpperCase()}.`;
+
+  if (room.item === "sedative") {
+    itemMessage =
+      "Has recuperado un SEDANTE. Podría estabilizar tu mente si lo USAS.";
+  } else if (room.item === "keycard_red") {
+    itemMessage =
+      "Has obtenido la TARJETA ROJA. Los lectores del CORE deberían aceptarla.";
+  } else if (room.item === "data_link") {
+    itemMessage =
+      "Tienes el DATA_LINK. Ahora puedes acceder a terminales bloqueadas.";
+  }
+
+  let newState: PlayerState = {
     ...state,
     inventory: [...state.inventory, room.item],
-    entityAwareness: state.entityAwareness + 15, // Te hace más visible
-    lastEvent: `Encontraste ${room.item}, pero el ruido atrajo atención.`,
+    entityAwareness: state.entityAwareness + 15, // Encontrar algo hace mucho ruido
+    lastEvent: `${itemMessage} Pero el ruido ha delatado tu posición.`,
   };
+
   return moveEntity(newState);
 }
 

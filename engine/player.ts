@@ -9,7 +9,7 @@ export interface PlayerState {
   entityAwareness: number;
   lastDirections: Direction[];
   gameOver?: boolean;
-  endingType?: "good" | "bad";
+  endingType?: "good" | "bad" | "insane";
 }
 
 export const initialPlayerState: PlayerState = {
