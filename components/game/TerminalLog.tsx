@@ -16,9 +16,33 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
-    // Esto hace que siempre veamos lo último al recibir mensajes
     scrollViewRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
+
+  // --- NUEVA FUNCIÓN PARA ESTILAR PALABRAS CLAVE ---
+  const renderStyledText = (text: string, baseStyle: any) => {
+    // Expresión regular para encontrar direcciones (insensible a mayúsculas/minúsculas)
+    const directionRegex = /\b(north|south|east|west|norte|sur|este|oeste)\b/gi;
+
+    // Dividimos el texto en partes
+    const parts = text.split(directionRegex);
+
+    return (
+      <Text style={baseStyle}>
+        {parts.map((part, index) => {
+          // Si la parte coincide con una dirección, la envolvemos en un estilo resaltado
+          if (directionRegex.test(part)) {
+            return (
+              <Text key={index} style={styles.highlightedDirection}>
+                {part.toUpperCase()}
+              </Text>
+            );
+          }
+          return part;
+        })}
+      </Text>
+    );
+  };
 
   const getStyle = (type: LogMessage["type"]) => {
     switch (type) {
@@ -30,7 +54,6 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
         return styles.warning;
       case "error":
         return styles.error;
-      case "narrative":
       default:
         return styles.narrative;
     }
@@ -62,10 +85,12 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
           {msg.timestamp && (
             <Text style={styles.timestamp}>[{msg.timestamp}] </Text>
           )}
-          <Text style={[styles.text, getStyle(msg.type)]}>
-            {getPrefix(msg.type)}
-            {msg.text}
-          </Text>
+          <View style={{ flex: 1 }}>
+            {renderStyledText(`${getPrefix(msg.type)}${msg.text}`, [
+              styles.text,
+              getStyle(msg.type),
+            ])}
+          </View>
         </View>
       ))}
     </ScrollView>
@@ -73,45 +98,26 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "transparent",
-  },
-  content: {
-    paddingVertical: 10,
-    paddingTop: 40, // Espacio arriba para que no choque con el nivel de cordura
-    paddingBottom: 20,
-  },
-  messageRow: {
-    flexDirection: "row",
-    marginBottom: 8,
-    flexWrap: "wrap",
-  },
-  timestamp: {
-    color: "#445544",
-    fontFamily: "monospace",
-    fontSize: 12,
-  },
-  text: {
-    flex: 1,
-    fontFamily: "monospace",
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  system: {
-    color: "#88aa88",
-  },
-  player: {
-    color: "#00ff00",
+  // ... (tus estilos existentes)
+  container: { flex: 1, backgroundColor: "transparent" },
+  content: { paddingVertical: 10, paddingTop: 40, paddingBottom: 20 },
+  messageRow: { flexDirection: "row", marginBottom: 8, paddingHorizontal: 5 },
+  timestamp: { color: "#445544", fontFamily: "monospace", fontSize: 12 },
+  text: { fontFamily: "monospace", fontSize: 14, lineHeight: 20 },
+
+  // --- ESTILOS DE COLORES ---
+  system: { color: "#88aa88" },
+  player: { color: "#00ff00", fontWeight: "bold" },
+  narrative: { color: "#ccffcc" },
+  warning: { color: "#ffcc00" },
+  error: { color: "#ff3333" },
+
+  // --- ESTILO PARA RESALTAR DIRECCIONES ---
+  highlightedDirection: {
+    color: "#ffffff", // Blanco puro para que brille sobre el verde
     fontWeight: "bold",
-  },
-  narrative: {
-    color: "#ccffcc",
-  },
-  warning: {
-    color: "#ffcc00",
-  },
-  error: {
-    color: "#ff3333",
+    textShadowColor: "rgba(255, 255, 255, 0.5)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5, // Efecto de brillo (glow)
   },
 });

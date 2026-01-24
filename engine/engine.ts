@@ -1,225 +1,188 @@
-import { moveEntity } from "./entity";
-import { PlayerState } from "./player";
-import { Direction, rooms } from "./rooms";
-import { distortText } from "./sanity";
+// import { moveEntity } from "./entity";
+// import { PlayerState } from "./player";
+// import { Direction, rooms } from "./rooms";
+// import { distortText } from "./sanity";
 
 // export function move(state: PlayerState, dir: Direction): PlayerState {
 //   const room = rooms[state.currentRoom];
 //   let connections = { ...room.connections };
 
-//   // 1. Distorsiones por cordura en conexiones
+//   // 1. Aplicar inestabilidad espacial
 //   if (room.unstableConnections) {
-//     for (const variant of room.unstableConnections) {
-//       if (state.sanity <= variant.maxSanity) {
-//         connections = { ...connections, ...variant.connections };
-//       }
-//     }
+//     room.unstableConnections.forEach((u) => {
+//       if (state.sanity <= u.maxSanity)
+//         connections = { ...connections, ...u.connections };
+//     });
 //   }
 
-//   // 2. Validación de Sala Ilusoria (Solo al entrar)
-//   const next = connections[dir];
-//   if (next) {
-//     const nextRoom = rooms[next];
-//     if (nextRoom.minSanityToExist && state.sanity > nextRoom.minSanityToExist) {
+//   const nextRoomId = connections[dir];
+//   if (!nextRoomId) return { ...state, lastEvent: "No puedes ir por ahí." };
+
+//   const nextRoomData = rooms[nextRoomId];
+//   if (nextRoomData.lockedBy) {
+//     const hasKey = state.inventory.includes(nextRoomData.lockedBy);
+
+//     if (!hasKey) {
 //       return {
 //         ...state,
-//         lastEvent:
-//           "Intentas avanzar, pero el camino parece desvanecerse ante tus ojos. No hay nada allí.",
+//         lastEvent: `La entrada a ${nextRoomId} está sellada magnéticamente. Necesitas: ${nextRoomData.lockedBy}.`,
 //       };
 //     }
 //   }
 
-//   // 3. Bloqueos por la Entidad
-//   const blockedByEntity: Direction[] = [];
-
-//   if (state.entityRoom && state.sanity < 35) {
-//     if (state.entityRoom === state.currentRoom) {
-//       const dirs = Object.keys(connections) as Direction[];
-//       if (dirs.length > 0) {
-//         const random = dirs[Math.floor(Math.random() * dirs.length)];
-//         blockedByEntity.push(random);
-//       }
-//     }
-//   }
-
-//   if (blockedByEntity.includes(dir)) {
-//     return { ...state, lastEvent: "Una presencia oscura bloquea esa salida." };
-//   }
-
-//   if (!next) return { ...state, lastEvent: "No hay nada en esa dirección." };
-
-//   // 4. Actualización de Estado Base
-//   let newState = {
+//   // 2. Mover y actualizar historial
+//   let newState: PlayerState = {
 //     ...state,
-//     currentRoom: next,
+//     currentRoom: nextRoomId,
 //     lastDirections: [...state.lastDirections, dir].slice(-5),
+//     sanity: state.sanity - 1,
 //   };
 
-//   // En la lógica de movimiento de engine.ts
-//   if (room.unstableConnections && state.sanity < 30) {
-//     newState.lastEvent =
-//       "Parpadeas y el pasillo parece haberse torcido. Algo no encaja.";
-//   }
-//   // En engine.ts -> función move()
-//   if (state.entityRoom === state.currentRoom) {
-//     newState.sanity -= 2; // El estrés de estar cerca de ella te agota
-//     newState.lastEvent =
-//       "Su presencia drena tu voluntad. Tienes que salir de aquí.";
-//   }
-//   // 5. Feedback de Predicción (Regla Clara)
-//   if (newState.lastDirections.length >= 3) {
-//     const history = newState.lastDirections;
-//     if (history[history.length - 1] === history[history.length - 3]) {
-//       newState.lastEvent =
-//         "La IA ha detectado un patrón en tus pasos. Eres predecible.";
-//     }
-//   }
-
-//   // 6. Procesar Ítems y Eventos
-//   const nextRoomData = rooms[next];
-//   if (nextRoomData.item && !newState.inventory.includes(nextRoomData.item)) {
-//     newState.inventory.push(nextRoomData.item);
-//     newState.lastEvent = `Has encontrado: ${nextRoomData.item}`;
-//   }
-
-//   const event = rollMentalEvent(newState);
-//   if (event) {
-//     newState.sanity = Math.max(
-//       0,
-//       Math.min(100, newState.sanity + event.sanityChange),
-//     );
-//     newState.lastEvent = event.text(newState);
-//   }
-
-//   // 7. Movimiento de la Entidad
+//   // 3. Turno de la IA
 //   newState = moveEntity(newState);
 
-//   // 8. Finales Refactorizados
+//   // 4. Chequeo de Finales
 //   if (newState.currentRoom === "core") {
-//     if (newState.sanity <= 20) {
-//       const favoriteDir = getMostFrequentDirection(newState.lastDirections);
+//     const favorite = getMostFrequentDirection(newState.lastDirections);
+//     if (newState.sanity < 20) {
 //       return {
 //         ...newState,
 //         gameOver: true,
 //         endingType: "bad",
-//         lastEvent: `La IA te envuelve. '¿Buscabas algo al ${favoriteDir}? Ya no importa. Ahora eres parte de la arquitectura.' Gracias por los datos, Sujeto 00.`,
+//         lastEvent: `La IA te asimila. '¿Buscabas algo al ${favorite}? Ya no importa.'`,
 //       };
 //     }
-//     if (newState.sanity > 20 && newState.entityAwareness < 50) {
-//       const isMaster = newState.lastDirections.length > 4; // ¿Sobrevivió mucho tiempo?
+//     if (newState.entityAwareness < 50) {
 //       return {
 //         ...newState,
 //         gameOver: true,
 //         endingType: "good",
-//         lastEvent: isMaster
-//           ? "El Núcleo se apaga. Has burlado cada algoritmo. Las puertas se abren hacia un horizonte que, por primera vez, se siente real. Eres libre."
-//           : "El Núcleo se apaga. Caminas hacia la luz. Eres libre... o al menos, has elegido creerlo.",
+//         lastEvent: "El Núcleo se apaga. Eres libre.",
 //       };
 //     }
 //   }
 
+//   if (newState.sanity <= 0) {
+//     return {
+//       ...newState,
+//       gameOver: true,
+//       endingType: "bad", // O podrías crear uno llamado "insanity"
+//       lastEvent:
+//         "Tu mente se fragmenta en mil líneas de código. Ya no sabes quién eres. Eres parte del sistema.",
+//     };
+//   }
+
 //   return newState;
+// }
+
+// export function investigate(state: PlayerState): PlayerState {
+//   const room = rooms[state.currentRoom];
+//   if (!room.item || state.inventory.includes(room.item)) {
+//     return { ...state, lastEvent: "No hay nada nuevo aquí." };
+//   }
+
+//   let newState = {
+//     ...state,
+//     inventory: [...state.inventory, room.item],
+//     entityAwareness: state.entityAwareness + 15,
+//     lastEvent: `Encontraste ${room.item}, pero el ruido atrajo atención.`,
+//   };
+//   return moveEntity(newState);
+// }
+
+// function getMostFrequentDirection(history: Direction[]): string {
+//   if (history.length === 0) return "ninguna parte";
+//   const counts: any = {};
+//   history.forEach((d) => (counts[d] = (counts[d] || 0) + 1));
+//   return Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
+// }
+
+// function getEntityProximityHint(awareness: number): string {
+//   if (awareness > 70) return "\n[ERROR: Interferencia estática masiva.]";
+//   if (awareness > 30) return "\nSientes un zumbido en la base del cráneo.";
+//   return "";
 // }
 
 // export function getRoomDescription(state: PlayerState): string {
 //   const room = rooms[state.currentRoom];
-//   let description = room.baseDescription;
+//   let desc = room.baseDescription;
 
-//   // 1. Aplicamos variantes de cordura (las que ya tienes en rooms.ts)
-//   if (room.sanityVariants) {
-//     for (const variant of room.sanityVariants) {
-//       if (state.sanity <= variant.minSanity) description = variant.description;
-//     }
+//   // Ecos del pasado
+//   if (state.sanity < 25 && state.lastDirections.length > 0) {
+//     desc += ` Sientes que ya caminaste hacia el ${state.lastDirections[0]} antes.`;
 //   }
 
-//   // 2. AGREGAMOS LA PISTA DE PROXIMIDAD (Aquí es donde se usa)
-//   // Esto añade la sensación de peligro a la descripción base
-//   description += getEntityProximityHint(state.entityAwareness);
-
-//   // 3. Finalmente, distorsionamos todo el bloque de texto
-//   return distortText(description, state.sanity);
+//   desc += getEntityProximityHint(state.entityAwareness);
+//   return distortText(desc, state.sanity);
 // }
-// // En engine.ts
 
 // /**
-//  * Nueva acción: investigar la habitación actual.
-//  * Añade riesgo al obligar al jugador a "detenerse" mientras la IA acecha.
+//  * Intenta forzar una puerta bloqueada.
+//  * Coste: Mucha cordura y aumento de awareness de la IA.
 //  */
-// export function investigate(state: PlayerState): PlayerState {
+// export function forceDoor(state: PlayerState, dir: Direction): PlayerState {
 //   const room = rooms[state.currentRoom];
+//   const nextRoomId = room.connections[dir];
 
-//   // 1. Verificar si hay algo que investigar
-//   if (!room.item) {
+//   if (!nextRoomId)
+//     return { ...state, lastEvent: "No hay nada que forzar allí." };
+
+//   const nextRoomData = rooms[nextRoomId];
+
+//   // Si no está bloqueada, no tiene sentido forzarla
+//   if (!nextRoomData.lockedBy) {
 //     return {
 //       ...state,
-//       lastEvent:
-//         "Buscas entre los escombros, pero solo encuentras vacío y el eco de tu respiración.",
+//       lastEvent: "La puerta ya está abierta o no tiene cerradura.",
+//     };
+//   }
+//   if (
+//     nextRoomData.lockedBy &&
+//     !state.inventory.includes(nextRoomData.lockedBy)
+//   ) {
+//     return {
+//       ...state,
+//       lastEvent: `La puerta está cerrada. Necesitas: ${nextRoomData.lockedBy}. (Podrías intentar FORZARLA, pero a un gran costo...)`,
 //     };
 //   }
 
-//   // 2. Verificar si ya se tiene el ítem
-//   if (state.inventory.includes(room.item)) {
+//   // Si ya tiene la llave, no debería usar esta acción
+//   if (state.inventory.includes(nextRoomData.lockedBy)) {
 //     return {
 //       ...state,
-//       lastEvent:
-//         "Ya has extraído todo lo útil de este lugar. No pierdas más tiempo.",
+//       lastEvent: "Ya tienes la llave, simplemente usa el comando de mover.",
 //     };
 //   }
 
-//   // 3. REGLA DE RIESGO/RECOMPENSA
-//   // Al investigar, el jugador obtiene el objeto pero "hace ruido"
+//   // REGLA DE RIESGO: Forzarla drena 25 de cordura y alerta a la entidad
 //   let newState: PlayerState = {
 //     ...state,
-//     inventory: [...state.inventory, room.item],
-//     entityAwareness: state.entityAwareness + 15, // Penalización: la IA te localiza
-//     lastEvent: `Has encontrado: ${room.item}. El esfuerzo por registrar la zona te ha dejado expuesto.`,
+//     sanity: state.sanity - 25,
+//     entityAwareness: state.entityAwareness + 30,
+//     currentRoom: nextRoomId,
+//     lastEvent: `¡CRACK! Forzaste la puerta a base de pánico y fuerza bruta. Tu mente se resquebraja por el esfuerzo y el estrépito resuena en todo el sector.`,
 //   };
 
-//   // 4. Turno de la Entidad
-//   // Mientras investigas, la entidad se mueve de nuevo.
-//   newState = moveEntity(newState);
-
-//   return newState;
+//   // La entidad se mueve inmediatamente debido al ruido
+//   return moveEntity(newState);
 // }
-
-// // Función de apoyo para generar "ecos"
-// function getEcho(state: PlayerState): string {
-//   if (state.lastDirections.length < 2) return "";
-//   const ancientDir = state.lastDirections[0]; // Recupera el primer movimiento del historial
-//   return ` Sientes que ya caminaste hacia el ${ancientDir} en otra vida.`;
-// }
-
-// function getEntityProximityHint(awareness: number): string {
-//   if (awareness > 80)
-//     return "\n[ALERTA: Interferencia estática masiva en el canal visual.]";
-//   if (awareness > 50)
-//     return "\nSientes un zumbido constante en la base del cráneo.";
-//   if (awareness > 25)
-//     return "\nEl aire se siente inusualmente frío en esta sala.";
-//   return "";
-// }
-// /**
-//  * Analiza el historial de direcciones para encontrar la más frecuente.
-//  * Esto sirve para que la IA personalice su burla final.
-//  */
-// function getMostFrequentDirection(history: Direction[]): string {
-//   if (history.length === 0) return "ninguna parte";
-
-//   const counts: Record<string, number> = {};
-
-//   history.forEach((dir) => {
-//     counts[dir] = (counts[dir] || 0) + 1;
-//   });
-
-//   // Encontrar la dirección con el valor más alto
-//   return Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
-// }
+import { moveEntity } from "./entity";
+import { PlayerState } from "./player";
+import { Direction, rooms } from "./rooms";
+import { distortText } from "./sanity";
 
 export function move(state: PlayerState, dir: Direction): PlayerState {
   const room = rooms[state.currentRoom];
   let connections = { ...room.connections };
 
-  // 1. Aplicar inestabilidad espacial
+  // 1. Limpieza inicial: Creamos un nuevo estado base SIN el evento anterior
+  // Esto evita que "Encontraste keycard" se arrastre eternamente.
+  let newState: PlayerState = {
+    ...state,
+    lastEvent: undefined,
+  };
+
+  // 2. Aplicar inestabilidad espacial
   if (room.unstableConnections) {
     room.unstableConnections.forEach((u) => {
       if (state.sanity <= u.maxSanity)
@@ -228,20 +191,48 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   }
 
   const nextRoomId = connections[dir];
-  if (!nextRoomId) return { ...state, lastEvent: "No puedes ir por ahí." };
 
-  // 2. Mover y actualizar historial
-  let newState: PlayerState = {
-    ...state,
+  // Si no hay conexión, devolvemos el estado previo con el aviso
+  if (!nextRoomId) {
+    return { ...newState, lastEvent: "No puedes ir por ahí." };
+  }
+
+  // 3. Validación de Sala Ilusoria
+  const nextRoomData = rooms[nextRoomId];
+  if (
+    nextRoomData.minSanityToExist &&
+    state.sanity > nextRoomData.minSanityToExist
+  ) {
+    return {
+      ...newState,
+      lastEvent:
+        "Intentas avanzar, pero el camino parece desvanecerse ante tus ojos. No hay nada allí.",
+    };
+  }
+
+  // 4. Validación de Puertas Bloqueadas
+  if (nextRoomData.lockedBy) {
+    const hasKey = state.inventory.includes(nextRoomData.lockedBy);
+    if (!hasKey) {
+      return {
+        ...newState,
+        lastEvent: `La entrada a ${nextRoomId} está sellada. Necesitas: ${nextRoomData.lockedBy}. (Podrías intentar FORZARLA, pero a un gran costo...)`,
+      };
+    }
+  }
+
+  // 5. Mover y actualizar estado (ÉXITO DE MOVIMIENTO)
+  newState = {
+    ...newState,
     currentRoom: nextRoomId,
     lastDirections: [...state.lastDirections, dir].slice(-5),
-    sanity: state.sanity - 1,
+    sanity: Math.max(0, state.sanity - 1),
   };
 
-  // 3. Turno de la IA
+  // 6. Turno de la IA (La IA puede generar su propio lastEvent como "Algo sabe a dónde vas")
   newState = moveEntity(newState);
 
-  // 4. Chequeo de Finales
+  // 7. Chequeo de Finales
   if (newState.currentRoom === "core") {
     const favorite = getMostFrequentDirection(newState.lastDirections);
     if (newState.sanity < 20) {
@@ -262,19 +253,106 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     }
   }
 
+  // Final por locura
   if (newState.sanity <= 0) {
     return {
       ...newState,
       gameOver: true,
-      endingType: "bad", // O podrías crear uno llamado "insanity"
-      lastEvent:
-        "Tu mente se fragmenta en mil líneas de código. Ya no sabes quién eres. Eres parte del sistema.",
+      endingType: "bad",
+      lastEvent: "Tu mente se fragmenta. Eres parte del sistema ahora.",
     };
   }
 
   return newState;
 }
 
+// export function move(state: PlayerState, dir: Direction): PlayerState {
+//   const room = rooms[state.currentRoom];
+//   let connections = { ...room.connections };
+
+//   // 1. Aplicar inestabilidad espacial (Salas que cambian según cordura)
+//   if (room.unstableConnections) {
+//     room.unstableConnections.forEach((u) => {
+//       if (state.sanity <= u.maxSanity)
+//         connections = { ...connections, ...u.connections };
+//     });
+//   }
+
+//   const nextRoomId = connections[dir];
+//   if (!nextRoomId) return { ...state, lastEvent: "No puedes ir por ahí." };
+
+//   // 2. Validación de Sala Ilusoria (minSanityToExist)
+//   const nextRoomData = rooms[nextRoomId];
+//   if (
+//     nextRoomData.minSanityToExist &&
+//     state.sanity > nextRoomData.minSanityToExist
+//   ) {
+//     return {
+//       ...state,
+//       lastEvent:
+//         "Intentas avanzar, pero el camino parece desvanecerse ante tus ojos. No hay nada allí.",
+//     };
+//   }
+
+//   // 3. Validación de Puertas Bloqueadas
+//   if (nextRoomData.lockedBy) {
+//     const hasKey = state.inventory.includes(nextRoomData.lockedBy);
+//     if (!hasKey) {
+//       return {
+//         ...state,
+//         lastEvent: `La entrada a ${nextRoomId} está sellada. Necesitas: ${nextRoomData.lockedBy}. (Podrías intentar FORZARLA, pero a un gran costo...)`,
+//       };
+//     }
+//   }
+
+//   // 4. Mover y actualizar estado
+//   let newState: PlayerState = {
+//     ...state,
+//     currentRoom: nextRoomId,
+//     lastDirections: [...state.lastDirections, dir].slice(-5),
+//     sanity: state.sanity - 1, // Moverse cansa la mente
+//   };
+
+//   // 5. Turno de la IA (Mover la entidad)
+//   newState = moveEntity(newState);
+
+//   // 6. Chequeo de Finales
+//   if (newState.currentRoom === "core") {
+//     const favorite = getMostFrequentDirection(newState.lastDirections);
+//     if (newState.sanity < 20) {
+//       return {
+//         ...newState,
+//         gameOver: true,
+//         endingType: "bad",
+//         lastEvent: `La IA te asimila. '¿Buscabas algo al ${favorite}? Ya no importa.'`,
+//       };
+//     }
+//     if (newState.entityAwareness < 50) {
+//       return {
+//         ...newState,
+//         gameOver: true,
+//         endingType: "good",
+//         lastEvent: "El Núcleo se apaga. Eres libre.",
+//       };
+//     }
+//   }
+
+//   // Final por locura
+//   if (newState.sanity <= 0) {
+//     return {
+//       ...newState,
+//       gameOver: true,
+//       endingType: "bad",
+//       lastEvent: "Tu mente se fragmenta. Eres parte del sistema ahora.",
+//     };
+//   }
+
+//   return newState;
+// }
+
+/**
+ * Investiga la habitación para buscar ítems.
+ */
 export function investigate(state: PlayerState): PlayerState {
   const room = rooms[state.currentRoom];
   if (!room.item || state.inventory.includes(room.item)) {
@@ -284,12 +362,72 @@ export function investigate(state: PlayerState): PlayerState {
   let newState = {
     ...state,
     inventory: [...state.inventory, room.item],
-    entityAwareness: state.entityAwareness + 15,
+    entityAwareness: state.entityAwareness + 15, // Te hace más visible
     lastEvent: `Encontraste ${room.item}, pero el ruido atrajo atención.`,
   };
   return moveEntity(newState);
 }
 
+/**
+ * Fuerza una puerta bloqueada gastando mucha cordura.
+ */
+export function forceDoor(state: PlayerState, dir: Direction): PlayerState {
+  const room = rooms[state.currentRoom];
+  const nextRoomId = room.connections[dir];
+  let lastEvent = undefined;
+
+  if (!nextRoomId)
+    return { ...state, lastEvent: "No hay nada que forzar allí." };
+
+  const nextRoomData = rooms[nextRoomId];
+
+  if (!nextRoomData.lockedBy) {
+    return { ...state, lastEvent: "La puerta ya está abierta." };
+  }
+
+  if (state.inventory.includes(nextRoomData.lockedBy)) {
+    return {
+      ...state,
+      lastEvent: "Ya tienes la llave, no hace falta forzarla.",
+    };
+  }
+
+  // EJECUCIÓN DEL RIESGO
+  let newState: PlayerState = {
+    ...state,
+    sanity: state.sanity - 25,
+    entityAwareness: state.entityAwareness + 30,
+    currentRoom: nextRoomId, // El jugador entra a la sala
+    lastEvent: `¡CRACK! Forzaste la puerta. El estrépito resuena y tu mente sufre por el esfuerzo.`,
+  };
+
+  return moveEntity(newState);
+}
+
+/**
+ * Genera la descripción visual con distorsiones y pistas de la IA.
+ */
+export function getRoomDescription(state: PlayerState): string {
+  const room = rooms[state.currentRoom];
+  let desc = room.baseDescription;
+
+  // Variantes de cordura (Descripciones que cambian)
+  if (room.sanityVariants) {
+    for (const v of room.sanityVariants) {
+      if (state.sanity <= v.minSanity) desc = v.description;
+    }
+  }
+
+  // Ecos del pasado (Si está loco)
+  if (state.sanity < 25 && state.lastDirections.length > 0) {
+    desc += ` Sientes que ya caminaste hacia el ${state.lastDirections[0]} antes.`;
+  }
+
+  desc += getEntityProximityHint(state.entityAwareness);
+  return distortText(desc, state.sanity);
+}
+
+// FUNCIONES DE APOYO
 function getMostFrequentDirection(history: Direction[]): string {
   if (history.length === 0) return "ninguna parte";
   const counts: any = {};
@@ -301,17 +439,4 @@ function getEntityProximityHint(awareness: number): string {
   if (awareness > 70) return "\n[ERROR: Interferencia estática masiva.]";
   if (awareness > 30) return "\nSientes un zumbido en la base del cráneo.";
   return "";
-}
-
-export function getRoomDescription(state: PlayerState): string {
-  const room = rooms[state.currentRoom];
-  let desc = room.baseDescription;
-
-  // Ecos del pasado
-  if (state.sanity < 25 && state.lastDirections.length > 0) {
-    desc += ` Sientes que ya caminaste hacia el ${state.lastDirections[0]} antes.`;
-  }
-
-  desc += getEntityProximityHint(state.entityAwareness);
-  return distortText(desc, state.sanity);
 }
