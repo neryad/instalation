@@ -1,10 +1,12 @@
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
 
 export default function Home() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [glitch, setGlitch] = useState(false);
   const [currentSubtitle, setCurrentSubtitle] = useState(
     "Análisis Sistemático de Integridad Neural",
@@ -29,36 +31,47 @@ export default function Home() {
         setTimeout(() => {
           setGlitch(false);
           setCurrentSubtitle("Análisis Sistemático de Integridad Neural");
-        }, 180);
+        }, 200);
       },
-      3000 + Math.random() * 5000,
+      4000 + Math.random() * 4000,
     );
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { paddingTop: insets.top, paddingBottom: insets.bottom },
+      ]}
+    >
       <CRTOverlay isGlitchActive={glitch} />
 
-      <View style={styles.content}>
-        {/* TÍTULO PRINCIPAL EVOLUCIONADO */}
-        <View style={styles.header}>
+      {/* BLOQUE SUPERIOR: TÍTULO Y ESTADO */}
+      <View style={styles.header}>
+        <View style={styles.titleWrapper}>
           <Text style={[styles.title, glitch && styles.glitchText]}>
             S.A.N.I.T.Y.
           </Text>
-          <View style={styles.scanlineTitle} />
-          <Text style={styles.version}>v2.0.26_CORE</Text>
+          <View
+            style={[
+              styles.scanlineTitle,
+              glitch && { backgroundColor: "rgba(255,0,0,0.4)" },
+            ]}
+          />
         </View>
+        <Text style={styles.version}>v2.0.26_CORE</Text>
 
-        {/* SUBTÍTULO CON ESTILO DE CARGA */}
         <View style={styles.subtitleContainer}>
           <Text style={[styles.subtitle, glitch && styles.glitchSubtitle]}>
             {currentSubtitle}
           </Text>
         </View>
+      </View>
 
-        {/* CAJA DE ADVERTENCIA MEJORADA */}
+      {/* BLOQUE CENTRAL: ADVERTENCIAS Y ACCIÓN */}
+      <View style={styles.centerContent}>
         <View style={styles.warningBox}>
           <View style={styles.warningLine} />
           <Text style={styles.warningText}>
@@ -70,18 +83,23 @@ export default function Home() {
           <View style={styles.warningLine} />
         </View>
 
-        {/* BOTÓN DE ACCIÓN */}
         <Pressable
           style={({ pressed }) => [
             styles.button,
+            glitch && styles.buttonGlitch,
             pressed && styles.buttonPressed,
           ]}
-          onPress={() => router.push("/intro")} // Suponiendo que llamas al archivo app/intro.tsx
+          onPress={() => router.push("/intro")}
         >
-          <Text style={styles.buttonText}>INICIAR SECUENCIA</Text>
+          <Text style={[styles.buttonText, glitch && { color: "#f00" }]}>
+            INICIAR SECUENCIA
+          </Text>
         </Pressable>
-        {/* GUÍA DE COMANDOS ESTILO TERMINAL */}
-        <View style={styles.footer}>
+      </View>
+
+      {/* BLOQUE INFERIOR: MANUAL Y SISTEMA UNIFICADOS */}
+      <View style={styles.footerContainer}>
+        <View style={styles.manualBox}>
           <Text style={styles.footerHeader}>// MANUAL_DE_OPERACIONES</Text>
           <View style={styles.commandRow}>
             <Text style={styles.cmd}>MOV:</Text>
@@ -92,6 +110,16 @@ export default function Home() {
             <Text style={styles.cmdDesc}>[INVESTIGAR, MIRAR, USAR]</Text>
           </View>
         </View>
+
+        <Pressable
+          onPress={() => router.push("/AboutScreen" as any)}
+          style={({ pressed }) => [
+            styles.systemBtn,
+            { opacity: pressed ? 0.5 : 1 },
+          ]}
+        >
+          <Text style={styles.systemLink}>[ SISTEMA ]</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -101,80 +129,78 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  content: {
-    alignItems: "center",
-    width: "100%",
-    padding: 30,
+    paddingHorizontal: 25,
+    justifyContent: "space-between",
   },
   header: {
     alignItems: "center",
-    marginBottom: 50,
+    marginTop: 40,
+  },
+  titleWrapper: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
-    //color: "#0f0",
-    // fontSize: 56,
-    // fontWeight: "900",
-    fontFamily: "monospace",
-    // letterSpacing: 12,
+    fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
     textShadowColor: "rgba(0, 255, 0, 0.8)",
-    textShadowRadius: 20,
-    fontSize: 40,
+    textShadowRadius: 15,
+    fontSize: 42,
     fontWeight: "bold",
     color: "#0f0",
-    letterSpacing: 6,
+    letterSpacing: 8,
     textAlign: "center",
-    width: "100%",
   },
-  titleContainer: {
-    flex: 2, // Le damos más peso al área del título
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 10, // Evita que las letras rocen los bordes
+  scanlineTitle: {
+    position: "absolute",
+    bottom: -5,
+    width: "100%",
+    height: 1,
+    backgroundColor: "rgba(0, 255, 0, 0.3)",
+  },
+  glitchText: {
+    color: "#f00",
+    transform: [{ scale: 1.03 }, { translateX: 2 }],
+    textShadowColor: "rgba(255, 0, 0, 0.5)",
   },
   version: {
     color: "#050",
     fontSize: 10,
     fontFamily: "monospace",
-    marginTop: 5,
-  },
-  glitchText: {
-    color: "#f00",
-    transform: [{ scale: 1.05 }, { skewX: "5deg" }],
-    textShadowColor: "#0f0",
+    marginTop: 10,
+    letterSpacing: 2,
   },
   subtitleContainer: {
-    height: 40,
+    height: 50,
     justifyContent: "center",
-    marginBottom: 60,
+    marginTop: 20,
   },
   subtitle: {
     color: "#4a4",
-    fontSize: 12,
+    fontSize: 11,
     textAlign: "center",
     fontFamily: "monospace",
     textTransform: "uppercase",
-    letterSpacing: 1,
   },
   glitchSubtitle: {
     color: "#f00",
-    fontWeight: "bold",
+    opacity: 0.8,
+  },
+  centerContent: {
+    alignItems: "center",
+    width: "100%",
   },
   warningBox: {
-    width: "100%",
     alignItems: "center",
-    marginBottom: 50,
+    marginBottom: 40,
   },
   warningLine: {
     height: 1,
-    width: 100,
-    backgroundColor: "#300",
-    marginVertical: 10,
+    width: 60,
+    backgroundColor: "#200",
+    marginVertical: 12,
   },
   warningText: {
-    color: "#600",
+    color: "#500",
     fontSize: 10,
     fontFamily: "monospace",
     marginBottom: 4,
@@ -182,60 +208,62 @@ const styles = StyleSheet.create({
   button: {
     borderWidth: 1,
     borderColor: "#0f0",
-    paddingHorizontal: 30,
-    paddingVertical: 15,
+    paddingHorizontal: 40,
+    paddingVertical: 18,
     backgroundColor: "transparent",
+  },
+  buttonGlitch: {
+    borderColor: "#f00",
   },
   buttonPressed: {
     backgroundColor: "rgba(0, 255, 0, 0.1)",
   },
   buttonText: {
     color: "#0f0",
-    fontSize: 18,
-    letterSpacing: 3,
+    fontSize: 16,
+    letterSpacing: 4,
     fontFamily: "monospace",
     fontWeight: "bold",
   },
-  footer: {
-    marginTop: 60,
+  footerContainer: {
     width: "100%",
-    padding: 20,
+    marginBottom: 20,
+  },
+  manualBox: {
     borderTopWidth: 1,
     borderTopColor: "rgba(0,255,0,0.1)",
+    paddingTop: 15,
+    marginBottom: 25,
   },
   footerHeader: {
-    color: "#252",
+    color: "#242",
     fontSize: 10,
     fontFamily: "monospace",
     marginBottom: 10,
   },
   commandRow: {
     flexDirection: "row",
-    marginBottom: 5,
+    marginBottom: 4,
   },
   cmd: {
     color: "#0a0",
-    width: 50,
-    fontSize: 11,
+    width: 45,
+    fontSize: 10,
     fontFamily: "monospace",
   },
   cmdDesc: {
     color: "#464",
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: "monospace",
   },
-
-  // ... (tus otros estilos)
-
-  scanlineTitle: {
-    position: "absolute",
-    bottom: 5,
-    width: "120%", // Un poco más ancho que el título
-    height: 2,
-    backgroundColor: "rgba(0, 255, 0, 0.2)",
-    shadowColor: "#0f0",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
+  systemBtn: {
+    alignSelf: "center",
+    padding: 10,
+  },
+  systemLink: {
+    color: "#002200",
+    fontFamily: "monospace",
+    fontSize: 11,
+    letterSpacing: 3,
   },
 });
