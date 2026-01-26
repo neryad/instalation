@@ -362,11 +362,11 @@ import { CRTOverlay } from "../components/game/CRTOverlay";
 import { SanityBar } from "../components/game/SanityBar";
 import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import {
-    forceDoor,
-    getForceableDirections,
-    getRoomDescription,
-    investigate,
-    move,
+  forceDoor,
+  getForceableDirections,
+  getRoomDescription,
+  investigate,
+  move,
 } from "../engine/engine";
 import { initialPlayerState } from "../engine/player";
 import { Direction } from "../engine/rooms";
@@ -431,11 +431,11 @@ export default function GameScreen() {
       return () => clearInterval(interval);
     }
 
-    // Verificación de muerte/victoria
-    if (state.sanity <= 0) router.replace("/FinalScreen?type=insane");
-    if (state.entityAwareness >= 100) router.replace("/FinalScreen?type=bad");
-    if (state.currentRoom === "core") router.replace("/FinalScreen?type=good");
-  }, [state.sanity, state.entityAwareness, state.currentRoom]);
+    // Verificación de muerte/victoria (Ahora gestiona 4 finales)
+    if (state.gameOver && state.endingType) {
+      router.replace(`/FinalScreen?type=${state.endingType}` as any);
+    }
+  }, [state.sanity, state.gameOver, state.endingType]);
 
   const addLog = (text: string, type: LogMessage["type"] = "narrative") => {
     setLogMessages((prev) => [

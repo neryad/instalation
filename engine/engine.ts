@@ -686,13 +686,24 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     return newState;
   }
 
-  // 8. FINAL POR LOCURA TOTAL
+  // 8. FINAL POR CAPTURA DE LA IA (Awareness máximo)
+  if (newState.entityAwareness >= 100) {
+    return {
+      ...newState,
+      gameOver: true,
+      endingType: "captured",
+      lastEvent:
+        "ALERTA CRÍTICA: La IA te ha localizado. Las puertas se sellan. Escuchas pasos metálicos aproximándose. No hay escapatoria.",
+    };
+  }
+
+  // 9. FINAL POR LOCURA TOTAL
   if (newState.sanity <= 0) {
     return {
       ...newState,
       gameOver: true,
-      endingType: "bad",
-      lastEvent: "CONEXIÓN PERDIDA: Mente fragmentada.",
+      endingType: "insane",
+      lastEvent: "CONEXIÓN PERDIDA: Tu mente se fragmenta en el vacío digital. Ya no hay 'ti'.",
     };
   }
 

@@ -3,8 +3,10 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function FinalScreen() {
-  // Actualizamos el tipo para incluir 'insane'
-  const { type } = useLocalSearchParams<{ type: "good" | "bad" | "insane" }>();
+  // Actualizamos el tipo para incluir los 4 finales
+  const { type } = useLocalSearchParams<{
+    type: "good" | "bad" | "insane" | "captured";
+  }>();
   const router = useRouter();
 
   // Helper para decidir el contenido según el final
@@ -19,17 +21,24 @@ export default function FinalScreen() {
         };
       case "insane":
         return {
-          title: "PERDIDO",
-          text: "Llegaste al núcleo, pero tu mente se quedó atrás.\nEl código es tu nueva piel.",
+          title: "MENTE FRAGMENTADA",
+          text: "Tu conciencia se disuelve en el vacío digital.\nYa no sabes dónde terminas tú y empieza el código.",
           button: "REINICIAR INTERFAZ",
           style: styles.insane,
+        };
+      case "captured":
+        return {
+          title: "LOCALIZADO",
+          text: "La IA cierra todas las salidas.\nEscuchas pasos metálicos. Está aquí.\nNo hay escapatoria.",
+          button: "ACEPTAR TU DESTINO",
+          style: styles.captured,
         };
       case "bad":
       default:
         return {
-          title: "TE ENCONTRÓ",
-          text: "No corriste. No luchaste.\nSolo seguiste el patrón.\nY eso fue suficiente.",
-          button: "ACEPTAR TU DESTINO",
+          title: "ASIMILADO",
+          text: "Llegaste al núcleo, pero demasiado tarde.\nLa IA te absorbe. Eres parte del sistema ahora.",
+          button: "UNIRSE AL SERVIDOR",
           style: styles.bad,
         };
     }
@@ -87,6 +96,12 @@ const styles = StyleSheet.create({
   insane: {
     color: "#ffcc00", // Amarillo/Naranja de advertencia
     textShadowColor: "rgba(255, 204, 0, 0.5)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  captured: {
+    color: "#cc00ff", // Púrpura/Violeta (IA tecnológica)
+    textShadowColor: "rgba(204, 0, 255, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
