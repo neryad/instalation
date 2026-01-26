@@ -362,10 +362,11 @@ import { CRTOverlay } from "../components/game/CRTOverlay";
 import { SanityBar } from "../components/game/SanityBar";
 import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import {
-  forceDoor,
-  getRoomDescription,
-  investigate,
-  move,
+    forceDoor,
+    getForceableDirections,
+    getRoomDescription,
+    investigate,
+    move,
 } from "../engine/engine";
 import { initialPlayerState } from "../engine/player";
 import { Direction } from "../engine/rooms";
@@ -524,6 +525,7 @@ export default function GameScreen() {
           onAction={handleCommand}
           disabled={state.gameOver}
           hasSedative={state.inventory.includes("sedative")}
+          forceableDirections={getForceableDirections(state)}
         />
       </View>
     </View>

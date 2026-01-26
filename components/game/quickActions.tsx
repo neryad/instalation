@@ -5,12 +5,14 @@ interface QuickActionsProps {
   onAction: (cmd: string) => void;
   disabled?: boolean;
   hasSedative?: boolean;
+  forceableDirections?: string[];
 }
 
 export function QuickActions({
   onAction,
   disabled,
   hasSedative,
+  forceableDirections = [],
 }: QuickActionsProps) {
   return (
     <View style={styles.container}>
@@ -71,6 +73,22 @@ export function QuickActions({
           disabled={disabled}
         />
       </View>
+
+      {/* Botones de FORZAR PUERTA (Contextuales) */}
+      {forceableDirections.length > 0 && (
+        <View style={[styles.row, { marginTop: 10 }]}>
+          {forceableDirections.map((dir) => (
+            <ActionButton
+              key={dir}
+              label={`FORZAR ${dir.toUpperCase().charAt(0)}`}
+              cmd={`forzar ${dir}`}
+              onPress={onAction}
+              disabled={disabled}
+              style={styles.forceButton}
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -141,6 +159,7 @@ const styles = StyleSheet.create({
   },
   mainButton: { borderColor: "#00ff00", minWidth: 120 },
   useButton: { backgroundColor: "#002200", borderColor: "#00ff00" },
+  forceButton: { borderColor: "#ff3333", backgroundColor: "#220000" },
   text: { color: "#0f0", fontFamily: "monospace", fontWeight: "bold" },
   pressed: { backgroundColor: "#003300" },
   disabled: { opacity: 0.3 },

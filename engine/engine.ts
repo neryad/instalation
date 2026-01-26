@@ -719,6 +719,7 @@ export function investigate(state: PlayerState): PlayerState {
     sedative: "un SEDANTE (Úsalo para recuperar cordura)",
     keycard_red: "la TARJETA ROJA (Acceso al CORE)",
     data_link: "un DATA LINK (Acceso a terminales)",
+    thermal_fuse: "un FUSIBLE TÉRMICO (Permite abrir puertas de seguridad)",
   };
 
   const foundItem = room.item;
@@ -743,8 +744,19 @@ export function forceDoor(state: PlayerState, dir: Direction): PlayerState {
     return { ...state, lastEvent: "No hay nada que forzar allí." };
 
   const nextRoomData = rooms[nextRoomId];
+
+  // Verificar si la puerta está bloqueada
   if (!nextRoomData.lockedBy)
     return { ...state, lastEvent: "La puerta no está bloqueada." };
+
+  // Verificar si la puerta es inforzable (nueva validación)
+  if (nextRoomData.unbreakable) {
+    return {
+      ...state,
+      lastEvent:
+        "ERROR CRÍTICO: Puerta de grado militar. Sistemas anti-sabotaje detectados. Imposible forzar.",
+    };
+  }
 
   let newState: PlayerState = {
     ...state,
@@ -774,4 +786,27 @@ export function getRoomDescription(state: PlayerState): string {
     desc += "\nSientes una mirada pesada en tu nuca.";
 
   return distortText(desc, state.sanity);
+}
+
+/**
+ * Devuelve las direcciones donde hay puertas forzables (bloqueadas y sin llave).
+ */
+export function getForceableDirections(state: PlayerState): Direction[] {
+  const room = rooms[state.currentRoom];
+  const directions: Direction[] = [];
+
+  for (const [key, nextRoomId] of Object.entries(room.connections)) {
+    if (!nextRoomId) continue;
+    const nextRoom = rooms[nextRoomId];
+
+    // Es forzable si está bloqueada, NO tenemos la llave, y NO es inforzable
+    if (
+      nextRoom.lockedBy &&
+      !state.inventory.includes(nextRoom.lockedBy) &&
+      !nextRoom.unbreakable
+    ) {
+      directions.push(key as Direction);
+    }
+  }
+  return directions;
 }
