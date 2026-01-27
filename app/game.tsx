@@ -388,6 +388,10 @@ export default function GameScreen() {
 
   const backgroundMusic = useRef<Audio.Sound | null>(null);
   const sfxBeep = useRef<Audio.Sound | null>(null);
+  const sfxMove = useRef<Audio.Sound | null>(null);
+  const sfxSedative = useRef<Audio.Sound | null>(null);
+  const sfxIA = useRef<Audio.Sound | null>(null);
+  const sfxForce = useRef<Audio.Sound | null>(null);
 
   // 1. GESTIÓN DE AUDIO (Ambiente y SFX)
   useEffect(() => {
@@ -413,6 +417,20 @@ export default function GameScreen() {
           require("../assets/sounds/beep2.mp3"),
         );
         sfxBeep.current = beep;
+
+        // Nuevos SFX
+        const { sound: moveSfx } = await Audio.Sound.createAsync(require("../assets/sounds/Heavy_hydraulic_sci.mp3"));
+        sfxMove.current = moveSfx;
+
+        const { sound: sedSfx } = await Audio.Sound.createAsync(require("../assets/sounds/Pneumatic_medical_in.mp3"));
+        sfxSedative.current = sedSfx;
+
+        const { sound: iaSfx } = await Audio.Sound.createAsync(require("../assets/sounds/Deep_modulated_digit.mp3"));
+        sfxIA.current = iaSfx;
+
+        const { sound: forceSfx } = await Audio.Sound.createAsync(require("../assets/sounds/Heavy_metal_door_being_force.mp3"));
+        sfxForce.current = forceSfx;
+
       } catch (e) {
         console.log("Error Audio:", e);
       }
@@ -421,6 +439,10 @@ export default function GameScreen() {
     return () => {
       backgroundMusic.current?.unloadAsync();
       sfxBeep.current?.unloadAsync();
+      sfxMove.current?.unloadAsync();
+      sfxSedative.current?.unloadAsync();
+      sfxIA.current?.unloadAsync();
+      sfxForce.current?.unloadAsync();
     };
   }, []);
 
@@ -475,15 +497,20 @@ export default function GameScreen() {
 
     if (["north", "south", "east", "west"].includes(lower)) {
       newState = move(state, lower as Direction);
+      if (newState.currentRoom !== state.currentRoom && settings.soundEnabled) {
+        sfxMove.current?.replayAsync().catch(() => {});
+      }
     } else if (["investigar", "buscar"].includes(lower)) {
       newState = investigate(state);
     } else if (lower.startsWith("forzar")) {
       newState = forceDoor(state, args[1] as Direction);
+      if (newState.currentRoom !== state.currentRoom && settings.soundEnabled) {
+        sfxForce.current?.replayAsync().catch(() => {});
+      }
     } else if (lower === "mirar" || lower === "look") {
       addLog(getRoomDescription(state), "narrative");
       return;
     } else if (lower.startsWith("usar")) {
-      // Lógica de sedante que tenías
       if (args[1]?.includes("sedan") && state.inventory.includes("sedative")) {
         newState = {
           ...state,
@@ -492,6 +519,9 @@ export default function GameScreen() {
           entityAwareness: Math.max(0, state.entityAwareness - 20),
         };
         addLog("Inyectas el sedante. Tu mente se estabiliza.", "system");
+        if (settings.soundEnabled) {
+          sfxSedative.current?.replayAsync().catch(() => {});
+        }
       }
     } else {
       addLog("COMANDO NO RECONOCIDO.", "error");
@@ -502,6 +532,11 @@ export default function GameScreen() {
     if (newState.lastEvent) addLog(newState.lastEvent, "warning");
     if (newState.currentRoom !== state.currentRoom) {
       addLog(getRoomDescription(newState), "narrative");
+    }
+
+    // DISPARAR SUSURRO IA (Si awareness > 70)
+    if (newState.entityAwareness > 70 && Math.random() > 0.6 && settings.soundEnabled) {
+      sfxIA.current?.replayAsync().catch(() => {});
     }
   };
 

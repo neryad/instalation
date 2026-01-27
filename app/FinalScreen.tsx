@@ -1,7 +1,9 @@
 import { CRTOverlay } from "@/components/game/CRTOverlay";
 import { unlockEnding } from "@/storage/achievements";
+import { getSettings } from "@/storage/settings";
+import { Audio } from "expo-av";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function FinalScreen() {
@@ -10,13 +12,41 @@ export default function FinalScreen() {
     type: "good" | "bad" | "insane" | "captured" | "transcend" | "escape";
   }>();
   const router = useRouter();
+  const soundRef = useRef<Audio.Sound | null>(null);
 
-  // Guardar el logro al cargar la pantalla
+  // Guardar el logro al cargar la pantalla y manejar audio
   useEffect(() => {
     if (type) {
       unlockEnding(type as any);
+      loadAndPlayAudio();
     }
+
+    return () => {
+      soundRef.current?.unloadAsync();
+    };
   }, [type]);
+
+  const loadAndPlayAudio = async () => {
+    try {
+      const settings = await getSettings();
+      if (!settings.soundEnabled) return;
+
+      let audioSource;
+      if (type === "good" || type === "escape") {
+        audioSource = require("../assets/sounds/GOOD_ y_ ESCAPE.mp3");
+      } else if (type === "transcend") {
+        audioSource = require("../assets/sounds/TRANSCEND.mp3");
+      } else {
+        audioSource = require("../assets/sounds/BAD_INSANE_y_CAPTURED.mp3");
+      }
+
+      const { sound } = await Audio.Sound.createAsync(audioSource);
+      soundRef.current = sound;
+      await sound.playAsync();
+    } catch (e) {
+      console.log("Error cargando audio final:", e);
+    }
+  };
 
   // Helper para decidir el contenido según el final
   const getEndingContent = () => {
