@@ -35,20 +35,21 @@ El núcleo del juego gestiona:
 * **Responsive Design:** Optimizado con layouts centrados y `maxWidth` para una experiencia perfecta en móviles, tablets y PC.
 * **Galería de Archivos (Logros):** Sistema de persistencia para coleccionar los distintos finales alcanzados.
 * **Manual Interactivo:** Pantalla de protocolos de misión integrada en la interfaz.
+* **Personalización (Ajustes):** Control total sobre efectos de Glitch, Filtro CRT y Audio para accesibilidad y confort. [NUEVO]
 
 ---
 
 ## 🛠️ Stack Tecnológico
 * **Framework:** React Native + Expo (SDK 50+)
-* **Persistence:** @react-native-async-storage/async-storage para guardado local (Web/Native). [NUEVO]
+* **Persistence:** @react-native-async-storage/async-storage para guardado local (Web/Native).
 * **Audio & Haptics:** Expo-AV y Expo-Haptics para retroalimentación física y auditiva.
 * **Lenguaje:** TypeScript (Tipado estricto para la definición de salas e ítems)
 
 ## 📂 Estructura del Proyecto
 ```text
-├── app/               # Sistema de rutas (Index, Game, Manual, Achievements)
+├── app/               # Pantallas (Index, Intro, Game, Manual, Achievements, Settings)
 ├── engine/            # Lógica central (Engine, Rooms, Entity Logic)
-├── storage/           # Manejo de persistencia de logros
+├── storage/           # Manejo de persistencia de logros y ajustes
 ├── components/        # UI Reutilizable (Botones, Terminal, GlitchText)
 ├── assets/            # Configuración visual y fuentes retro
 └── README.md          # Documentación técnica
@@ -93,7 +94,7 @@ El sistema utiliza una interfaz de botones contextuales que aparecen según la s
 - [x] IA Predictiva con aprendizaje de patrones.
 - [x] Capa de Inmersión: Sonido y Vibración.
 - [x] Sistema de Finales Múltiples (6 rutas).
-- [x] Persistencia de Logros (Web/Móvil).
+- [x] Persistencia de Logros y Ajustes (Web/Móvil). [MODIFICADO]
 - [x] Diseño Centrado Responsivo (PC/Tablets).
 - [ ] Generación procedimental de salas basada en el nivel de cordura.
 - [ ] Efectos de sonido ambientales generativos.
