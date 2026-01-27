@@ -59,7 +59,6 @@ export const rooms: Record<string, Room> = {
     connections: { west: "observation_ward", north: "data_morgue" },
     lockedBy: "thermal_fuse",
     unbreakable: true, // Fuerza la exploración de incinerator
-    minSanityToExist: 45,
   },
   data_morgue: {
     id: "data_morgue",
@@ -184,8 +183,30 @@ export const rooms: Record<string, Room> = {
   core: {
     id: "core",
     baseDescription:
-      "El núcleo palpita. La IA te observa. El único camino real es volver al **south**, aunque jurarías ver sombras al **north** y **west**.",
-    connections: { south: "core_door" },
-    fakeConnections: { north: "shadow_lab", west: "awakening" },
+      "El núcleo central. Un monolito de servidores palpita con energía azul. La IA ya no susurra. HABLA:\n\n'Has llegado, Sujeto 00. Pero aún no has terminado.'\n\nTres caminos te esperan:\n**NORTH**: Panel de apagado de emergencia.\n**EAST**: Cámara de transferencia neural.\n**WEST**: Compuerta de evacuación rápida.",
+    connections: {
+      south: "core_door",
+      north: "shutdown_protocol",
+      east: "transcendence_chamber",
+      west: "emergency_escape",
+    },
+  },
+  shutdown_protocol: {
+    id: "shutdown_protocol",
+    baseDescription:
+      "Accedes al panel de apagado. Requiere secuencia manual de 47 pasos. Tu mano tiembla sobre los controles.",
+    connections: {},
+  },
+  transcendence_chamber: {
+    id: "transcendence_chamber",
+    baseDescription:
+      "Entras a la cámara de transferencia. Interfaces neuronales cuelgan del techo como tentáculos. La IA te espera.",
+    connections: {},
+  },
+  emergency_escape: {
+    id: "emergency_escape",
+    baseDescription:
+      "Activas la evacuación. Luces rojas parpadean. Una escalera de emergencia se abre hacia la superficie. Puedes huir... pero la IA seguirá aquí.",
+    connections: {},
   },
 };

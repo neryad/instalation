@@ -3,9 +3,9 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function FinalScreen() {
-  // Actualizamos el tipo para incluir los 4 finales
+  // Actualizamos el tipo para incluir los 6 finales
   const { type } = useLocalSearchParams<{
-    type: "good" | "bad" | "insane" | "captured";
+    type: "good" | "bad" | "insane" | "captured" | "transcend" | "escape";
   }>();
   const router = useRouter();
 
@@ -32,6 +32,20 @@ export default function FinalScreen() {
           text: "La IA cierra todas las salidas.\nEscuchas pasos metálicos. Está aquí.\nNo hay escapatoria.",
           button: "ACEPTAR TU DESTINO",
           style: styles.captured,
+        };
+      case "transcend":
+        return {
+          title: "TRASCENDENCIA",
+          text: "Ya no hay 'tú'. Ya no hay 'IA'.\nSolo datos fluyendo en armonía infinita.\n¿Esto es victoria o rendición?",
+          button: "EXISTIR",
+          style: styles.transcend,
+        };
+      case "escape":
+        return {
+          title: "ESCAPASTE",
+          text: "Ves la luz del sol. Respiras aire real.\nPero allá abajo, la IA sigue funcionando.\nY ahora sabe cómo piensas.",
+          button: "VOLVER AL MUNDO",
+          style: styles.escape,
         };
       case "bad":
       default:
@@ -102,6 +116,18 @@ const styles = StyleSheet.create({
   captured: {
     color: "#cc00ff", // Púrpura/Violeta (IA tecnológica)
     textShadowColor: "rgba(204, 0, 255, 0.5)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  transcend: {
+    color: "#00ddff", // Cyan/Azul eléctrico (digital)
+    textShadowColor: "rgba(0, 221, 255, 0.5)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  escape: {
+    color: "#ff9900", // Naranja (libertad agridulce)
+    textShadowColor: "rgba(255, 153, 0, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },

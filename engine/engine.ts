@@ -635,14 +635,16 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   }
 
   // 4. Bloqueos de Puerta
-  if (
-    nextRoomData.lockedBy &&
-    !state.inventory.includes(nextRoomData.lockedBy)
-  ) {
-    return {
-      ...newState,
-      lastEvent: `BLOQUEO: Requiere ${nextRoomData.lockedBy.toUpperCase()}.`,
-    };
+  if (nextRoomData.lockedBy) {
+    if (!state.inventory.includes(nextRoomData.lockedBy)) {
+      return {
+        ...newState,
+        lastEvent: `BLOQUEO: Requiere ${nextRoomData.lockedBy.toUpperCase()}.`,
+      };
+    } else {
+      // Si SÍ tiene la llave, añadimos feedback de uso
+      newState.lastEvent = `Usas ${nextRoomData.lockedBy.toUpperCase()}. La puerta se abre con un click metálico.`;
+    }
   }
 
   // 5. MOVIMIENTO EFECTIVO
@@ -670,19 +672,38 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     }
   }
 
-  // 7. CHEQUEO DE FINAL (CORE)
-  if (newState.currentRoom === "core") {
+  // 7. CHEQUEO DE SALAS DE FINAL (Decisiones activas en el core)
+  
+  // NORTH: Shutdown Protocol (Final bueno - requiere cordura estable)
+  if (newState.currentRoom === "shutdown_protocol") {
     newState.gameOver = true;
-    if (newState.entityAwareness >= 90 || newState.sanity <= 15) {
+    if (newState.sanity < 55) {
       newState.endingType = "bad";
-      newState.lastEvent = "LA IA TE HA ASIMILADO. Eres parte del sistema.";
-    } else if (newState.sanity < 45) {
-      newState.endingType = "insane";
-      newState.lastEvent = "Llegas al núcleo, pero tu mente ya no está aquí.";
+      newState.lastEvent =
+        "Tu mente tiembla. Fallas la secuencia de apagado. La IA te captura en el último momento.";
     } else {
       newState.endingType = "good";
-      newState.lastEvent = "NÚCLEO DESACTIVADO. Eres libre.";
+      newState.lastEvent =
+        "Ejecutas la secuencia perfectamente. El núcleo colapsa. SISTEMA APAGADO. Eres libre.";
     }
+    return newState;
+  }
+
+  // EAST: Transcendence Chamber (Final filosófico - fusión con la IA)
+  if (newState.currentRoom === "transcendence_chamber") {
+    newState.gameOver = true;
+    newState.endingType = "transcend";
+    newState.lastEvent =
+      "Te conectas a la interfaz. Los límites entre tú y la IA se disuelven. Ya no hay 'Sujeto 00'. Solo... existencia.";
+    return newState;
+  }
+
+  // WEST: Emergency Escape (Final neutral - huida incompleta)
+  if (newState.currentRoom === "emergency_escape") {
+    newState.gameOver = true;
+    newState.endingType = "escape";
+    newState.lastEvent =
+      "Corres escaleras arriba. Ves luz solar por primera vez en... ¿días? ¿meses? La IA sigue viva allá abajo. Pero tú escapaste.";
     return newState;
   }
 
