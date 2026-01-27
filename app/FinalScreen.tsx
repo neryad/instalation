@@ -1,5 +1,7 @@
 import { CRTOverlay } from "@/components/game/CRTOverlay";
+import { unlockEnding } from "@/storage/achievements";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function FinalScreen() {
@@ -8,6 +10,13 @@ export default function FinalScreen() {
     type: "good" | "bad" | "insane" | "captured" | "transcend" | "escape";
   }>();
   const router = useRouter();
+
+  // Guardar el logro al cargar la pantalla
+  useEffect(() => {
+    if (type) {
+      unlockEnding(type as any);
+    }
+  }, [type]);
 
   // Helper para decidir el contenido según el final
   const getEndingContent = () => {

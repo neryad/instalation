@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -83,18 +83,34 @@ export default function Home() {
           <View style={styles.warningLine} />
         </View>
 
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            glitch && styles.buttonGlitch,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={() => router.push("/intro")}
-        >
-          <Text style={[styles.buttonText, glitch && { color: "#f00" }]}>
-            INICIAR SECUENCIA
-          </Text>
-        </Pressable>
+        <Link href="/game" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              glitch && styles.buttonGlitch,
+              pressed && styles.buttonPressed,
+            ]}
+          >
+            <Text style={[styles.buttonText, glitch && { color: "#f00" }]}>
+              INICIAR SECUENCIA
+            </Text>
+          </Pressable>
+        </Link>
+
+        {/* Botón de Archivos / Logros */}
+        <Link href="/AchievementsScreen" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              { marginTop: 15, borderColor: "#005500" },
+              pressed && { backgroundColor: "rgba(0, 50, 0, 0.3)" },
+            ]}
+          >
+            <Text style={[styles.buttonText, { color: "#00aa00", fontSize: 14 }]}>
+              ARCHIVOS
+            </Text>
+          </Pressable>
+        </Link>
       </View>
 
       {/* BLOQUE INFERIOR: MANUAL Y SISTEMA UNIFICADOS */}
