@@ -157,6 +157,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     paddingHorizontal: 25,
     justifyContent: "space-between",
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
   },
   header: {
     alignItems: "center",

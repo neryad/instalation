@@ -547,6 +547,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000500",
     paddingHorizontal: 15, // Un poco de aire a los lados
+    maxWidth: 800,
+    alignSelf: "center",
+    width: "100%",
   },
   header: {
     marginBottom: 10,

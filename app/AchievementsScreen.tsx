@@ -103,6 +103,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000500",
     paddingHorizontal: 20,
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
   },
   title: {
     color: "#0f0",
