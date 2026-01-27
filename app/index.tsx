@@ -51,7 +51,11 @@ export default function Home() {
       {/* BLOQUE SUPERIOR: TÍTULO Y ESTADO */}
       <View style={styles.header}>
         <View style={styles.titleWrapper}>
-          <Text style={[styles.title, glitch && styles.glitchText]}>
+          <Text
+            style={[styles.title, glitch && styles.glitchText]}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+          >
             S.A.N.I.T.Y.
           </Text>
           <View
@@ -128,19 +132,20 @@ export default function Home() {
         </Link>
       </View>
 
-      {/* BLOQUE INFERIOR: MANUAL UNIFICADO */}
+      {/* BLOQUE INFERIOR: ACCESO A MANUAL */}
       <View style={styles.footerContainer}>
-        <View style={styles.manualBox}>
-          <Text style={styles.footerHeader}>// MANUAL_DE_OPERACIONES</Text>
-          <View style={styles.commandRow}>
-            <Text style={styles.cmd}>MOV:</Text>
-            <Text style={styles.cmdDesc}>[N, S, E, W]</Text>
-          </View>
-          <View style={styles.commandRow}>
-            <Text style={styles.cmd}>ACT:</Text>
-            <Text style={styles.cmdDesc}>[INVESTIGAR, MIRAR, USAR]</Text>
-          </View>
-        </View>
+        <Link href="/ManualScreen" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.manualButton,
+              pressed && { backgroundColor: "rgba(0, 50, 0, 0.2)" },
+            ]}
+          >
+            <Text style={styles.footerHeader}>
+              [ ABRIR MANUAL DE OPERACIONES ]
+            </Text>
+          </Pressable>
+        </Link>
       </View>
     </View>
   );
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 42,
     fontWeight: "bold",
     color: "#0f0",
-    letterSpacing: 8,
+    letterSpacing: 4,
     textAlign: "center",
   },
   scanlineTitle: {
@@ -250,31 +255,17 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 20,
   },
-  manualBox: {
+  manualButton: {
     borderTopWidth: 1,
-    borderTopColor: "rgba(0,255,0,0.1)",
-    paddingTop: 15,
-    marginBottom: 25,
+    borderTopColor: "rgba(0,255,0,0.3)",
+    paddingVertical: 20,
+    width: "100%",
+    alignItems: "center",
   },
   footerHeader: {
-    color: "#242",
-    fontSize: 10,
+    color: "#262",
+    fontSize: 12,
     fontFamily: "monospace",
-    marginBottom: 10,
-  },
-  commandRow: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  cmd: {
-    color: "#0a0",
-    width: 45,
-    fontSize: 10,
-    fontFamily: "monospace",
-  },
-  cmdDesc: {
-    color: "#464",
-    fontSize: 10,
-    fontFamily: "monospace",
+    letterSpacing: 2,
   },
 });
