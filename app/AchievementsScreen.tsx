@@ -65,7 +65,7 @@ export default function AchievementsScreen() {
                 isUnlocked ? { borderColor: details.color } : styles.lockedCard,
               ]}
             >
-              <Text style={styles.icon}>
+              <Text style={[styles.icon, isUnlocked && { color: details.color }]}>
                 {isUnlocked ? details.icon : "🔒"}
               </Text>
               <Text
@@ -140,8 +140,14 @@ const styles = StyleSheet.create({
     borderStyle: "dashed",
   },
   icon: {
-    fontSize: 32,
+    fontSize: 24, // Un poco más pequeño para que quepa el ASCII
     marginBottom: 10,
+    fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
+    fontWeight: "bold",
+    letterSpacing: 1,
+    textShadowColor: "rgba(0, 255, 0, 0.5)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
   cardTitle: {
     fontSize: 12,

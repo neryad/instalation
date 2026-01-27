@@ -14,12 +14,12 @@ export const EndingDetails: Record<
   EndingType,
   { title: string; color: string; icon: string }
 > = {
-  good: { title: "SISTEMA APAGADO", color: "#00ff88", icon: "🔓" },
-  bad: { title: "ASIMILADO", color: "#ff0033", icon: "💀" },
-  insane: { title: "MENTE FRAGMENTADA", color: "#ffcc00", icon: "🧠" },
-  captured: { title: "LOCALIZADO", color: "#cc00ff", icon: "👁️" },
-  transcend: { title: "TRASCENDENCIA", color: "#00ddff", icon: "💠" },
-  escape: { title: "HUÍDA IMPERFECTA", color: "#ff9900", icon: "🏃" },
+  good: { title: "SISTEMA APAGADO", color: "#00ff88", icon: "[OK]" },
+  bad: { title: "ASIMILADO", color: "#ff0033", icon: "X_X" },
+  insane: { title: "MENTE FRAGMENTADA", color: "#ffcc00", icon: "{~?~}" },
+  captured: { title: "LOCALIZADO", color: "#cc00ff", icon: "( o )" },
+  transcend: { title: "TRASCENDENCIA", color: "#00ddff", icon: "< . >" },
+  escape: { title: "HUÍDA IMPERFECTA", color: "#ff9900", icon: ">>_" },
 };
 
 export async function unlockEnding(ending: EndingType) {

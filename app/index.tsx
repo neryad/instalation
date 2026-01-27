@@ -111,9 +111,24 @@ export default function Home() {
             </Text>
           </Pressable>
         </Link>
+
+        {/* Botón de Sistema / About */}
+        <Link href="/AboutScreen" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              { marginTop: 15, borderColor: "#003300" },
+              pressed && { backgroundColor: "rgba(0, 30, 0, 0.3)" },
+            ]}
+          >
+            <Text style={[styles.buttonText, { color: "#005500", fontSize: 12 }]}>
+              SISTEMA
+            </Text>
+          </Pressable>
+        </Link>
       </View>
 
-      {/* BLOQUE INFERIOR: MANUAL Y SISTEMA UNIFICADOS */}
+      {/* BLOQUE INFERIOR: MANUAL UNIFICADO */}
       <View style={styles.footerContainer}>
         <View style={styles.manualBox}>
           <Text style={styles.footerHeader}>// MANUAL_DE_OPERACIONES</Text>
@@ -126,16 +141,6 @@ export default function Home() {
             <Text style={styles.cmdDesc}>[INVESTIGAR, MIRAR, USAR]</Text>
           </View>
         </View>
-
-        <Pressable
-          onPress={() => router.push("/AboutScreen" as any)}
-          style={({ pressed }) => [
-            styles.systemBtn,
-            { opacity: pressed ? 0.5 : 1 },
-          ]}
-        >
-          <Text style={styles.systemLink}>[ SISTEMA ]</Text>
-        </Pressable>
       </View>
     </View>
   );
@@ -271,15 +276,5 @@ const styles = StyleSheet.create({
     color: "#464",
     fontSize: 10,
     fontFamily: "monospace",
-  },
-  systemBtn: {
-    alignSelf: "center",
-    padding: 10,
-  },
-  systemLink: {
-    color: "#002200",
-    fontFamily: "monospace",
-    fontSize: 11,
-    letterSpacing: 3,
   },
 });
