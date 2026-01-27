@@ -466,11 +466,24 @@ export default function GameScreen() {
     }
   }, [state.sanity, state.gameOver, state.endingType]);
 
+  // 4. EFECTO DE LATIDO (Haptics)
+  useEffect(() => {
+    if (state.sanity < 15 && !state.gameOver) {
+      const interval = setInterval(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        setTimeout(() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }, 100);
+      }, 1500);
+      return () => clearInterval(interval);
+    }
+  }, [state.sanity, state.gameOver]);
+
   const addLog = (text: string, type: LogMessage["type"] = "narrative") => {
-    setLogMessages((prev) => [
-      ...prev,
-      { id: generateId(), text, type, timestamp: getTimestamp() },
-    ]);
+    setLogMessages((prev) => {
+        const next = [...prev, { id: generateId(), text, type, timestamp: getTimestamp() }];
+        return next.length > 50 ? next.slice(next.length - 50) : next;
+    });
 
     // Feedback táctico y sonoro
     if (type === "error")
@@ -550,7 +563,10 @@ export default function GameScreen() {
         },
       ]}
     >
-      <CRTOverlay isGlitchActive={isGlitchActive} />
+      <CRTOverlay 
+        isGlitchActive={isGlitchActive} 
+        dangerLevel={state.entityAwareness / 100}
+      />
 
       {/* HUD Superior */}
       <View style={styles.header}>

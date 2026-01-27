@@ -5,9 +5,10 @@ import { StyleSheet, View } from "react-native";
 // 1. Definimos la interfaz para que TS no se queje en GameScreen
 interface CRTOverlayProps {
   isGlitchActive?: boolean;
+  dangerLevel?: number; // 0 a 1
 }
 
-export const CRTOverlay: React.FC<CRTOverlayProps> = ({ isGlitchActive }) => {
+export const CRTOverlay: React.FC<CRTOverlayProps> = ({ isGlitchActive, dangerLevel = 0 }) => {
   const [settings, setSettings] = useState({ crtEnabled: true, glitchEnabled: true });
 
   useEffect(() => {
@@ -33,6 +34,8 @@ export const CRTOverlay: React.FC<CRTOverlayProps> = ({ isGlitchActive }) => {
       )}
       <View style={styles.vignette} />
       {settings.crtEnabled && <View style={styles.tint} />}
+      {/* Tinte de peligro (Rojo) */}
+      <View style={[styles.dangerTint, { opacity: dangerLevel * 0.15 }]} />
     </View>
   );
 };
@@ -61,5 +64,9 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderWidth: 2,
     borderColor: "rgba(0, 255, 0, 0.1)",
+  },
+  dangerTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#ff0000",
   },
 });
