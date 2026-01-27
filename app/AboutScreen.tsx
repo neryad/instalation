@@ -1,17 +1,19 @@
+import { useRouter } from "expo-router";
 import React from "react";
 import {
-  Linking,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
+    Linking,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
 
 export default function AboutScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   const openLink = (url: string) => {
     Linking.openURL(url).catch((err) =>
@@ -66,7 +68,7 @@ export default function AboutScreen() {
         <Pressable
           style={styles.backBtn}
           onPress={() => {
-            /* Aquí usarías router.back() de expo-router */
+            router.back();
           }}
         >
           <Text style={styles.backText}>[ VOLVER_A_LA_TERMINAL ]</Text>
@@ -85,7 +87,14 @@ function AboutButton({ label, onPress }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#000500", paddingHorizontal: 25 },
+  container: {
+    flex: 1,
+    backgroundColor: "#000500",
+    paddingHorizontal: 25,
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
+  },
   scrollContent: { paddingVertical: 20 },
   header: {
     color: "#0f0",
