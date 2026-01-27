@@ -25,80 +25,64 @@ El proyecto se basa en una separación clara entre la interfaz de usuario y la l
 
 ### 1. Game Engine (`/engine`)
 El núcleo del juego gestiona:
-* **Manejo de Comandos:** Un sistema de procesamiento de lenguaje natural simplificado que traduce entradas de texto en acciones de juego (`north`, `south`, `east`, `west`, `grab`, `use`).
+* **Manejo de Comandos:** Un sistema de procesamiento de lenguaje natural simplificado que traduce entradas de texto en acciones de juego o botones contextuales inteligentes.
 * **Sistema de Cordura (Sanity):** Una variable de estado global que actúa como multiplicador de dificultad. A menor cordura, el motor altera las descripciones de las salas y activa eventos de "corrupción".
 * **Entidad Predictiva (IA):** Lógica que rastrea el historial de movimientos del jugador. El motor penaliza patrones repetitivos, simulando una inteligencia que acecha y bloquea al usuario.
+* **Sistema de 6 Finales:** Los desenlaces dependen de decisiones activas en el núcleo y del estado mental acumulado.
 
 ### 2. UI & Experience (`/app` & `/components`)
 * **Terminal de Texto Dinámica:** Un sistema de logs que renderiza el progreso de la historia con efectos de glitch.
-* **Responsive Design:** Optimizado para funcionar tanto en dispositivos móviles (iOS/Android) como en navegadores web mediante **Expo Web**.
+* **Responsive Design:** Optimizado con layouts centrados y `maxWidth` para una experiencia perfecta en móviles, tablets y PC.
+* **Galería de Archivos (Logros):** Sistema de persistencia para coleccionar los distintos finales alcanzados.
+* **Manual Interactivo:** Pantalla de protocolos de misión integrada en la interfaz.
 
 ---
 
 ## 🛠️ Stack Tecnológico
 * **Framework:** React Native + Expo (SDK 50+)
-* **Audio & Haptics:** Expo-AV y Expo-Haptics para retroalimentación física y auditiva. [NUEVO]
+* **Persistence:** @react-native-async-storage/async-storage para guardado local (Web/Native). [NUEVO]
+* **Audio & Haptics:** Expo-AV y Expo-Haptics para retroalimentación física y auditiva.
 * **Lenguaje:** TypeScript (Tipado estricto para la definición de salas e ítems)
 
 ## 📂 Estructura del Proyecto
 ```text
-├── app/               # Sistema de rutas (Index, Game, GameOver)
-├── engine/            # Lógica central (GameEngine, Rooms, Items)
+├── app/               # Sistema de rutas (Index, Game, Manual, Achievements)
+├── engine/            # Lógica central (Engine, Rooms, Entity Logic)
+├── storage/           # Manejo de persistencia de logros
 ├── components/        # UI Reutilizable (Botones, Terminal, GlitchText)
-├── hooks/             # Custom hooks para manejar el estado persistente
-└── assets/            # Configuración visual y fuentes retro
+├── assets/            # Configuración visual y fuentes retro
+└── README.md          # Documentación técnica
+```
 
-````
+## ⌨️ Protocolos de Acción
 
-## ⌨️ Protocolos de Comando
+El sistema utiliza una interfaz de botones contextuales que aparecen según la situación del jugador:
 
-El sistema acepta entradas de lenguaje natural simplificado. Los comandos principales incluyen:
-
-| Comando                          | Acción                             | Impacto en el Juego                    |
-| :------------------------------- | :--------------------------------- | :------------------------------------- |
-| `NORTH`, `SOUTH`, `EAST`, `WEST` | Desplazamiento entre sectores      | Gasta -1% de Cordura.                  |
-| `INVESTIGAR` / `LOOK`            | Analiza la sala actual             | Puede revelar ítems o alertar a la IA. |
-| `HELP`                           | Despliega protocolos de emergencia | Muestra la guía de supervivencia.      |
+| Acción                           | Impacto en el Juego                    |
+| :------------------------------- | :------------------------------------- |
+| `MOVIMIENTO (N, S, E, W)`        | Gasta -2% de Cordura.                  |
+| `INVESTIGAR`                     | Revela ítems o genera ruido (IA).      |
+| `FORZAR PUERTA`                  | Atajo táctico a cambio de Cordura.     |
+| `USAR SEDANTE`                   | Recupera estabilidad mental y reduce ruido.|
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M31DTPAL)
 
 ## 🚀 Instalación y Uso Local
 
 1.  **Clonar el repo:**
-
-    Bash
-
-    ```
-    git clone [https://github.com/neryad/instalation.git](https://github.com/neryad/instalation.git)
+    ```bash
+    git clone https://github.com/neryad/instalation.git
     cd instalation
-
     ```
 
 2.  **Instalar dependencias:**
-
-    Bash
-
-    ```
+    ```bash
     npm install
-
     ```
 
 3.  **Iniciar Expo:**
-
-    Bash
-
-    ```
+    ```bash
     npx expo start
-
-    ```
-
-4.  **Exportar para Web:**
-
-    Bash
-
-    ```
-    npx expo export:web
-
     ```
 
 ---
@@ -106,9 +90,11 @@ El sistema acepta entradas de lenguaje natural simplificado. Los comandos princi
 ## 🧬 Hoja de Ruta (Roadmap)
 
 - [x] Motor de movimiento base.
-- [x] Sistema de inventario y objetos clave.
-- [x] IA Predictiva inicial.
-- [x] **Capa de Inmersión:** Retroalimentación háptica y efectos sonoros de terminal. [LOGRADO]
+- [x] IA Predictiva con aprendizaje de patrones.
+- [x] Capa de Inmersión: Sonido y Vibración.
+- [x] Sistema de Finales Múltiples (6 rutas).
+- [x] Persistencia de Logros (Web/Móvil).
+- [x] Diseño Centrado Responsivo (PC/Tablets).
 - [ ] Generación procedimental de salas basada en el nivel de cordura.
 - [ ] Efectos de sonido ambientales generativos.
 
@@ -116,4 +102,4 @@ El sistema acepta entradas de lenguaje natural simplificado. Los comandos princi
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M31DTPAL)
 
-Desarrollado por [neryad](https://github.com/neryad) como un experimento de narrativa técnica y desarrollo multiplataforma.\
+Desarrollado por [neryad](https://github.com/neryad) como un experimento de narrativa técnica y desarrollo multiplataforma.
