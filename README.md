@@ -31,39 +31,36 @@ El núcleo del juego gestiona:
 * **Sistema de 6 Finales:** Los desenlaces dependen de decisiones activas en el núcleo y del estado mental acumulado.
 
 ### 2. UI & Experience (`/app` & `/components`)
-* **Terminal de Texto Dinámica:** Un sistema de logs que renderiza el progreso de la historia con efectos de glitch.
-* **Responsive Design:** Optimizado con layouts centrados y `maxWidth` para una experiencia perfecta en móviles, tablets y PC.
-* **Galería de Archivos (Logros):** Sistema de persistencia para coleccionar los distintos finales alcanzados.
-* **Manual Interactivo:** Pantalla de protocolos de misión integrada en la interfaz.
-* **Personalización (Ajustes):** Control total sobre efectos de Glitch, Filtro CRT y Audio para accesibilidad y confort. [NUEVO]
+* **Terminal de Texto Dinámica:** Sistema de logs optimizado (límite de 50 registros) con efecto de escritura gradual y cursor parpadeante.
+* **Responsive Design:** Layouts centrados y `maxWidth` para una experiencia fluida en cualquier dispositivo.
+* **Mastery Feedback:** Tinte rojo dinámico (Peligro) y latido háptico (Pánico) para inmersión sensorial máxima.
+* **Personalización (Ajustes):** Control total sobre efectos de Glitch, Filtro CRT y Audio.
 
 ---
 
 ## 🛠️ Stack Tecnológico
 * **Framework:** React Native + Expo (SDK 50+)
-* **Persistence:** @react-native-async-storage/async-storage para guardado local (Web/Native).
-* **Audio & Haptics:** Expo-AV y Expo-Haptics. Incluye 7 efectos de sonido generados por IA para acciones tácticas y atmósferas de final. [NUEVO]
-* **Lenguaje:** TypeScript (Tipado estricto para la definición de salas e ítems)
+* **Persistence:** AsyncStorage para logros y ajustes.
+* **Audio & Haptics:** Pack de 7 audios IA y feedback táctil rítmico.
+* **Lenguaje:** TypeScript (Tipado estricto)
 
 ## 📂 Estructura del Proyecto
 ```text
 ├── app/               # Pantallas (Index, Intro, Game, Manual, Achievements, Settings)
-├── engine/            # Lógica central (Engine, Rooms, Entity Logic)
-├── storage/           # Manejo de persistencia de logros y ajustes
-├── assets/            # Audios (IA SFX) y fuentes retro
+├── engine/            # Lógica central (Acciones, Entidad, Habitaciones)
+├── storage/           # Persistencia de datos local
+├── assets/            # Audios IA, Iconografía y Fuentes
 └── README.md          # Documentación técnica
 ```
 
 ## ⌨️ Protocolos de Acción
 
-El sistema utiliza una interfaz de botones contextuales que aparecen según la situación del jugador:
-
-| Acción                           | Impacto en el Juego                    | Audio IA Asociado                      |
+| Acción                           | Impacto en el Juego                    | Inmersión Sensorial                    |
 | :------------------------------- | :------------------------------------- | :------------------------------------- |
-| `MOVIMIENTO (N, S, E, W)`        | Gasta -2% de Cordura.                  | Puerta Hidráulica Pesada               |
-| `INVESTIGAR`                     | Revela ítems o genera ruido (IA).      | Feedback de Terminal                   |
-| `FORZAR PUERTA`                  | Atajo táctico a cambio de Cordura.     | Crujido de Metal Forzado               |
-| `USAR SEDANTE`                   | Recupera estabilidad y reduce ruido.   | Inyector Neumático Médico              |
+| `MOVIMIENTO (N, S, E, W)`        | Gasta -2% de Cordura.                  | Audio Hidráulico                       |
+| `INVESTIGAR`                     | Revela ítems o alerta a la IA.         | Feedback de Terminal                   |
+| `FORZAR PUERTA`                  | Atajo táctico por Cordura.             | Audio de Crujido Metálico              |
+| `USAR SEDANTE`                   | Restaura Sanity y reduce Awareness.    | Audio Inyector Neumático               |
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M31DTPAL)
 
@@ -89,13 +86,11 @@ El sistema utiliza una interfaz de botones contextuales que aparecen según la s
 
 ## 🧬 Hoja de Ruta (Roadmap)
 
-- [x] Motor de movimiento base.
 - [x] IA Predictiva con aprendizaje de patrones.
-- [x] Capa de Inmersión: Sonido y Vibración.
 - [x] Sistema de Finales Múltiples (6 rutas).
-- [x] Persistencia de Logros y Ajustes (Web/Móvil).
 - [x] Diseño Centrado Responsivo (PC/Tablets).
-- [x] Atmósferas Sonora de Finales y Acciones (7 IA SFX). [LOGRADO]
+- [x] Atmósferas Sonora de Finales y Acciones (7 IA SFX).
+- [x] **Pulido de Maestría:** Feedback sensorial de peligro y optimización de memoria. [LOGRADO]
 - [ ] Generación procedimental de salas basada en el nivel de cordura.
 
 ---
