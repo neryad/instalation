@@ -42,7 +42,7 @@ El núcleo del juego gestiona:
 ## 🛠️ Stack Tecnológico
 * **Framework:** React Native + Expo (SDK 50+)
 * **Persistence:** @react-native-async-storage/async-storage para guardado local (Web/Native).
-* **Audio & Haptics:** Expo-AV y Expo-Haptics para retroalimentación física y auditiva.
+* **Audio & Haptics:** Expo-AV y Expo-Haptics. Incluye 7 efectos de sonido generados por IA para acciones tácticas y atmósferas de final. [NUEVO]
 * **Lenguaje:** TypeScript (Tipado estricto para la definición de salas e ítems)
 
 ## 📂 Estructura del Proyecto
@@ -50,8 +50,7 @@ El núcleo del juego gestiona:
 ├── app/               # Pantallas (Index, Intro, Game, Manual, Achievements, Settings)
 ├── engine/            # Lógica central (Engine, Rooms, Entity Logic)
 ├── storage/           # Manejo de persistencia de logros y ajustes
-├── components/        # UI Reutilizable (Botones, Terminal, GlitchText)
-├── assets/            # Configuración visual y fuentes retro
+├── assets/            # Audios (IA SFX) y fuentes retro
 └── README.md          # Documentación técnica
 ```
 
@@ -59,12 +58,12 @@ El núcleo del juego gestiona:
 
 El sistema utiliza una interfaz de botones contextuales que aparecen según la situación del jugador:
 
-| Acción                           | Impacto en el Juego                    |
-| :------------------------------- | :------------------------------------- |
-| `MOVIMIENTO (N, S, E, W)`        | Gasta -2% de Cordura.                  |
-| `INVESTIGAR`                     | Revela ítems o genera ruido (IA).      |
-| `FORZAR PUERTA`                  | Atajo táctico a cambio de Cordura.     |
-| `USAR SEDANTE`                   | Recupera estabilidad mental y reduce ruido.|
+| Acción                           | Impacto en el Juego                    | Audio IA Asociado                      |
+| :------------------------------- | :------------------------------------- | :------------------------------------- |
+| `MOVIMIENTO (N, S, E, W)`        | Gasta -2% de Cordura.                  | Puerta Hidráulica Pesada               |
+| `INVESTIGAR`                     | Revela ítems o genera ruido (IA).      | Feedback de Terminal                   |
+| `FORZAR PUERTA`                  | Atajo táctico a cambio de Cordura.     | Crujido de Metal Forzado               |
+| `USAR SEDANTE`                   | Recupera estabilidad y reduce ruido.   | Inyector Neumático Médico              |
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M31DTPAL)
 
@@ -94,10 +93,10 @@ El sistema utiliza una interfaz de botones contextuales que aparecen según la s
 - [x] IA Predictiva con aprendizaje de patrones.
 - [x] Capa de Inmersión: Sonido y Vibración.
 - [x] Sistema de Finales Múltiples (6 rutas).
-- [x] Persistencia de Logros y Ajustes (Web/Móvil). [MODIFICADO]
+- [x] Persistencia de Logros y Ajustes (Web/Móvil).
 - [x] Diseño Centrado Responsivo (PC/Tablets).
+- [x] Atmósferas Sonora de Finales y Acciones (7 IA SFX). [LOGRADO]
 - [ ] Generación procedimental de salas basada en el nivel de cordura.
-- [ ] Efectos de sonido ambientales generativos.
 
 ---
 
