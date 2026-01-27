@@ -87,7 +87,7 @@ export default function Home() {
           <View style={styles.warningLine} />
         </View>
 
-        <Link href="/game" asChild>
+        <Link href="/intro" asChild>
           <Pressable
             style={({ pressed }) => [
               styles.button,
@@ -112,6 +112,21 @@ export default function Home() {
           >
             <Text style={[styles.buttonText, { color: "#00aa00", fontSize: 14 }]}>
               ARCHIVOS
+            </Text>
+          </Pressable>
+        </Link>
+
+        {/* Botón de Configuración / Ajustes */}
+        <Link href="/SettingsScreen" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              { marginTop: 15, borderColor: "#008800" },
+              pressed && { backgroundColor: "rgba(0, 80, 0, 0.2)" },
+            ]}
+          >
+            <Text style={[styles.buttonText, { color: "#0f0", fontSize: 14 }]}>
+              CONFIGURACIÓN
             </Text>
           </Pressable>
         </Link>

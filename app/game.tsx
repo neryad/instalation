@@ -352,6 +352,7 @@
 // });
 import { InventoryHUD } from "@/components/game/inventoryHud";
 import { QuickActions } from "@/components/game/quickActions";
+import { getSettings } from "@/storage/settings";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
@@ -383,6 +384,7 @@ export default function GameScreen() {
   const [state, setState] = useState(initialPlayerState);
   const [logMessages, setLogMessages] = useState<LogMessage[]>([]);
   const [isGlitchActive, setIsGlitchActive] = useState(false);
+  const [settings, setSettings] = useState({ soundEnabled: true });
 
   const backgroundMusic = useRef<Audio.Sound | null>(null);
   const sfxBeep = useRef<Audio.Sound | null>(null);
@@ -390,16 +392,21 @@ export default function GameScreen() {
   // 1. GESTIÓN DE AUDIO (Ambiente y SFX)
   useEffect(() => {
     async function loadAudio() {
+      const s = await getSettings();
+      setSettings(s);
+
       try {
         await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
 
-        // Música de fondo
-        const { sound: music } = await Audio.Sound.createAsync(
-          require("../assets/sounds/Recursive_Error_State.mp3"),
-          { isLooping: true, volume: 0.3 },
-        );
-        backgroundMusic.current = music;
-        await music.playAsync();
+        // Música de fondo (Si está activada)
+        if (s.soundEnabled) {
+          const { sound: music } = await Audio.Sound.createAsync(
+            require("../assets/sounds/Recursive_Error_State.mp3"),
+            { isLooping: true, volume: 0.3 },
+          );
+          backgroundMusic.current = music;
+          await music.playAsync();
+        }
 
         // Sonido de Beep para la terminal
         const { sound: beep } = await Audio.Sound.createAsync(
@@ -448,7 +455,9 @@ export default function GameScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     else Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-    sfxBeep.current?.replayAsync().catch(() => {});
+    if (settings.soundEnabled) {
+      sfxBeep.current?.replayAsync().catch(() => {});
+    }
   };
 
   const handleCommand = (cmd: string) => {
