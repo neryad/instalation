@@ -352,6 +352,7 @@
 // });
 import { InventoryHUD } from "@/components/game/inventoryHud";
 import { QuickActions } from "@/components/game/quickActions";
+import { unlockEnding } from "@/storage/achievements";
 import { getSettings } from "@/storage/settings";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
@@ -368,6 +369,7 @@ import {
     getRoomDescription,
     investigate,
     move,
+    useItem,
 } from "../engine/engine";
 import { initialPlayerState } from "../engine/player";
 import { Direction } from "../engine/rooms";
@@ -527,18 +529,24 @@ export default function GameScreen() {
       addLog(getRoomDescription(state), "narrative");
       return;
     } else if (lower.startsWith("usar")) {
-      if (args[1]?.includes("sedan") && state.inventory.includes("sedative")) {
-        newState = {
-          ...state,
-          inventory: state.inventory.filter((i) => i !== "sedative"),
-          sanity: Math.min(100, state.sanity + 30),
-          entityAwareness: Math.max(0, state.entityAwareness - 20),
-        };
-        addLog("Inyectas el sedante. Tu mente se estabiliza.", "system");
-        if (settings.soundEnabled) {
-          sfxSedative.current?.setVolumeAsync(settings.volume);
-          sfxSedative.current?.replayAsync().catch(() => {});
-        }
+      const itemToUse = args[1];
+      newState = useItem(state, itemToUse);
+      if (newState.lastEvent !== state.lastEvent) { // Verifica si hubo evento
+          // Sonido específico para sedante
+          if (itemToUse.includes("sedat") && settings.soundEnabled) {
+              sfxSedative.current?.setVolumeAsync(settings.volume);
+              sfxSedative.current?.replayAsync().catch(() => {});
+          }
+          
+          // EASTER EGG: Desbloquear logro si se lee el log
+          if (newState.lastEvent?.includes("Registro del Desarrollador")) {
+             unlockEnding("secret_log");
+             if (settings.soundEnabled) {
+                 // Sonido extra creepy para el logro
+                 sfxIA.current?.setVolumeAsync(settings.volume);
+                 sfxIA.current?.replayAsync().catch(() => {});
+             }
+          }
       }
     } else {
       addLog("COMANDO NO RECONOCIDO.", "error");

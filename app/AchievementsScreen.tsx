@@ -17,6 +17,7 @@ const ALL_ENDINGS: EndingType[] = [
   "captured",
   "transcend",
   "escape",
+  "secret_log",
 ];
 
 export default function AchievementsScreen() {

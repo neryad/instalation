@@ -842,3 +842,39 @@ export function getForceableDirections(state: PlayerState): Direction[] {
   }
   return directions;
 }
+// ... (previous code)
+
+/**
+ * Usa un objeto del inventario.
+ */
+export function useItem(state: PlayerState, item: string): PlayerState {
+  if (!state.inventory.includes(item)) {
+    return { ...state, lastEvent: `No tienes ${item}.` };
+  }
+
+  // Lógica de SEDANTE
+  if (item === "sedative") {
+    // Al usarlo, se consume
+    const newInventory = state.inventory.filter((i) => i !== "sedative");
+    return {
+      ...state,
+      inventory: newInventory,
+      sanity: Math.min(100, state.sanity + 40),
+      lastEvent: "Te inyectas el sedante. La realidad se vuelve más... estable.",
+    };
+  }
+
+  // Lógica del EASTER EGG: DEV_LOG.aes
+  if (item === "DEV_LOG.aes") {
+    // No se consume, es un archivo
+    // Simulamos un delay narrativo en el texto
+    return {
+      ...state,
+      lastEvent: `[SISTEMA]: Desencriptando archivo...\n> Clave requerida...\n> Probando 'neryad'...\n> ACCESO CONCEDIDO.\n\n"Registro del Desarrollador, 2026. Todo parecía normal hasta que..."\n\n[ERROR DE LECTURA]\n\n"Espera... esto no es un registro grabado. TE ESTOY VIENDO. Sé que estás leyendo esto desde una pantalla brillante. ¿Crees que esto es un juego? APÁGALO AHORA."\n\n[CONEXIÓN TERMINADA POR EL HOST]`,
+      sanity: Math.max(0, state.sanity - 15), // Asusta al jugador
+      entityAwareness: state.entityAwareness + 20, // La IA se da cuenta
+    };
+  }
+
+  return { ...state, lastEvent: `No puedes usar ${item} aquí o así.` };
+}

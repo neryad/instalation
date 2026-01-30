@@ -170,7 +170,7 @@ export const rooms: Record<string, Room> = {
       // Dejemos que conecte con West (Mirror Gallery).
     connections: { west: "mirror_gallery" }, 
     lockedBy: "data_link", 
-    item: "ia_log", // Mantiene el log de historia
+    item: "DEV_LOG.aes", // Easter Egg item
   },
   core_door: {
     id: "core_door",

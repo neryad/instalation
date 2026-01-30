@@ -8,7 +8,8 @@ export type EndingType =
   | "insane"
   | "captured"
   | "transcend"
-  | "escape";
+  | "escape"
+  | "secret_log";
 
 export const EndingDetails: Record<
   EndingType,
@@ -20,6 +21,7 @@ export const EndingDetails: Record<
   captured: { title: "LOCALIZADO", color: "#cc00ff", icon: "( o )" },
   transcend: { title: "TRASCENDENCIA", color: "#00ddff", icon: "< . >" },
   escape: { title: "HUÍDA IMPERFECTA", color: "#ff9900", icon: ">>_" },
+  secret_log: { title: "LA VERDAD", color: "#ffffff", icon: "👁️" },
 };
 
 export async function unlockEnding(ending: EndingType) {
