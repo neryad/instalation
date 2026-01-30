@@ -1,5 +1,5 @@
 import { CRTOverlay } from "@/components/game/CRTOverlay";
-import { PRIVACY_POLICY, TERMS_OF_USE } from "@/constants/legalText";
+import { LICENSE_TEXT, PRIVACY_POLICY, TERMS_OF_USE } from "@/constants/legalText";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -9,8 +9,19 @@ export default function LegalScreen() {
   const insets = useSafeAreaInsets();
   const { type } = useLocalSearchParams();
 
-  const content = type === "privacy" ? PRIVACY_POLICY : TERMS_OF_USE;
-  const title = type === "privacy" ? "POLÍTICA DE PRIVACIDAD" : "TÉRMINOS DE USO";
+  let content = "";
+  let title = "";
+
+  if (type === "privacy") {
+      content = PRIVACY_POLICY;
+      title = "POLÍTICA DE PRIVACIDAD";
+  } else if (type === "terms") {
+      content = TERMS_OF_USE;
+      title = "TÉRMINOS DE USO";
+  } else if (type === "license") {
+      content = LICENSE_TEXT;
+      title = "LICENCIA MIT";
+  }
 
   return (
     <View

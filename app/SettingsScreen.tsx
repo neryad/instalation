@@ -143,6 +143,13 @@ export default function SettingsScreen() {
         >
             <Text style={styles.legalText}>TÉRMINOS DE USO</Text>
         </Pressable>
+        <Pressable 
+            style={styles.legalBtn} 
+            // @ts-ignore
+            onPress={() => router.push("/legal/license")}
+        >
+            <Text style={styles.legalText}>LICENCIA (MIT)</Text>
+        </Pressable>
       </View>
 
       <View style={styles.footer}>
