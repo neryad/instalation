@@ -131,6 +131,7 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
       ref={scrollViewRef}
       style={styles.container}
       contentContainerStyle={styles.content}
+      onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
     >
       {messages.map((msg) => (
         <FadeInView key={msg.id}>
