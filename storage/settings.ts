@@ -6,12 +6,14 @@ export interface GameSettings {
   crtEnabled: boolean;
   glitchEnabled: boolean;
   soundEnabled: boolean;
+  volume: number;
 }
 
 export const defaultSettings: GameSettings = {
   crtEnabled: true,
   glitchEnabled: true,
   soundEnabled: true,
+  volume: 0.5,
 };
 
 export async function getSettings(): Promise<GameSettings> {

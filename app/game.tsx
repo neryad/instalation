@@ -363,11 +363,11 @@ import { CRTOverlay } from "../components/game/CRTOverlay";
 import { SanityBar } from "../components/game/SanityBar";
 import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import {
-  forceDoor,
-  getForceableDirections,
-  getRoomDescription,
-  investigate,
-  move,
+    forceDoor,
+    getForceableDirections,
+    getRoomDescription,
+    investigate,
+    move,
 } from "../engine/engine";
 import { initialPlayerState } from "../engine/player";
 import { Direction } from "../engine/rooms";
@@ -384,7 +384,7 @@ export default function GameScreen() {
   const [state, setState] = useState(initialPlayerState);
   const [logMessages, setLogMessages] = useState<LogMessage[]>([]);
   const [isGlitchActive, setIsGlitchActive] = useState(false);
-  const [settings, setSettings] = useState({ soundEnabled: true });
+  const [settings, setSettings] = useState({ soundEnabled: true, volume: 0.5 });
 
   const backgroundMusic = useRef<Audio.Sound | null>(null);
   const sfxBeep = useRef<Audio.Sound | null>(null);
@@ -406,7 +406,7 @@ export default function GameScreen() {
         if (s.soundEnabled) {
           const { sound: music } = await Audio.Sound.createAsync(
             require("../assets/sounds/Recursive_Error_State.mp3"),
-            { isLooping: true, volume: 0.3 },
+            { isLooping: true, volume: s.volume * 0.3 }, // Base volume scaled by setting
           );
           backgroundMusic.current = music;
           await music.playAsync();
@@ -491,6 +491,7 @@ export default function GameScreen() {
     else Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
     if (settings.soundEnabled) {
+      sfxBeep.current?.setVolumeAsync(settings.volume);
       sfxBeep.current?.replayAsync().catch(() => {});
     }
   };
@@ -511,6 +512,7 @@ export default function GameScreen() {
     if (["north", "south", "east", "west"].includes(lower)) {
       newState = move(state, lower as Direction);
       if (newState.currentRoom !== state.currentRoom && settings.soundEnabled) {
+        sfxMove.current?.setVolumeAsync(settings.volume);
         sfxMove.current?.replayAsync().catch(() => {});
       }
     } else if (["investigar", "buscar"].includes(lower)) {
@@ -518,6 +520,7 @@ export default function GameScreen() {
     } else if (lower.startsWith("forzar")) {
       newState = forceDoor(state, args[1] as Direction);
       if (newState.currentRoom !== state.currentRoom && settings.soundEnabled) {
+        sfxForce.current?.setVolumeAsync(settings.volume);
         sfxForce.current?.replayAsync().catch(() => {});
       }
     } else if (lower === "mirar" || lower === "look") {
@@ -533,6 +536,7 @@ export default function GameScreen() {
         };
         addLog("Inyectas el sedante. Tu mente se estabiliza.", "system");
         if (settings.soundEnabled) {
+          sfxSedative.current?.setVolumeAsync(settings.volume);
           sfxSedative.current?.replayAsync().catch(() => {});
         }
       }
@@ -549,6 +553,7 @@ export default function GameScreen() {
 
     // DISPARAR SUSURRO IA (Si awareness > 70)
     if (newState.entityAwareness > 70 && Math.random() > 0.6 && settings.soundEnabled) {
+      sfxIA.current?.setVolumeAsync(settings.volume);
       sfxIA.current?.replayAsync().catch(() => {});
     }
   };

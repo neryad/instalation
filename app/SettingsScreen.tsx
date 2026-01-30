@@ -26,6 +26,20 @@ export default function SettingsScreen() {
     await saveSettings(newSettings);
   };
 
+  const adjustVolume = async (delta: number) => {
+    if (!settings) return;
+    const newVolume = Math.max(0, Math.min(1, settings.volume + delta));
+    const newSettings = { ...settings, volume: parseFloat(newVolume.toFixed(1)) };
+    setSettings(newSettings);
+    await saveSettings(newSettings);
+  };
+
+  const renderVolumeBar = (vol: number) => {
+    const totalBlocks = 10;
+    const filledBlocks = Math.round(vol * totalBlocks);
+    return "[" + "█".repeat(filledBlocks) + "▒".repeat(totalBlocks - filledBlocks) + "]";
+  };
+
   const handleResetData = () => {
     const confirmMessage = "¿Deseas borrar todos los logros y el progreso? Esta acción no se puede deshacer.";
     
@@ -84,6 +98,23 @@ export default function SettingsScreen() {
             active={settings.soundEnabled} 
             onPress={() => toggleSetting('soundEnabled')} 
         />
+        
+        <View style={styles.volumeContainer}>
+            <Text style={styles.toggleLabel}>NIVEL DE VOLUMEN</Text>
+            <View style={styles.volumeSliderLayout}>
+                <Pressable onPress={() => adjustVolume(-0.1)} style={styles.volumeStepBtn}>
+                    <Text style={styles.volumeStepText}>-</Text>
+                </Pressable>
+                <View style={styles.volumeBar}>
+                    <Text style={styles.volumeBarText}>
+                        {renderVolumeBar(settings.volume)}
+                    </Text>
+                </View>
+                <Pressable onPress={() => adjustVolume(0.1)} style={styles.volumeStepBtn}>
+                    <Text style={styles.volumeStepText}>+</Text>
+                </Pressable>
+            </View>
+        </View>
       </View>
 
       <View style={styles.section}>
@@ -186,6 +217,41 @@ const styles = StyleSheet.create({
   },
   statusInactive: {
     color: '#004400',
+  },
+  volumeContainer: {
+    marginTop: 10,
+  },
+  volumeSliderLayout: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  volumeStepBtn: {
+    borderWidth: 1,
+    borderColor: '#0f0',
+    width: 30,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 255, 0, 0.05)',
+  },
+  volumeStepText: {
+    color: '#0f0',
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
+  },
+  volumeBar: {
+    flex: 1,
+    marginHorizontal: 15,
+    alignItems: 'center',
+  },
+  volumeBarText: {
+    color: '#0f0',
+    fontSize: 18,
+    fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
+    letterSpacing: -1,
   },
   resetBtn: {
     borderWidth: 1,
