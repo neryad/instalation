@@ -127,6 +127,24 @@ export default function SettingsScreen() {
         </Pressable>
       </View>
 
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>PROTOCOLO LEGAL</Text>
+        <Pressable 
+            style={styles.legalBtn} 
+            // @ts-ignore
+            onPress={() => router.push("/legal/privacy")}
+        >
+            <Text style={styles.legalText}>POLÍTICA DE PRIVACIDAD</Text>
+        </Pressable>
+        <Pressable 
+            style={styles.legalBtn} 
+            // @ts-ignore
+            onPress={() => router.push("/legal/terms")}
+        >
+            <Text style={styles.legalText}>TÉRMINOS DE USO</Text>
+        </Pressable>
+      </View>
+
       <View style={styles.footer}>
         <Pressable
           style={styles.backButton}
@@ -265,6 +283,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
+  },
+  legalBtn: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#004400",
+  },
+  legalText: {
+    color: "#0a0",
+    fontSize: 12,
+    fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
+    letterSpacing: 1,
   },
   footer: {
     marginTop: 'auto',
