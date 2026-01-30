@@ -66,7 +66,7 @@ export default function AchievementsScreen() {
               ]}
             >
               <Text style={[styles.icon, isUnlocked && { color: details.color }]}>
-                {isUnlocked ? details.icon : "🔒"}
+                {isUnlocked ? details.icon : "[X]"}
               </Text>
               <Text
                 style={[
