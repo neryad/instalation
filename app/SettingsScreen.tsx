@@ -3,7 +3,7 @@ import { resetEndings } from "@/storage/achievements";
 import { GameSettings, getSettings, saveSettings } from "@/storage/settings";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
@@ -67,99 +67,102 @@ export default function SettingsScreen() {
   if (!settings) return null;
 
   return (
-    <View
-      style={[
-        styles.container,
-        { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 },
-      ]}
-    >
+    <View style={styles.container}>
       <CRTOverlay />
+      
+      <ScrollView 
+        contentContainerStyle={[
+            styles.scrollContent,
+            { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 }
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+          <Text style={styles.header}>[ CONFIGURACIÓN_DEL_SISTEMA ]</Text>
 
-      <Text style={styles.header}>[ CONFIGURACIÓN_DEL_SISTEMA ]</Text>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>DIMENSIÓN VISUAL</Text>
+            <SettingToggle 
+                label="FILTRO CRT" 
+                active={settings.crtEnabled} 
+                onPress={() => toggleSetting('crtEnabled')} 
+            />
+            <SettingToggle 
+                label="EFECTO GLITCH" 
+                active={settings.glitchEnabled} 
+                onPress={() => toggleSetting('glitchEnabled')} 
+            />
+          </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>DIMENSIÓN VISUAL</Text>
-        <SettingToggle 
-            label="FILTRO CRT" 
-            active={settings.crtEnabled} 
-            onPress={() => toggleSetting('crtEnabled')} 
-        />
-        <SettingToggle 
-            label="EFECTO GLITCH" 
-            active={settings.glitchEnabled} 
-            onPress={() => toggleSetting('glitchEnabled')} 
-        />
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>DIMENSIÓN AUDITIVA</Text>
-        <SettingToggle 
-            label="SONIDO E INTERFAZ" 
-            active={settings.soundEnabled} 
-            onPress={() => toggleSetting('soundEnabled')} 
-        />
-        
-        <View style={styles.volumeContainer}>
-            <Text style={styles.toggleLabel}>NIVEL DE VOLUMEN</Text>
-            <View style={styles.volumeSliderLayout}>
-                <Pressable onPress={() => adjustVolume(-0.1)} style={styles.volumeStepBtn}>
-                    <Text style={styles.volumeStepText}>-</Text>
-                </Pressable>
-                <View style={styles.volumeBar}>
-                    <Text style={styles.volumeBarText}>
-                        {renderVolumeBar(settings.volume)}
-                    </Text>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>DIMENSIÓN AUDITIVA</Text>
+            <SettingToggle 
+                label="SONIDO E INTERFAZ" 
+                active={settings.soundEnabled} 
+                onPress={() => toggleSetting('soundEnabled')} 
+            />
+            
+            <View style={styles.volumeContainer}>
+                <Text style={styles.toggleLabel}>NIVEL DE VOLUMEN</Text>
+                <View style={styles.volumeSliderLayout}>
+                    <Pressable onPress={() => adjustVolume(-0.1)} style={styles.volumeStepBtn}>
+                        <Text style={styles.volumeStepText}>-</Text>
+                    </Pressable>
+                    <View style={styles.volumeBar}>
+                        <Text style={styles.volumeBarText}>
+                            {renderVolumeBar(settings.volume)}
+                        </Text>
+                    </View>
+                    <Pressable onPress={() => adjustVolume(0.1)} style={styles.volumeStepBtn}>
+                        <Text style={styles.volumeStepText}>+</Text>
+                    </Pressable>
                 </View>
-                <Pressable onPress={() => adjustVolume(0.1)} style={styles.volumeStepBtn}>
-                    <Text style={styles.volumeStepText}>+</Text>
-                </Pressable>
             </View>
-        </View>
-      </View>
+          </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>NÚCLEO DE DATOS</Text>
-        <Pressable 
-            style={[styles.resetBtn]} 
-            onPress={handleResetData}
-        >
-            <Text style={styles.resetText}>BORRAR REGISTROS DE ARCHIVO</Text>
-        </Pressable>
-      </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>NÚCLEO DE DATOS</Text>
+            <Pressable 
+                style={[styles.resetBtn]} 
+                onPress={handleResetData}
+            >
+                <Text style={styles.resetText}>BORRAR REGISTROS DE ARCHIVO</Text>
+            </Pressable>
+          </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>PROTOCOLO LEGAL</Text>
-        <Pressable 
-            style={styles.legalBtn} 
-            // @ts-ignore
-            onPress={() => router.push("/legal/privacy")}
-        >
-            <Text style={styles.legalText}>POLÍTICA DE PRIVACIDAD</Text>
-        </Pressable>
-        <Pressable 
-            style={styles.legalBtn} 
-            // @ts-ignore
-            onPress={() => router.push("/legal/terms")}
-        >
-            <Text style={styles.legalText}>TÉRMINOS DE USO</Text>
-        </Pressable>
-        <Pressable 
-            style={styles.legalBtn} 
-            // @ts-ignore
-            onPress={() => router.push("/legal/license")}
-        >
-            <Text style={styles.legalText}>LICENCIA (MIT)</Text>
-        </Pressable>
-      </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>PROTOCOLO LEGAL</Text>
+            <Pressable 
+                style={styles.legalBtn} 
+                // @ts-ignore
+                onPress={() => router.push("/legal/privacy")}
+            >
+                <Text style={styles.legalText}>POLÍTICA DE PRIVACIDAD</Text>
+            </Pressable>
+            <Pressable 
+                style={styles.legalBtn} 
+                // @ts-ignore
+                onPress={() => router.push("/legal/terms")}
+            >
+                <Text style={styles.legalText}>TÉRMINOS DE USO</Text>
+            </Pressable>
+            <Pressable 
+                style={styles.legalBtn} 
+                // @ts-ignore
+                onPress={() => router.push("/legal/license")}
+            >
+                <Text style={styles.legalText}>LICENCIA (MIT)</Text>
+            </Pressable>
+          </View>
 
-      <View style={styles.footer}>
-        <Pressable
-          style={styles.backButton}
-          onPress={() => router.replace("/")}
-        >
-          <Text style={styles.backText}>VOLVER AL MENÚ</Text>
-        </Pressable>
-      </View>
+          <View style={styles.footer}>
+            <Pressable
+              style={styles.backButton}
+              onPress={() => router.replace("/")}
+            >
+              <Text style={styles.backText}>VOLVER AL MENÚ</Text>
+            </Pressable>
+          </View>
+      </ScrollView>
     </View>
   );
 }
@@ -181,10 +184,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000500",
-    paddingHorizontal: 25,
     maxWidth: 600,
     alignSelf: "center",
     width: "100%",
+  },
+  scrollContent: {
+      flexGrow: 1,
+      paddingHorizontal: 25,
   },
   header: {
     color: "#0f0",
