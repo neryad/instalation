@@ -9,6 +9,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { GridBackground } from "../components/game/GridBackground";
 
 const ALL_ENDINGS: EndingType[] = [
   "good",
@@ -46,6 +47,7 @@ export default function AchievementsScreen() {
         { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 },
       ]}
     >
+      <GridBackground />
       <CRTOverlay />
 
       <Text style={styles.title}>ARCHIVOS DEL SISTEMA</Text>
@@ -102,7 +104,7 @@ export default function AchievementsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000500",
+    backgroundColor: "transparent",
     paddingHorizontal: 20,
     maxWidth: 600,
     alignSelf: "center",

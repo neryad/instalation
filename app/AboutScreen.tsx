@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
+import { GridBackground } from "../components/game/GridBackground";
 
 export default function AboutScreen() {
   const insets = useSafeAreaInsets();
@@ -28,6 +29,7 @@ export default function AboutScreen() {
         { paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
+      <GridBackground />
       <CRTOverlay isGlitchActive={false} />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -89,7 +91,7 @@ function AboutButton({ label, onPress }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000500",
+    backgroundColor: "transparent",
     paddingHorizontal: 25,
     maxWidth: 600,
     alignSelf: "center",

@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { GridBackground } from "../components/game/GridBackground";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -68,6 +69,7 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
+      <GridBackground />
       <CRTOverlay />
       
       <ScrollView 
@@ -183,7 +185,7 @@ function SettingToggle({ label, active, onPress }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000500",
+    backgroundColor: "transparent",
     maxWidth: 600,
     alignSelf: "center",
     width: "100%",

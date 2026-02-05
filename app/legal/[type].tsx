@@ -3,6 +3,7 @@ import { LICENSE_TEXT, PRIVACY_POLICY, TERMS_OF_USE } from "@/constants/legalTex
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { GridBackground } from "../../components/game/GridBackground";
 
 export default function LegalScreen() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function LegalScreen() {
         { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 },
       ]}
     >
+      <GridBackground />
       <CRTOverlay />
 
       <Text style={styles.header}>[ {title} ]</Text>
@@ -53,7 +55,7 @@ export default function LegalScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000500",
+    backgroundColor: "transparent",
     paddingHorizontal: 20,
     maxWidth: 600,
     alignSelf: "center",

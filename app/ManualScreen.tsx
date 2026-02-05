@@ -2,6 +2,7 @@ import { CRTOverlay } from "@/components/game/CRTOverlay";
 import { useRouter } from "expo-router";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { GridBackground } from "../components/game/GridBackground";
 
 export default function ManualScreen() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function ManualScreen() {
         { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 },
       ]}
     >
+      <GridBackground />
       <CRTOverlay />
 
       <Text style={styles.header}>// PROTOCOLO_DE_SUPERVIVENCIA</Text>
@@ -82,7 +84,7 @@ export default function ManualScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000500",
+    backgroundColor: "transparent",
     paddingHorizontal: 20,
     maxWidth: 600,
     alignSelf: "center",
