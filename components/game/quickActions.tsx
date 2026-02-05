@@ -20,15 +20,15 @@ export function QuickActions({
       <View style={styles.row}>
         <ActionButton
           label="N"
-          cmd="north"
+          cmd="norte"
           onPress={onAction}
           disabled={disabled}
         />
       </View>
       <View style={styles.row}>
         <ActionButton
-          label="W"
-          cmd="west"
+          label="O"
+          cmd="oeste"
           onPress={onAction}
           disabled={disabled}
         />
@@ -41,7 +41,7 @@ export function QuickActions({
         />
         <ActionButton
           label="E"
-          cmd="east"
+          cmd="este"
           onPress={onAction}
           disabled={disabled}
         />
@@ -49,7 +49,7 @@ export function QuickActions({
       <View style={styles.row}>
         <ActionButton
           label="S"
-          cmd="south"
+          cmd="sur"
           onPress={onAction}
           disabled={disabled}
         />
@@ -117,10 +117,10 @@ function ActionButton({ label, cmd, onPress, disabled, isMain, style }: any) {
 //   disabled,
 // }) => {
 //   const actions = [
-//     { label: "N", cmd: "NORTH" },
-//     { label: "S", cmd: "SOUTH" },
-//     { label: "E", cmd: "EAST" },
-//     { label: "W", cmd: "WEST" },
+//     { label: "N", cmd: "norte" },
+//     { label: "S", cmd: "sur" },
+//     { label: "E", cmd: "este" },
+//     { label: "W", cmd: "oeste" },
 //     { label: "INVESTIGAR", cmd: "INVESTIGAR" },
 //     { label: "MIRAR", cmd: "LOOK" },
 //   ];
@@ -159,32 +159,32 @@ const styles = StyleSheet.create({
     minWidth: 55,
     alignItems: "center",
   },
-  mainButton: { 
-    borderColor: "#008800", 
+  mainButton: {
+    borderColor: "#008800",
     borderBottomColor: "#00ff00",
-    minWidth: 130 
+    minWidth: 130,
   },
-  useButton: { 
-    backgroundColor: "#001a00", 
+  useButton: {
+    backgroundColor: "#001a00",
     borderColor: "#00aa00",
-    borderBottomColor: "#0f0"
+    borderBottomColor: "#0f0",
   },
-  forceButton: { 
-    borderColor: "#880000", 
+  forceButton: {
+    borderColor: "#880000",
     borderBottomColor: "#ff0000",
-    backgroundColor: "#1a0000" 
+    backgroundColor: "#1a0000",
   },
-  text: { 
-    color: "#0f0", 
-    fontFamily: "monospace", 
+  text: {
+    color: "#0f0",
+    fontFamily: "monospace",
     fontWeight: "bold",
     fontSize: 13,
-    letterSpacing: 1
+    letterSpacing: 1,
   },
-  pressed: { 
+  pressed: {
     borderBottomWidth: 1,
     marginTop: 3, // Se "hunde" al presionar
-    backgroundColor: "#003300" 
+    backgroundColor: "#003300",
   },
   disabled: { opacity: 0.3 },
 });

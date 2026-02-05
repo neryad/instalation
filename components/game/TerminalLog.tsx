@@ -29,20 +29,28 @@ const FadeInView = (props: any) => {
   );
 };
 
-const TypewriterText = ({ text, style, onRender }: { text: string; style: any; onRender: (t: string, s: any) => any }) => {
+const TypewriterText = ({
+  text,
+  style,
+  onRender,
+}: {
+  text: string;
+  style: any;
+  onRender: (t: string, s: any) => any;
+}) => {
   const [displayedText, setDisplayedText] = useState("");
   const hasAnimated = useRef(false);
 
   useEffect(() => {
     if (hasAnimated.current) {
-        setDisplayedText(text);
-        return;
+      setDisplayedText(text);
+      return;
     }
 
     let current = "";
     const chars = text.split("");
     let i = 0;
-    
+
     const interval = setInterval(() => {
       if (i < chars.length) {
         current += chars[i];
@@ -52,7 +60,7 @@ const TypewriterText = ({ text, style, onRender }: { text: string; style: any; o
         hasAnimated.current = true;
         clearInterval(interval);
       }
-    }, 10); 
+    }, 10);
 
     return () => clearInterval(interval);
   }, [text]);
@@ -66,17 +74,21 @@ const BlinkingCursor = () => {
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
-        Animated.timing(opacity, { toValue: 0, duration: 400, useNativeDriver: true }),
-        Animated.timing(opacity, { toValue: 1, duration: 400, useNativeDriver: true }),
-      ])
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]),
     ).start();
   }, []);
 
-  return (
-    <Animated.Text style={[styles.cursor, { opacity }]}>
-      ▉
-    </Animated.Text>
-  );
+  return <Animated.Text style={[styles.cursor, { opacity }]}>▉</Animated.Text>;
 };
 
 export const TerminalLog = ({ messages }: TerminalLogProps) => {
@@ -87,7 +99,7 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
   }, [messages]);
 
   const renderStyledText = (text: string, baseStyle: any) => {
-    const directionRegex = /\b(north|south|east|west|norte|sur|este|oeste)\b/gi;
+    const directionRegex = /\b(norte|sur|este|oeste|norte|sur|este|oeste)\b/gi;
     const parts = text.split(directionRegex);
 
     return (
@@ -108,21 +120,31 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
 
   const getStyle = (type: LogMessage["type"]) => {
     switch (type) {
-      case "system": return styles.system;
-      case "player": return styles.player;
-      case "warning": return styles.warning;
-      case "error": return styles.error;
-      default: return styles.narrative;
+      case "system":
+        return styles.system;
+      case "player":
+        return styles.player;
+      case "warning":
+        return styles.warning;
+      case "error":
+        return styles.error;
+      default:
+        return styles.narrative;
     }
   };
 
   const getPrefix = (type: LogMessage["type"]) => {
     switch (type) {
-      case "system": return "[SYS] ";
-      case "player": return "> ";
-      case "warning": return "[WARN] ";
-      case "error": return "[ERR] ";
-      default: return "";
+      case "system":
+        return "[SYS] ";
+      case "player":
+        return "> ";
+      case "warning":
+        return "[WARN] ";
+      case "error":
+        return "[ERR] ";
+      default:
+        return "";
     }
   };
 
@@ -131,7 +153,9 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
       ref={scrollViewRef}
       style={styles.container}
       contentContainerStyle={styles.content}
-      onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+      onContentSizeChange={() =>
+        scrollViewRef.current?.scrollToEnd({ animated: true })
+      }
     >
       {messages.map((msg) => (
         <FadeInView key={msg.id}>
@@ -140,7 +164,7 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
               <Text style={styles.timestamp}>[{msg.timestamp}] </Text>
             )}
             <View style={{ flex: 1 }}>
-              <TypewriterText 
+              <TypewriterText
                 text={`${getPrefix(msg.type)}${msg.text}`}
                 style={[styles.text, getStyle(msg.type)]}
                 onRender={renderStyledText}

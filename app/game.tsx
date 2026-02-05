@@ -195,7 +195,7 @@
 //     // --- 1. AYUDA ---
 //     if (lower === "help" || lower === "ayuda") {
 //       addLog(
-//         "COMANDOS: NORTH, SOUTH, EAST, WEST, INVESTIGAR, MIRAR, FORZAR [DIR], USAR [ITEM]",
+//         "COMANDOS: norte, sur, este, oeste, INVESTIGAR, MIRAR, FORZAR [DIR], USAR [ITEM]",
 //         "system",
 //       );
 //       return;
@@ -255,7 +255,7 @@
 //     }
 
 //     // --- 6. MOVIMIENTO ---
-//     if (["north", "south", "east", "west"].includes(lower)) {
+//     if (["norte", "sur", "este", "oeste"].includes(lower)) {
 //       setState((prev) => {
 //         const newState = move(prev, lower as Direction);
 //         if (newState.currentRoom !== prev.currentRoom) {
@@ -421,18 +421,25 @@ export default function GameScreen() {
         sfxBeep.current = beep;
 
         // Nuevos SFX
-        const { sound: moveSfx } = await Audio.Sound.createAsync(require("../assets/sounds/Heavy_hydraulic_sci.mp3"));
+        const { sound: moveSfx } = await Audio.Sound.createAsync(
+          require("../assets/sounds/Heavy_hydraulic_sci.mp3"),
+        );
         sfxMove.current = moveSfx;
 
-        const { sound: sedSfx } = await Audio.Sound.createAsync(require("../assets/sounds/Pneumatic_medical_in.mp3"));
+        const { sound: sedSfx } = await Audio.Sound.createAsync(
+          require("../assets/sounds/Pneumatic_medical_in.mp3"),
+        );
         sfxSedative.current = sedSfx;
 
-        const { sound: iaSfx } = await Audio.Sound.createAsync(require("../assets/sounds/Deep_modulated_digit.mp3"));
+        const { sound: iaSfx } = await Audio.Sound.createAsync(
+          require("../assets/sounds/Deep_modulated_digit.mp3"),
+        );
         sfxIA.current = iaSfx;
 
-        const { sound: forceSfx } = await Audio.Sound.createAsync(require("../assets/sounds/Heavy_metal_door_being_force.mp3"));
+        const { sound: forceSfx } = await Audio.Sound.createAsync(
+          require("../assets/sounds/Heavy_metal_door_being_force.mp3"),
+        );
         sfxForce.current = forceSfx;
-
       } catch (e) {
         console.log("Error Audio:", e);
       }
@@ -474,7 +481,7 @@ export default function GameScreen() {
       const interval = setInterval(() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         setTimeout(() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         }, 100);
       }, 1500);
       return () => clearInterval(interval);
@@ -483,8 +490,11 @@ export default function GameScreen() {
 
   const addLog = (text: string, type: LogMessage["type"] = "narrative") => {
     setLogMessages((prev) => {
-        const next = [...prev, { id: generateId(), text, type, timestamp: getTimestamp() }];
-        return next.length > 50 ? next.slice(next.length - 50) : next;
+      const next = [
+        ...prev,
+        { id: generateId(), text, type, timestamp: getTimestamp() },
+      ];
+      return next.length > 50 ? next.slice(next.length - 50) : next;
     });
 
     // Feedback táctico y sonoro
@@ -511,7 +521,7 @@ export default function GameScreen() {
 
     let newState = { ...state };
 
-    if (["north", "south", "east", "west"].includes(lower)) {
+    if (["norte", "sur", "este", "oeste"].includes(lower)) {
       newState = move(state, lower as Direction);
       if (newState.currentRoom !== state.currentRoom && settings.soundEnabled) {
         sfxMove.current?.setVolumeAsync(settings.volume);
@@ -529,24 +539,28 @@ export default function GameScreen() {
       addLog(getRoomDescription(state), "narrative");
       return;
     } else if (lower.startsWith("usar")) {
-      const itemToUse = args[1];
+      let itemToUse = args[1];
+      // Normalizar nombres de items en español a inglés
+      if (itemToUse === "sedante") itemToUse = "sedative";
+      
       newState = useItem(state, itemToUse);
-      if (newState.lastEvent !== state.lastEvent) { // Verifica si hubo evento
-          // Sonido específico para sedante
-          if (itemToUse.includes("sedat") && settings.soundEnabled) {
-              sfxSedative.current?.setVolumeAsync(settings.volume);
-              sfxSedative.current?.replayAsync().catch(() => {});
+      if (newState.lastEvent !== state.lastEvent) {
+        // Verifica si hubo evento
+        // Sonido específico para sedante
+        if (itemToUse.includes("sedat") && settings.soundEnabled) {
+          sfxSedative.current?.setVolumeAsync(settings.volume);
+          sfxSedative.current?.replayAsync().catch(() => {});
+        }
+
+        // esteER EGG: Desbloquear logro si se lee el log
+        if (newState.lastEvent?.includes("Registro del Desarrollador")) {
+          unlockEnding("secret_log");
+          if (settings.soundEnabled) {
+            // Sonido extra creepy para el logro
+            sfxIA.current?.setVolumeAsync(settings.volume);
+            sfxIA.current?.replayAsync().catch(() => {});
           }
-          
-          // EASTER EGG: Desbloquear logro si se lee el log
-          if (newState.lastEvent?.includes("Registro del Desarrollador")) {
-             unlockEnding("secret_log");
-             if (settings.soundEnabled) {
-                 // Sonido extra creepy para el logro
-                 sfxIA.current?.setVolumeAsync(settings.volume);
-                 sfxIA.current?.replayAsync().catch(() => {});
-             }
-          }
+        }
       }
     } else {
       addLog("COMANDO NO RECONOCIDO.", "error");
@@ -560,7 +574,11 @@ export default function GameScreen() {
     }
 
     // DISPARAR SUSURRO IA (Si awareness > 70)
-    if (newState.entityAwareness > 70 && Math.random() > 0.6 && settings.soundEnabled) {
+    if (
+      newState.entityAwareness > 70 &&
+      Math.random() > 0.6 &&
+      settings.soundEnabled
+    ) {
       sfxIA.current?.setVolumeAsync(settings.volume);
       sfxIA.current?.replayAsync().catch(() => {});
     }
@@ -576,8 +594,8 @@ export default function GameScreen() {
         },
       ]}
     >
-      <CRTOverlay 
-        isGlitchActive={isGlitchActive} 
+      <CRTOverlay
+        isGlitchActive={isGlitchActive}
         dangerLevel={state.entityAwareness / 100}
       />
 

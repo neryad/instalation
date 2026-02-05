@@ -1,4 +1,4 @@
-export type Direction = "north" | "south" | "east" | "west";
+export type Direction = "norte" | "sur" | "este" | "oeste";
 
 export interface Room {
   id: string;
@@ -20,51 +20,51 @@ export const rooms: Record<string, Room> = {
   awakening: {
     id: "awakening",
     baseDescription:
-      "Despiertas sobre una camilla metálica. La luz roja parpadea. La única salida es un arco de seguridad hacia el **north**.",
-    connections: { north: "hallway_a" },
+      "Despiertas sobre una camilla metálica. La luz roja parpadea. La única salida es un arco de seguridad hacia el **norte**.",
+    connections: { norte: "hallway_a" },
     sanityVariants: [
       {
         minSanity: 30,
         description:
-          "La luz roja late como un corazón. Escuchas respiración ajena tras la puerta al **north**.",
+          "La luz roja late como un corazón. Escuchas respiración ajena tras la puerta al **norte**.",
       },
     ],
   },
   hallway_a: {
     id: "hallway_a",
     baseDescription:
-      "Un pasillo estrecho con símbolos extraños. Se bifurca hacia el **east** y **west**. Al **north**, un conducto de ventilación gotea aceite. Al **south** queda la sala de despertar.",
+      "Un pasillo estrecho con símbolos extraños. Se bifurca hacia el **este** y **oeste**. Al **norte**, un conducto de ventilación gotea aceite. Al **sur** queda la sala de despertar.",
     connections: {
-      south: "awakening",
-      east: "observation_ward", // Conecta con la nueva sala de observación
-      west: "armory",
-      north: "ventilation_shaft",
+      sur: "awakening",
+      este: "observation_ward", // Conecta con la nueva sala de observación
+      oeste: "armory",
+      norte: "ventilation_shaft",
     },
     unstableConnections: [
-      { maxSanity: 30, connections: { east: "awakening" } },
-      { maxSanity: 15, connections: { north: "mirror_gallery" } },
+      { maxSanity: 30, connections: { este: "awakening" } },
+      { maxSanity: 15, connections: { norte: "mirror_gallery" } },
     ],
   },
   observation_ward: {
     id: "observation_ward",
     baseDescription:
-      "Una sala con ventanales reforzados. Puedes ver el pasillo al **west**. Una puerta de servicio lleva al **east**.",
-    connections: { west: "hallway_a", east: "shadow_lab" },
+      "Una sala con ventanales reforzados. Puedes ver el pasillo al **oeste**. Una puerta de servicio lleva al **este**.",
+    connections: { oeste: "hallway_a", este: "shadow_lab" },
     // Aquí el jugador puede ver pistas si usa LOOK
   },
   shadow_lab: {
     id: "shadow_lab",
     baseDescription:
-      "Un laboratorio de sombras. Tu reflejo se mueve con retraso en los cristales. La salida principal es al **west**. Una puerta blindada lleva al **north**.",
-    connections: { west: "observation_ward", north: "data_morgue" },
+      "Un laboratorio de sombras. Tu reflejo se mueve con retraso en los cristales. La salida principal es al **oeste**. Una puerta blindada lleva al **norte**.",
+    connections: { oeste: "observation_ward", norte: "data_morgue" },
     lockedBy: "thermal_fuse",
     unbreakable: true, // Fuerza la exploración de incinerator
   },
   data_morgue: {
     id: "data_morgue",
     baseDescription:
-      "Filas infinitas de servidores zumban con un tono grave. El aire está helado. Cientos de luces azules parpadean como ojos en la oscuridad. La salida está al **south**.",
-    connections: { south: "shadow_lab" },
+      "Filas infinitas de servidores zumban con un tono grave. El aire está helado. Cientos de luces azules parpadean como ojos en la oscuridad. La salida está al **sur**.",
+    connections: { sur: "shadow_lab" },
     sanityVariants: [
       {
         minSanity: 20,
@@ -73,20 +73,24 @@ export const rooms: Record<string, Room> = {
       },
     ],
     // item: "ia_log", // Removed duplicate
-    item: "keycard_red", 
+    item: "keycard_red",
   },
   armory: {
     id: "armory",
     baseDescription:
-      "Un casillero abierto con olor a ozono. Hay un rastro de aceite hacia el **south**. El pasillo queda al **east**. Una puerta con escáner retinal está al **west**.",
-    connections: { east: "hallway_a", south: "waste_disposal", west: "neural_link" },
+      "Un casillero abierto con olor a ozono. Hay un rastro de aceite hacia el **sur**. El pasillo queda al **este**. Una puerta con escáner retinal está al **oeste**.",
+    connections: {
+      este: "hallway_a",
+      sur: "waste_disposal",
+      oeste: "neural_link",
+    },
     // item: "keycard_red", // MOVIDO A DATA MORGUE
   },
   neural_link: {
     id: "neural_link",
     baseDescription:
-      "Sillones reclinables con interfaces cerebrales cuelgan del techo. Monitores muestran estática blanca. Es un lugar de silencio absoluto. La salida es al **east**.",
-    connections: { east: "armory" },
+      "Sillones reclinables con interfaces cerebrales cuelgan del techo. Monitores muestran estática blanca. Es un lugar de silencio absoluto. La salida es al **este**.",
+    connections: { este: "armory" },
     sanityVariants: [
       {
         minSanity: 40,
@@ -98,15 +102,15 @@ export const rooms: Record<string, Room> = {
   waste_disposal: {
     id: "waste_disposal",
     baseDescription:
-      "Un vertedero de chatarra orgánica y cables pelados. El calor emana de una escotilla abierta en el suelo hacia el **south**. El único camino seguro es volver al **north**.",
-    connections: { north: "armory", south: "incinerator" },
-    item: "data_link", 
+      "Un vertedero de chatarra orgánica y cables pelados. El calor emana de una escotilla abierta en el suelo hacia el **sur**. El único camino seguro es volver al **norte**.",
+    connections: { norte: "armory", sur: "incinerator" },
+    item: "data_link",
   },
   incinerator: {
     id: "incinerator",
     baseDescription:
-      "El calor es insoportable. Las paredes están negras por el hollín. El ruido de la maquinaria golpea tu pecho. La salida es subir al **north**.",
-    connections: { north: "waste_disposal" },
+      "El calor es insoportable. Las paredes están negras por el hollín. El ruido de la maquinaria golpea tu pecho. La salida es subir al **norte**.",
+    connections: { norte: "waste_disposal" },
     item: "thermal_fuse",
     sanityVariants: [
       {
@@ -119,25 +123,25 @@ export const rooms: Record<string, Room> = {
   ventilation_shaft: {
     id: "ventilation_shaft",
     baseDescription:
-      "Un conducto claustrofóbico. Hay un silbido de vapor hacia el **west**. El camino principal sigue al **north** o regresa al **south**.",
+      "Un conducto claustrofóbico. Hay un silbido de vapor hacia el **oeste**. El camino principal sigue al **norte** o regresa al **sur**.",
     connections: {
-      south: "hallway_a",
-      north: "core_door",
-      west: "life_support",
+      sur: "hallway_a",
+      norte: "core_door",
+      oeste: "life_support",
     },
   },
   life_support: {
     id: "life_support",
     baseDescription:
-      "Maquinaria ruidosa mantiene el aire circulando. Una compuerta con el símbolo de 'Bio-Hazard' lleva al **west**. El conducto está al **east**.",
-    connections: { east: "ventilation_shaft", west: "dead_hydroponics" },
+      "Maquinaria ruidosa mantiene el aire circulando. Una compuerta con el símbolo de 'Bio-Hazard' lleva al **oeste**. El conducto está al **este**.",
+    connections: { este: "ventilation_shaft", oeste: "dead_hydroponics" },
     // item: "sedative", // MOVIDO A HYDROPONICS
   },
   dead_hydroponics: {
     id: "dead_hydroponics",
     baseDescription:
-      "Plantas secas y grises crujen bajo tus pies. El aire huele a agua estancada y moho. Es un cementerio vegetal. La salida es al **east**.",
-    connections: { east: "life_support" },
+      "Plantas secas y grises crujen bajo tus pies. El aire huele a agua estancada y moho. Es un cementerio vegetal. La salida es al **este**.",
+    connections: { este: "life_support" },
     item: "sedative",
     sanityVariants: [
       {
@@ -150,45 +154,46 @@ export const rooms: Record<string, Room> = {
   mirror_gallery: {
     id: "mirror_gallery",
     baseDescription:
-      "Una sala llena de espejos negros. Ves un destello digital al **east**. La salida lógica es el **south**.",
-    connections: { south: "hallway_a", east: "data_terminal" },
+      "Una sala llena de espejos negros. Ves un destello digital al **este**. La salida lógica es el **sur**.",
+    connections: { sur: "hallway_a", este: "data_terminal" },
     unstableConnections: [
       {
         maxSanity: 20,
-        connections: { north: "core", west: "awakening" },
+        connections: { norte: "core", oeste: "awakening" },
       },
     ],
   },
-  data_terminal: { // ESTA SALA YA NO CONECTA A shadow_lab DIRECTAMENTE POR EL NORTE?
-  // Espera, shadow_lab conectaba a data_terminal al norte. Ahora conecta a data_morgue.
-  // data_terminal estaba conectada a mirror_gallery (West) y shadow_lab (South).
-  // Mantengamos data_terminal accesible desde mirror_gallery.
+  data_terminal: {
+    // ESTA SALA YA NO CONECTA A shadow_lab DIRECTAMENTE POR EL NORTE?
+    // Espera, shadow_lab conectaba a data_terminal al norte. Ahora conecta a data_morgue.
+    // data_terminal estaba conectada a mirror_gallery (oeste) y shadow_lab (sur).
+    // Mantengamos data_terminal accesible desde mirror_gallery.
     id: "data_terminal",
     baseDescription:
-      "Una terminal zumba constantemente. Hay cables que van hacia el **west**.", // La puerta al south hacia shadow_lab la quitamos o la dejamos como atajo desbloqueable? 
-      // Simplifiquemos: Data Terminal solo accesible desde Mirror Gallery por ahora, o podría conectar con Data Morgue?
-      // Dejemos que conecte con West (Mirror Gallery).
-    connections: { west: "mirror_gallery" }, 
-    lockedBy: "data_link", 
-    item: "DEV_LOG.aes", // Easter Egg item
+      "Una terminal zumba constantemente. Hay cables que van hacia el **oeste**.", // La puerta al sur hacia shadow_lab la quitamos o la dejamos como atajo desbloqueable?
+    // Simplifiquemos: Data Terminal solo accesible desde Mirror Gallery por ahora, o podría conectar con Data Morgue?
+    // Dejemos que conecte con oeste (Mirror Gallery).
+    connections: { oeste: "mirror_gallery" },
+    lockedBy: "data_link",
+    item: "DEV_LOG.aes", // esteer Egg item
   },
   core_door: {
     id: "core_door",
     baseDescription:
-      "Una puerta blindada con un lector rojo bloquea el **north**. El conducto queda al **south**.",
-    connections: { south: "ventilation_shaft", north: "core" },
+      "Una puerta blindada con un lector rojo bloquea el **norte**. El conducto queda al **sur**.",
+    connections: { sur: "ventilation_shaft", norte: "core" },
     lockedBy: "keycard_red",
     unbreakable: true, // Puerta final obligatoria
   },
   core: {
     id: "core",
     baseDescription:
-      "El núcleo central. Un monolito de servidores palpita con energía azul. La IA ya no susurra. HABLA:\n\n'Has llegado, Sujeto 00. Pero aún no has terminado.'\n\nTres caminos te esperan:\n**NORTH**: Panel de apagado de emergencia.\n**EAST**: Cámara de transferencia neural.\n**WEST**: Compuerta de evacuación rápida.",
+      "El núcleo central. Un monolito de servidores palpita con energía azul. La IA ya no susurra. HABLA:\n\n'Has llegado, Sujeto 00. Pero aún no has terminado.'\n\nTres caminos te esperan:\n**norte**: Panel de apagado de emergencia.\n**este**: Cámara de transferencia neural.\n**oeste**: Compuerta de evacuación rápida.",
     connections: {
-      south: "core_door",
-      north: "shutdown_protocol",
-      east: "transcendence_chamber",
-      west: "emergency_escape",
+      sur: "core_door",
+      norte: "shutdown_protocol",
+      este: "transcendence_chamber",
+      oeste: "emergency_escape",
     },
   },
   shutdown_protocol: {

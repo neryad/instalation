@@ -75,7 +75,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
 
   // 7. CHEQUEO DE SALAS DE FINAL (Decisiones activas en el core)
 
-  // NORTH: Shutdown Protocol (Final bueno - requiere cordura estable)
+  // norte: Shutdown Protocol (Final bueno - requiere cordura estable)
   if (newState.currentRoom === "shutdown_protocol") {
     newState.gameOver = true;
     if (newState.sanity < 55) {
@@ -90,7 +90,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     return newState;
   }
 
-  // EAST: Transcendence Chamber (Final filosófico - fusión con la IA)
+  // este: Transcendence Chamber (Final filosófico - fusión con la IA)
   if (newState.currentRoom === "transcendence_chamber") {
     newState.gameOver = true;
     newState.endingType = "transcend";
@@ -99,7 +99,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     return newState;
   }
 
-  // WEST: Emergency Escape (Final neutral - huida incompleta)
+  // oeste: Emergency Escape (Final neutral - huida incompleta)
   if (newState.currentRoom === "emergency_escape") {
     newState.gameOver = true;
     newState.endingType = "escape";
@@ -267,7 +267,7 @@ export function useItem(state: PlayerState, item: string): PlayerState {
     };
   }
 
-  // Lógica del EASTER EGG: DEV_LOG.aes
+  // Lógica del esteER EGG: DEV_LOG.aes
   if (item === "DEV_LOG.aes") {
     // No se consume, es un archivo
     // Simulamos un delay narrativo en el texto
