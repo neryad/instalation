@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
+import { GridBackground } from "../components/game/GridBackground";
 
 export default function Home() {
   const router = useRouter();
@@ -46,6 +47,7 @@ export default function Home() {
         { paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
+      <GridBackground />
       <CRTOverlay isGlitchActive={glitch} />
 
       {/* BLOQUE SUPERIOR: TÍTULO Y ESTADO */}
@@ -169,7 +171,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     paddingHorizontal: 25,
     justifyContent: "space-between",
     maxWidth: 600,
