@@ -361,6 +361,7 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
+import { GridBackground } from "../components/game/GridBackground";
 import { SanityBar } from "../components/game/SanityBar";
 import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import {
@@ -594,6 +595,7 @@ export default function GameScreen() {
         },
       ]}
     >
+      <GridBackground />
       <CRTOverlay
         isGlitchActive={isGlitchActive}
         dangerLevel={state.entityAwareness / 100}
@@ -636,8 +638,8 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: "#000500",
-    paddingHorizontal: 15, // Un poco de aire a los lados
+    backgroundColor: "transparent", // Permitir que se vea el grid
+    paddingHorizontal: 15,
     maxWidth: 800,
     alignSelf: "center",
     width: "100%",
