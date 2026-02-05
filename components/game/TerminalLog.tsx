@@ -108,7 +108,7 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
           if (directionRegex.test(part)) {
             return (
               <Text key={index} style={styles.highlightedDirection}>
-                {part.toUpperCase()}
+                {part}
               </Text>
             );
           }
