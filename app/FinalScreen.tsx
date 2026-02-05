@@ -5,6 +5,7 @@ import { Audio } from "expo-av";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { GridBackground } from "../components/game/GridBackground";
 
 export default function FinalScreen() {
   // Actualizamos el tipo para incluir los 6 finales
@@ -101,6 +102,7 @@ export default function FinalScreen() {
 
   return (
     <View style={styles.container}>
+      <GridBackground />
       <CRTOverlay />
       <Text style={[styles.title, content.style]}>{content.title}</Text>
 
@@ -122,7 +124,7 @@ export default function FinalScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
