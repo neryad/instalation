@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 
 export function GridBackground() {
   // En web, inyectamos estilos globales para el body
@@ -25,7 +25,22 @@ export function GridBackground() {
     }
   }, []);
 
-  return null; // No necesitamos renderizar nada, los estilos se aplican al body
+  // En mobile, renderizamos un View con fondo negro absoluto
+  if (Platform.OS !== "web") {
+    return <View style={styles.background} />;
+  }
+
+  return null; // En web, los estilos se aplican al body
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  background: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#000000",
+    zIndex: -1, // Asegurar que esté detrás de todo
+  },
+});
