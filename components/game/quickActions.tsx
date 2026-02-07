@@ -5,12 +5,14 @@ interface QuickActionsProps {
   onAction: (cmd: string) => void;
   disabled?: boolean;
   hasSedative?: boolean;
+  forceableDirections?: string[];
 }
 
 export function QuickActions({
   onAction,
   disabled,
   hasSedative,
+  forceableDirections = [],
 }: QuickActionsProps) {
   return (
     <View style={styles.container}>
@@ -18,15 +20,15 @@ export function QuickActions({
       <View style={styles.row}>
         <ActionButton
           label="N"
-          cmd="north"
+          cmd="norte"
           onPress={onAction}
           disabled={disabled}
         />
       </View>
       <View style={styles.row}>
         <ActionButton
-          label="W"
-          cmd="west"
+          label="O"
+          cmd="oeste"
           onPress={onAction}
           disabled={disabled}
         />
@@ -39,7 +41,7 @@ export function QuickActions({
         />
         <ActionButton
           label="E"
-          cmd="east"
+          cmd="este"
           onPress={onAction}
           disabled={disabled}
         />
@@ -47,7 +49,7 @@ export function QuickActions({
       <View style={styles.row}>
         <ActionButton
           label="S"
-          cmd="south"
+          cmd="sur"
           onPress={onAction}
           disabled={disabled}
         />
@@ -71,6 +73,22 @@ export function QuickActions({
           disabled={disabled}
         />
       </View>
+
+      {/* Botones de FORZAR PUERTA (Contextuales) */}
+      {forceableDirections.length > 0 && (
+        <View style={[styles.row, { marginTop: 10 }]}>
+          {forceableDirections.map((dir) => (
+            <ActionButton
+              key={dir}
+              label={`FORZAR ${dir.toUpperCase().charAt(0)}`}
+              cmd={`forzar ${dir}`}
+              onPress={onAction}
+              disabled={disabled}
+              style={styles.forceButton}
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -84,8 +102,8 @@ function ActionButton({ label, cmd, onPress, disabled, isMain, style }: any) {
       style={({ pressed }) => [
         styles.button,
         isMain && styles.mainButton,
-        pressed && styles.pressed,
         style,
+        pressed && styles.pressed,
         disabled && styles.disabled,
       ]}
     >
@@ -99,10 +117,10 @@ function ActionButton({ label, cmd, onPress, disabled, isMain, style }: any) {
 //   disabled,
 // }) => {
 //   const actions = [
-//     { label: "N", cmd: "NORTH" },
-//     { label: "S", cmd: "SOUTH" },
-//     { label: "E", cmd: "EAST" },
-//     { label: "W", cmd: "WEST" },
+//     { label: "N", cmd: "norte" },
+//     { label: "S", cmd: "sur" },
+//     { label: "E", cmd: "este" },
+//     { label: "W", cmd: "oeste" },
 //     { label: "INVESTIGAR", cmd: "INVESTIGAR" },
 //     { label: "MIRAR", cmd: "LOOK" },
 //   ];
@@ -135,14 +153,39 @@ const styles = StyleSheet.create({
   button: {
     padding: 12,
     borderWidth: 1,
-    borderColor: "#005500",
-    minWidth: 50,
+    borderBottomWidth: 4, // Efecto mecánico
+    borderColor: "#004400",
+    backgroundColor: "rgba(0, 20, 0, 0.8)",
+    minWidth: 55,
     alignItems: "center",
   },
-  mainButton: { borderColor: "#00ff00", minWidth: 120 },
-  useButton: { backgroundColor: "#002200", borderColor: "#00ff00" },
-  text: { color: "#0f0", fontFamily: "monospace", fontWeight: "bold" },
-  pressed: { backgroundColor: "#003300" },
+  mainButton: {
+    borderColor: "#008800",
+    borderBottomColor: "#00ff00",
+    minWidth: 130,
+  },
+  useButton: {
+    backgroundColor: "#001a00",
+    borderColor: "#00aa00",
+    borderBottomColor: "#0f0",
+  },
+  forceButton: {
+    borderColor: "#880000",
+    borderBottomColor: "#ff0000",
+    backgroundColor: "#1a0000",
+  },
+  text: {
+    color: "#0f0",
+    fontFamily: "monospace",
+    fontWeight: "bold",
+    fontSize: 13,
+    letterSpacing: 1,
+  },
+  pressed: {
+    borderBottomWidth: 1,
+    marginTop: 3, // Se "hunde" al presionar
+    backgroundColor: "#003300",
+  },
   disabled: { opacity: 0.3 },
 });
 

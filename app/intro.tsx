@@ -2,6 +2,7 @@ import { CRTOverlay } from "@/components/game/CRTOverlay";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { GridBackground } from "../components/game/GridBackground";
 
 export default function IntroScreen() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function IntroScreen() {
 
   return (
     <View style={styles.container}>
+      <GridBackground />
       <CRTOverlay />
       <View style={styles.content}>
         {lines.map((line, index) => (
@@ -59,7 +61,7 @@ export default function IntroScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     padding: 30,
     justifyContent: "center",
   },
