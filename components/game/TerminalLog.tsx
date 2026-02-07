@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Animated, ScrollView, StyleSheet, Text, View } from "react-native";
 
 export interface LogMessage {
@@ -12,6 +12,85 @@ interface TerminalLogProps {
   messages: LogMessage[];
 }
 
+const FadeInView = (props: any) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 400,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  return (
+    <Animated.View style={{ opacity: fadeAnim }}>
+      {props.children}
+    </Animated.View>
+  );
+};
+
+const TypewriterText = ({
+  text,
+  style,
+  onRender,
+}: {
+  text: string;
+  style: any;
+  onRender: (t: string, s: any) => any;
+}) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (hasAnimated.current) {
+      setDisplayedText(text);
+      return;
+    }
+
+    let current = "";
+    const chars = text.split("");
+    let i = 0;
+
+    const interval = setInterval(() => {
+      if (i < chars.length) {
+        current += chars[i];
+        setDisplayedText(current);
+        i++;
+      } else {
+        hasAnimated.current = true;
+        clearInterval(interval);
+      }
+    }, 10);
+
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return onRender(displayedText, style);
+};
+
+const BlinkingCursor = () => {
+  const opacity = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+  }, []);
+
+  return <Animated.Text style={[styles.cursor, { opacity }]}>▉</Animated.Text>;
+};
+
 export const TerminalLog = ({ messages }: TerminalLogProps) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -19,22 +98,17 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 
-  // --- NUEVA FUNCIÓN PARA ESTILAR PALABRAS CLAVE ---
   const renderStyledText = (text: string, baseStyle: any) => {
-    // Expresión regular para encontrar direcciones (insensible a mayúsculas/minúsculas)
-    const directionRegex = /\b(north|south|east|west|norte|sur|este|oeste)\b/gi;
-
-    // Dividimos el texto en partes
+    const directionRegex = /\b(norte|sur|este|oeste|norte|sur|este|oeste)\b/gi;
     const parts = text.split(directionRegex);
 
     return (
       <Text style={baseStyle}>
         {parts.map((part, index) => {
-          // Si la parte coincide con una dirección, la envolvemos en un estilo resaltado
           if (directionRegex.test(part)) {
             return (
               <Text key={index} style={styles.highlightedDirection}>
-                {part.toUpperCase()}
+                {part}
               </Text>
             );
           }
@@ -74,44 +148,32 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
     }
   };
 
-  const FadeInView = (props: any) => {
-    const fadeAnim = useRef(new Animated.Value(0)).current;
-    useEffect(() => {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }).start();
-    }, []);
-
-    return (
-      <Animated.View style={{ opacity: fadeAnim }}>
-        {props.children}
-      </Animated.View>
-    );
-  };
-
   return (
     <ScrollView
       ref={scrollViewRef}
       style={styles.container}
       contentContainerStyle={styles.content}
+      onContentSizeChange={() =>
+        scrollViewRef.current?.scrollToEnd({ animated: true })
+      }
     >
       {messages.map((msg) => (
         <FadeInView key={msg.id}>
-          <View key={msg.id} style={styles.messageRow}>
+          <View style={styles.messageRow}>
             {msg.timestamp && (
               <Text style={styles.timestamp}>[{msg.timestamp}] </Text>
             )}
             <View style={{ flex: 1 }}>
-              {renderStyledText(`${getPrefix(msg.type)}${msg.text}`, [
-                styles.text,
-                getStyle(msg.type),
-              ])}
+              <TypewriterText
+                text={`${getPrefix(msg.type)}${msg.text}`}
+                style={[styles.text, getStyle(msg.type)]}
+                onRender={renderStyledText}
+              />
             </View>
           </View>
         </FadeInView>
       ))}
+      <BlinkingCursor />
     </ScrollView>
   );
 };
@@ -147,6 +209,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textShadowColor: "rgba(0, 255, 0, 0.8)",
     textShadowRadius: 8,
-    textDecorationLine: "underline", // Ayuda a que parezca un "link" táctil
+    textDecorationLine: "underline",
+  },
+  cursor: {
+    color: "#0f0",
+    fontSize: 16,
+    marginLeft: 5,
+    marginTop: 5,
+    textShadowColor: "rgba(0, 255, 0, 0.5)",
+    textShadowRadius: 5,
   },
 });

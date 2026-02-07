@@ -1,23 +1,41 @@
-import React from "react";
+import { getSettings } from "@/storage/settings";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 // 1. Definimos la interfaz para que TS no se queje en GameScreen
 interface CRTOverlayProps {
   isGlitchActive?: boolean;
+  dangerLevel?: number; // 0 a 1
 }
 
-export const CRTOverlay: React.FC<CRTOverlayProps> = ({ isGlitchActive }) => {
+export const CRTOverlay: React.FC<CRTOverlayProps> = ({ isGlitchActive, dangerLevel = 0 }) => {
+  const [settings, setSettings] = useState({ crtEnabled: true, glitchEnabled: true });
+
+  useEffect(() => {
+    async function load() {
+      const s = await getSettings();
+      setSettings(s);
+    }
+    load();
+  }, []);
+
+  if (!settings.crtEnabled && !isGlitchActive) return null;
+
   return (
     <View
       style={[
         styles.container,
-        isGlitchActive && styles.glitchContainer, // Cambia el fondo si hay glitch
+        isGlitchActive && settings.glitchEnabled && styles.glitchContainer,
       ]}
       pointerEvents="none"
     >
-      <View style={[styles.scanlines, isGlitchActive && styles.glitchLines]} />
+      {settings.crtEnabled && (
+        <View style={[styles.scanlines, isGlitchActive && settings.glitchEnabled && styles.glitchLines]} />
+      )}
       <View style={styles.vignette} />
-      <View style={styles.tint} />
+      {settings.crtEnabled && <View style={styles.tint} />}
+      {/* Tinte de peligro (Rojo) */}
+      <View style={[styles.dangerTint, { opacity: dangerLevel * 0.15 }]} />
     </View>
   );
 };
@@ -46,5 +64,9 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderWidth: 2,
     borderColor: "rgba(0, 255, 0, 0.1)",
+  },
+  dangerTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#ff0000",
   },
 });

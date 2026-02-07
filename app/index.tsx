@@ -1,8 +1,9 @@
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
+import { GridBackground } from "../components/game/GridBackground";
 
 export default function Home() {
   const router = useRouter();
@@ -46,12 +47,17 @@ export default function Home() {
         { paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
+      <GridBackground />
       <CRTOverlay isGlitchActive={glitch} />
 
       {/* BLOQUE SUPERIOR: TÍTULO Y ESTADO */}
       <View style={styles.header}>
         <View style={styles.titleWrapper}>
-          <Text style={[styles.title, glitch && styles.glitchText]}>
+          <Text
+            style={[styles.title, glitch && styles.glitchText]}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+          >
             S.A.N.I.T.Y.
           </Text>
           <View
@@ -83,43 +89,80 @@ export default function Home() {
           <View style={styles.warningLine} />
         </View>
 
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            glitch && styles.buttonGlitch,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={() => router.push("/intro")}
-        >
-          <Text style={[styles.buttonText, glitch && { color: "#f00" }]}>
-            INICIAR SECUENCIA
-          </Text>
-        </Pressable>
+        <Link href="/intro" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              glitch && styles.buttonGlitch,
+              pressed && styles.buttonPressed,
+            ]}
+          >
+            <Text style={[styles.buttonText, glitch && { color: "#f00" }]}>
+              INICIAR SECUENCIA
+            </Text>
+          </Pressable>
+        </Link>
+
+        {/* Botón de Archivos / Logros */}
+        <Link href="/AchievementsScreen" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              { marginTop: 15, borderColor: "#005500" },
+              pressed && { backgroundColor: "rgba(0, 50, 0, 0.3)" },
+            ]}
+          >
+            <Text style={[styles.buttonText, { color: "#00aa00", fontSize: 14 }]}>
+              ARCHIVOS
+            </Text>
+          </Pressable>
+        </Link>
+
+        {/* Botón de Configuración / Ajustes */}
+        <Link href="/SettingsScreen" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              { marginTop: 15, borderColor: "#008800" },
+              pressed && { backgroundColor: "rgba(0, 80, 0, 0.2)" },
+            ]}
+          >
+            <Text style={[styles.buttonText, { color: "#0f0", fontSize: 14 }]}>
+              CONFIGURACIÓN
+            </Text>
+          </Pressable>
+        </Link>
+
+        {/* Botón de Sistema / About */}
+        <Link href="/AboutScreen" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              { marginTop: 15, borderColor: "#003300" },
+              pressed && { backgroundColor: "rgba(0, 30, 0, 0.3)" },
+            ]}
+          >
+            <Text style={[styles.buttonText, { color: "#005500", fontSize: 12 }]}>
+              SISTEMA
+            </Text>
+          </Pressable>
+        </Link>
       </View>
 
-      {/* BLOQUE INFERIOR: MANUAL Y SISTEMA UNIFICADOS */}
+      {/* BLOQUE INFERIOR: ACCESO A MANUAL */}
       <View style={styles.footerContainer}>
-        <View style={styles.manualBox}>
-          <Text style={styles.footerHeader}>// MANUAL_DE_OPERACIONES</Text>
-          <View style={styles.commandRow}>
-            <Text style={styles.cmd}>MOV:</Text>
-            <Text style={styles.cmdDesc}>[N, S, E, W]</Text>
-          </View>
-          <View style={styles.commandRow}>
-            <Text style={styles.cmd}>ACT:</Text>
-            <Text style={styles.cmdDesc}>[INVESTIGAR, MIRAR, USAR]</Text>
-          </View>
-        </View>
-
-        <Pressable
-          onPress={() => router.push("/AboutScreen" as any)}
-          style={({ pressed }) => [
-            styles.systemBtn,
-            { opacity: pressed ? 0.5 : 1 },
-          ]}
-        >
-          <Text style={styles.systemLink}>[ SISTEMA ]</Text>
-        </Pressable>
+        <Link href="/ManualScreen" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.manualButton,
+              pressed && { backgroundColor: "rgba(0, 50, 0, 0.2)" },
+            ]}
+          >
+            <Text style={styles.footerHeader}>
+              [ ABRIR MANUAL DE OPERACIONES ]
+            </Text>
+          </Pressable>
+        </Link>
       </View>
     </View>
   );
@@ -128,9 +171,12 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     paddingHorizontal: 25,
     justifyContent: "space-between",
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
   },
   header: {
     alignItems: "center",
@@ -147,7 +193,7 @@ const styles = StyleSheet.create({
     fontSize: 42,
     fontWeight: "bold",
     color: "#0f0",
-    letterSpacing: 8,
+    letterSpacing: 4,
     textAlign: "center",
   },
   scanlineTitle: {
@@ -229,41 +275,17 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 20,
   },
-  manualBox: {
+  manualButton: {
     borderTopWidth: 1,
-    borderTopColor: "rgba(0,255,0,0.1)",
-    paddingTop: 15,
-    marginBottom: 25,
+    borderTopColor: "rgba(0,255,0,0.3)",
+    paddingVertical: 20,
+    width: "100%",
+    alignItems: "center",
   },
   footerHeader: {
-    color: "#242",
-    fontSize: 10,
+    color: "#262",
+    fontSize: 12,
     fontFamily: "monospace",
-    marginBottom: 10,
-  },
-  commandRow: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  cmd: {
-    color: "#0a0",
-    width: 45,
-    fontSize: 10,
-    fontFamily: "monospace",
-  },
-  cmdDesc: {
-    color: "#464",
-    fontSize: 10,
-    fontFamily: "monospace",
-  },
-  systemBtn: {
-    alignSelf: "center",
-    padding: 10,
-  },
-  systemLink: {
-    color: "#002200",
-    fontFamily: "monospace",
-    fontSize: 11,
-    letterSpacing: 3,
+    letterSpacing: 2,
   },
 });

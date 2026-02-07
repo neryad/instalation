@@ -195,7 +195,7 @@
 //     // --- 1. AYUDA ---
 //     if (lower === "help" || lower === "ayuda") {
 //       addLog(
-//         "COMANDOS: NORTH, SOUTH, EAST, WEST, INVESTIGAR, MIRAR, FORZAR [DIR], USAR [ITEM]",
+//         "COMANDOS: norte, sur, este, oeste, INVESTIGAR, MIRAR, FORZAR [DIR], USAR [ITEM]",
 //         "system",
 //       );
 //       return;
@@ -255,7 +255,7 @@
 //     }
 
 //     // --- 6. MOVIMIENTO ---
-//     if (["north", "south", "east", "west"].includes(lower)) {
+//     if (["norte", "sur", "este", "oeste"].includes(lower)) {
 //       setState((prev) => {
 //         const newState = move(prev, lower as Direction);
 //         if (newState.currentRoom !== prev.currentRoom) {
@@ -352,6 +352,8 @@
 // });
 import { InventoryHUD } from "@/components/game/inventoryHud";
 import { QuickActions } from "@/components/game/quickActions";
+import { unlockEnding } from "@/storage/achievements";
+import { getSettings } from "@/storage/settings";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
@@ -359,13 +361,16 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
+import { GridBackground } from "../components/game/GridBackground";
 import { SanityBar } from "../components/game/SanityBar";
 import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import {
-  forceDoor,
-  getRoomDescription,
-  investigate,
-  move,
+    forceDoor,
+    getForceableDirections,
+    getRoomDescription,
+    investigate,
+    move,
+    useItem,
 } from "../engine/engine";
 import { initialPlayerState } from "../engine/player";
 import { Direction } from "../engine/rooms";
@@ -382,29 +387,60 @@ export default function GameScreen() {
   const [state, setState] = useState(initialPlayerState);
   const [logMessages, setLogMessages] = useState<LogMessage[]>([]);
   const [isGlitchActive, setIsGlitchActive] = useState(false);
+  const [settings, setSettings] = useState({ soundEnabled: true, volume: 0.5 });
 
   const backgroundMusic = useRef<Audio.Sound | null>(null);
   const sfxBeep = useRef<Audio.Sound | null>(null);
+  const sfxMove = useRef<Audio.Sound | null>(null);
+  const sfxSedative = useRef<Audio.Sound | null>(null);
+  const sfxIA = useRef<Audio.Sound | null>(null);
+  const sfxForce = useRef<Audio.Sound | null>(null);
 
   // 1. GESTIÓN DE AUDIO (Ambiente y SFX)
   useEffect(() => {
     async function loadAudio() {
+      const s = await getSettings();
+      setSettings(s);
+
       try {
         await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
 
-        // Música de fondo
-        const { sound: music } = await Audio.Sound.createAsync(
-          require("../assets/sounds/Recursive_Error_State.mp3"),
-          { isLooping: true, volume: 0.3 },
-        );
-        backgroundMusic.current = music;
-        await music.playAsync();
+        // Música de fondo (Si está activada)
+        if (s.soundEnabled) {
+          const { sound: music } = await Audio.Sound.createAsync(
+            require("../assets/sounds/Recursive_Error_State.mp3"),
+            { isLooping: true, volume: s.volume * 0.3 }, // Base volume scaled by setting
+          );
+          backgroundMusic.current = music;
+          await music.playAsync();
+        }
 
         // Sonido de Beep para la terminal
         const { sound: beep } = await Audio.Sound.createAsync(
           require("../assets/sounds/beep2.mp3"),
         );
         sfxBeep.current = beep;
+
+        // Nuevos SFX
+        const { sound: moveSfx } = await Audio.Sound.createAsync(
+          require("../assets/sounds/Heavy_hydraulic_sci.mp3"),
+        );
+        sfxMove.current = moveSfx;
+
+        const { sound: sedSfx } = await Audio.Sound.createAsync(
+          require("../assets/sounds/Pneumatic_medical_in.mp3"),
+        );
+        sfxSedative.current = sedSfx;
+
+        const { sound: iaSfx } = await Audio.Sound.createAsync(
+          require("../assets/sounds/Deep_modulated_digit.mp3"),
+        );
+        sfxIA.current = iaSfx;
+
+        const { sound: forceSfx } = await Audio.Sound.createAsync(
+          require("../assets/sounds/Heavy_metal_door_being_force.mp3"),
+        );
+        sfxForce.current = forceSfx;
       } catch (e) {
         console.log("Error Audio:", e);
       }
@@ -413,6 +449,10 @@ export default function GameScreen() {
     return () => {
       backgroundMusic.current?.unloadAsync();
       sfxBeep.current?.unloadAsync();
+      sfxMove.current?.unloadAsync();
+      sfxSedative.current?.unloadAsync();
+      sfxIA.current?.unloadAsync();
+      sfxForce.current?.unloadAsync();
     };
   }, []);
 
@@ -430,24 +470,43 @@ export default function GameScreen() {
       return () => clearInterval(interval);
     }
 
-    // Verificación de muerte/victoria
-    if (state.sanity <= 0) router.replace("/FinalScreen?type=insane");
-    if (state.entityAwareness >= 100) router.replace("/FinalScreen?type=bad");
-    if (state.currentRoom === "core") router.replace("/FinalScreen?type=good");
-  }, [state.sanity, state.entityAwareness, state.currentRoom]);
+    // Verificación de muerte/victoria (Ahora gestiona 4 finales)
+    if (state.gameOver && state.endingType) {
+      router.replace(`/FinalScreen?type=${state.endingType}` as any);
+    }
+  }, [state.sanity, state.gameOver, state.endingType]);
+
+  // 4. EFECTO DE LATIDO (Haptics)
+  useEffect(() => {
+    if (state.sanity < 15 && !state.gameOver) {
+      const interval = setInterval(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        setTimeout(() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }, 100);
+      }, 1500);
+      return () => clearInterval(interval);
+    }
+  }, [state.sanity, state.gameOver]);
 
   const addLog = (text: string, type: LogMessage["type"] = "narrative") => {
-    setLogMessages((prev) => [
-      ...prev,
-      { id: generateId(), text, type, timestamp: getTimestamp() },
-    ]);
+    setLogMessages((prev) => {
+      const next = [
+        ...prev,
+        { id: generateId(), text, type, timestamp: getTimestamp() },
+      ];
+      return next.length > 50 ? next.slice(next.length - 50) : next;
+    });
 
     // Feedback táctico y sonoro
     if (type === "error")
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     else Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-    sfxBeep.current?.replayAsync().catch(() => {});
+    if (settings.soundEnabled) {
+      sfxBeep.current?.setVolumeAsync(settings.volume);
+      sfxBeep.current?.replayAsync().catch(() => {});
+    }
   };
 
   const handleCommand = (cmd: string) => {
@@ -463,25 +522,46 @@ export default function GameScreen() {
 
     let newState = { ...state };
 
-    if (["north", "south", "east", "west"].includes(lower)) {
+    if (["norte", "sur", "este", "oeste"].includes(lower)) {
       newState = move(state, lower as Direction);
+      if (newState.currentRoom !== state.currentRoom && settings.soundEnabled) {
+        sfxMove.current?.setVolumeAsync(settings.volume);
+        sfxMove.current?.replayAsync().catch(() => {});
+      }
     } else if (["investigar", "buscar"].includes(lower)) {
       newState = investigate(state);
     } else if (lower.startsWith("forzar")) {
       newState = forceDoor(state, args[1] as Direction);
+      if (newState.currentRoom !== state.currentRoom && settings.soundEnabled) {
+        sfxForce.current?.setVolumeAsync(settings.volume);
+        sfxForce.current?.replayAsync().catch(() => {});
+      }
     } else if (lower === "mirar" || lower === "look") {
       addLog(getRoomDescription(state), "narrative");
       return;
     } else if (lower.startsWith("usar")) {
-      // Lógica de sedante que tenías
-      if (args[1]?.includes("sedan") && state.inventory.includes("sedative")) {
-        newState = {
-          ...state,
-          inventory: state.inventory.filter((i) => i !== "sedative"),
-          sanity: Math.min(100, state.sanity + 30),
-          entityAwareness: Math.max(0, state.entityAwareness - 20),
-        };
-        addLog("Inyectas el sedante. Tu mente se estabiliza.", "system");
+      let itemToUse = args[1];
+      // Normalizar nombres de items en español a inglés
+      if (itemToUse === "sedante") itemToUse = "sedative";
+      
+      newState = useItem(state, itemToUse);
+      if (newState.lastEvent !== state.lastEvent) {
+        // Verifica si hubo evento
+        // Sonido específico para sedante
+        if (itemToUse.includes("sedat") && settings.soundEnabled) {
+          sfxSedative.current?.setVolumeAsync(settings.volume);
+          sfxSedative.current?.replayAsync().catch(() => {});
+        }
+
+        // esteER EGG: Desbloquear logro si se lee el log
+        if (newState.lastEvent?.includes("Registro del Desarrollador")) {
+          unlockEnding("secret_log");
+          if (settings.soundEnabled) {
+            // Sonido extra creepy para el logro
+            sfxIA.current?.setVolumeAsync(settings.volume);
+            sfxIA.current?.replayAsync().catch(() => {});
+          }
+        }
       }
     } else {
       addLog("COMANDO NO RECONOCIDO.", "error");
@@ -492,6 +572,16 @@ export default function GameScreen() {
     if (newState.lastEvent) addLog(newState.lastEvent, "warning");
     if (newState.currentRoom !== state.currentRoom) {
       addLog(getRoomDescription(newState), "narrative");
+    }
+
+    // DISPARAR SUSURRO IA (Si awareness > 70)
+    if (
+      newState.entityAwareness > 70 &&
+      Math.random() > 0.6 &&
+      settings.soundEnabled
+    ) {
+      sfxIA.current?.setVolumeAsync(settings.volume);
+      sfxIA.current?.replayAsync().catch(() => {});
     }
   };
 
@@ -505,7 +595,11 @@ export default function GameScreen() {
         },
       ]}
     >
-      <CRTOverlay isGlitchActive={isGlitchActive} />
+      <GridBackground />
+      <CRTOverlay
+        isGlitchActive={isGlitchActive}
+        dangerLevel={state.entityAwareness / 100}
+      />
 
       {/* HUD Superior */}
       <View style={styles.header}>
@@ -524,6 +618,7 @@ export default function GameScreen() {
           onAction={handleCommand}
           disabled={state.gameOver}
           hasSedative={state.inventory.includes("sedative")}
+          forceableDirections={getForceableDirections(state)}
         />
       </View>
     </View>
@@ -543,8 +638,11 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: "#000500",
-    paddingHorizontal: 15, // Un poco de aire a los lados
+    backgroundColor: "transparent", // Permitir que se vea el grid
+    paddingHorizontal: 15,
+    maxWidth: 800,
+    alignSelf: "center",
+    width: "100%",
   },
   header: {
     marginBottom: 10,

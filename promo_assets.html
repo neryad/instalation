@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.A.N.I.T.Y. - Promo Assets Generator</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .promo-card {
+            width: 360px; /* 9:16 Aspect Ratio based on width */
+            height: 640px;
+            background-color: #000;
+            border: 2px solid #333;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+        }
+
+        /* CRT Effect Overlay */
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 40px;
+            text-shadow: 0 0 5px #0f0;
+            z-index: 1;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        /* ASSET 4: ENDINGS */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 20px;
+        }
+        .icon-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #0f0;
+        }
+        .label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* ASSET 5: CALL TO ACTION */
+        .cta-text {
+            font-size: 24px;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+        .btn-fake {
+            margin-top: 40px;
+            border: 2px solid #0f0;
+            padding: 10px 30px;
+            font-weight: bold;
+            background: rgba(0, 255, 0, 0.1);
+            text-transform: uppercase;
+        }
+
+        .helper-text {
+            position: absolute;
+            top: -30px;
+            color: #fff;
+            width: 100%;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- IMAGEN 4: FINALES -->
+    <div style="position: relative;">
+        <div class="helper-text">Imagen 4: Haz captura de esto</div>
+        <div class="promo-card crt">
+            <div class="title">6 FINALES<br>POSIBLES</div>
+            <div class="content">
+                <div class="grid">
+                    <div class="icon-box"><span class="icon">[OK]</span><span class="label">SISTEMA APAGADO</span></div>
+                    <div class="icon-box"><span class="icon">X_X</span><span class="label">ASIMILADO</span></div>
+                    <div class="icon-box"><span class="icon">{~?~}</span><span class="label">FRAGMENTADO</span></div>
+                    <div class="icon-box"><span class="icon">( o )</span><span class="label">LOCALIZADO</span></div>
+                    <div class="icon-box"><span class="icon">&lt; . &gt;</span><span class="label">TRASCENDENCIA</span></div>
+                    <div class="icon-box"><span class="icon">&gt;&gt;_</span><span class="label">ESCAPE</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGEN 5: CALL TO ACTION -->
+    <div style="position: relative;">
+        <div class="helper-text">Imagen 5: Haz captura de esto</div>
+        <div class="promo-card crt">
+            <div class="content">
+                <div class="cta-text">
+                    &gt; INICIAR SISTEMA?<br>
+                    <span class="blink">_</span>
+                </div>
+                
+                <div class="btn-fake">INSTALL S.A.N.I.T.Y.</div>
+
+                <div style="margin-top: 60px; font-size: 18px; color: #fff;">
+                    ¿TE ATREVES?
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

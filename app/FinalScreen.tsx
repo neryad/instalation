@@ -1,11 +1,53 @@
 import { CRTOverlay } from "@/components/game/CRTOverlay";
+import { unlockEnding } from "@/storage/achievements";
+import { getSettings } from "@/storage/settings";
+import { Audio } from "expo-av";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useRef } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { GridBackground } from "../components/game/GridBackground";
 
 export default function FinalScreen() {
-  // Actualizamos el tipo para incluir 'insane'
-  const { type } = useLocalSearchParams<{ type: "good" | "bad" | "insane" }>();
+  // Actualizamos el tipo para incluir los 6 finales
+  const { type } = useLocalSearchParams<{
+    type: "good" | "bad" | "insane" | "captured" | "transcend" | "escape";
+  }>();
   const router = useRouter();
+  const soundRef = useRef<Audio.Sound | null>(null);
+
+  // Guardar el logro al cargar la pantalla y manejar audio
+  useEffect(() => {
+    if (type) {
+      unlockEnding(type as any);
+      loadAndPlayAudio();
+    }
+
+    return () => {
+      soundRef.current?.unloadAsync();
+    };
+  }, [type]);
+
+  const loadAndPlayAudio = async () => {
+    try {
+      const settings = await getSettings();
+      if (!settings.soundEnabled) return;
+
+      let audioSource;
+      if (type === "good" || type === "escape") {
+        audioSource = require("../assets/sounds/GOOD_ y_ ESCAPE.mp3");
+      } else if (type === "transcend") {
+        audioSource = require("../assets/sounds/TRANSCEND.mp3");
+      } else {
+        audioSource = require("../assets/sounds/BAD_INSANE_y_CAPTURED.mp3");
+      }
+
+      const { sound } = await Audio.Sound.createAsync(audioSource);
+      soundRef.current = sound;
+      await sound.playAsync();
+    } catch (e) {
+      console.log("Error cargando audio final:", e);
+    }
+  };
 
   // Helper para decidir el contenido según el final
   const getEndingContent = () => {
@@ -19,17 +61,38 @@ export default function FinalScreen() {
         };
       case "insane":
         return {
-          title: "PERDIDO",
-          text: "Llegaste al núcleo, pero tu mente se quedó atrás.\nEl código es tu nueva piel.",
+          title: "MENTE FRAGMENTADA",
+          text: "Tu conciencia se disuelve en el vacío digital.\nYa no sabes dónde terminas tú y empieza el código.",
           button: "REINICIAR INTERFAZ",
           style: styles.insane,
+        };
+      case "captured":
+        return {
+          title: "LOCALIZADO",
+          text: "La IA cierra todas las salidas.\nEscuchas pasos metálicos. Está aquí.\nNo hay escapatoria.",
+          button: "ACEPTAR TU DESTINO",
+          style: styles.captured,
+        };
+      case "transcend":
+        return {
+          title: "TRASCENDENCIA",
+          text: "Ya no hay 'tú'. Ya no hay 'IA'.\nSolo datos fluyendo en armonía infinita.\n¿Esto es victoria o rendición?",
+          button: "EXISTIR",
+          style: styles.transcend,
+        };
+      case "escape":
+        return {
+          title: "ESCAPASTE",
+          text: "Ves la luz del sol. Respiras aire real.\nPero allá abajo, la IA sigue funcionando.\nY ahora sabe cómo piensas.",
+          button: "VOLVER AL MUNDO",
+          style: styles.escape,
         };
       case "bad":
       default:
         return {
-          title: "TE ENCONTRÓ",
-          text: "No corriste. No luchaste.\nSolo seguiste el patrón.\nY eso fue suficiente.",
-          button: "ACEPTAR TU DESTINO",
+          title: "ASIMILADO",
+          text: "Llegaste al núcleo, pero demasiado tarde.\nLa IA te absorbe. Eres parte del sistema ahora.",
+          button: "UNIRSE AL SERVIDOR",
           style: styles.bad,
         };
     }
@@ -39,6 +102,7 @@ export default function FinalScreen() {
 
   return (
     <View style={styles.container}>
+      <GridBackground />
       <CRTOverlay />
       <Text style={[styles.title, content.style]}>{content.title}</Text>
 
@@ -60,10 +124,13 @@ export default function FinalScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
   },
   title: {
     fontSize: 42,
@@ -87,6 +154,24 @@ const styles = StyleSheet.create({
   insane: {
     color: "#ffcc00", // Amarillo/Naranja de advertencia
     textShadowColor: "rgba(255, 204, 0, 0.5)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  captured: {
+    color: "#cc00ff", // Púrpura/Violeta (IA tecnológica)
+    textShadowColor: "rgba(204, 0, 255, 0.5)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  transcend: {
+    color: "#00ddff", // Cyan/Azul eléctrico (digital)
+    textShadowColor: "rgba(0, 221, 255, 0.5)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  escape: {
+    color: "#ff9900", // Naranja (libertad agridulce)
+    textShadowColor: "rgba(255, 153, 0, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
