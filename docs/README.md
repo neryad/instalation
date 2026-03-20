@@ -150,6 +150,12 @@ npx expo start
 
 ---
 
+## 🎬 Marketing y Promoción
+
+*   **[Prompt de Video Sora](./SORA_VIDEO_PROMPT.md):** Prompt listo para usar en Sora (OpenAI) para generar un video publicitario de S.A.N.I.T.Y. e incluir el logo del juego.
+
+---
+
 ## 🚀 Posibles Mejoras Futuras
 
 *   [ ] **Generación Procedural:** Crear mapas aleatorios para aumentar la rejugabilidad.
