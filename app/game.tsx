@@ -363,7 +363,7 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
-import { GridBackground } from "../components/game/GridBackground";
+import { GridBackground, ScanWave, StaticNoise } from "../components/game/GridBackground";
 import { MapModal } from "../components/game/MapModal";
 import { SanityBar } from "../components/game/SanityBar";
 import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
@@ -395,6 +395,7 @@ export default function GameScreen() {
   const [isLoaded, setIsLoaded] = useState(false);
   const isFirstRender = useRef(true);
   const [currentAchievement, setCurrentAchievement] = useState<EndingType | null>(null);
+  const [transitionGlitch, setTransitionGlitch] = useState(false);
 
   const backgroundMusic = useRef<Audio.Sound | null>(null);
   const sfxBeep = useRef<Audio.Sound | null>(null);
@@ -609,6 +610,8 @@ export default function GameScreen() {
     if (newState.lastEvent) addLog(newState.lastEvent, "warning");
     if (newState.currentRoom !== state.currentRoom) {
       addLog(getRoomDescription(newState), "narrative");
+      setTransitionGlitch(true);
+      setTimeout(() => setTransitionGlitch(false), 200);
     }
 
     // DISPARAR SUSURRO IA (Si awareness > 70)
@@ -632,9 +635,11 @@ export default function GameScreen() {
         },
       ]}
     >
-      <GridBackground />
+      <GridBackground sanity={state.sanity} />
+      <StaticNoise density={Math.max(0, (50 - state.sanity) / 50)} />
+      <ScanWave active={state.entityAwareness > 50} />
       <CRTOverlay
-        isGlitchActive={isGlitchActive}
+        isGlitchActive={isGlitchActive || transitionGlitch}
         dangerLevel={state.entityAwareness / 100}
         sanity={state.sanity}
       />
