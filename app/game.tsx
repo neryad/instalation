@@ -633,6 +633,7 @@ export default function GameScreen() {
       <CRTOverlay
         isGlitchActive={isGlitchActive}
         dangerLevel={state.entityAwareness / 100}
+        sanity={state.sanity}
       />
 
       {/* HUD Superior */}
