@@ -1,4 +1,5 @@
 import { CRTOverlay } from "@/components/game/CRTOverlay";
+import { clearSave } from "@/storage/gameState";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -28,7 +29,8 @@ export default function IntroScreen() {
       return () => clearTimeout(timeout);
     } else {
       // Esperar un segundo después de la última línea y entrar al juego
-      const finalTimeout = setTimeout(() => {
+      const finalTimeout = setTimeout(async () => {
+        await clearSave();
         router.replace("/game");
       }, 1500);
       return () => clearTimeout(finalTimeout);

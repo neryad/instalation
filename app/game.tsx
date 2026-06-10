@@ -353,6 +353,7 @@
 import { InventoryHUD } from "@/components/game/inventoryHud";
 import { QuickActions } from "@/components/game/quickActions";
 import { unlockEnding } from "@/storage/achievements";
+import { loadGame, saveGame } from "@/storage/gameState";
 import { getSettings } from "@/storage/settings";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
@@ -390,6 +391,8 @@ export default function GameScreen() {
   const [isGlitchActive, setIsGlitchActive] = useState(false);
   const [settings, setSettings] = useState({ soundEnabled: true, volume: 0.5 });
   const [showMap, setShowMap] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const isFirstRender = useRef(true);
 
   const backgroundMusic = useRef<Audio.Sound | null>(null);
   const sfxBeep = useRef<Audio.Sound | null>(null);
@@ -458,10 +461,20 @@ export default function GameScreen() {
     };
   }, []);
 
-  // 2. INICIO DE PARTIDA
+  // 2. INICIO DE PARTIDA (intenta cargar partida guardada)
   useEffect(() => {
-    addLog("SISTEMA ONLINE. VÍNCULO NEURAL ESTABLECIDO.", "system");
-    addLog(getRoomDescription(initialPlayerState), "narrative");
+    async function init() {
+      const saved = await loadGame();
+      if (saved) {
+        setState(saved);
+        addLog("PARTIDA ANTERIOR RESTAURADA.", "system");
+      } else {
+        addLog("SISTEMA ONLINE. VÍNCULO NEURAL ESTABLECIDO.", "system");
+      }
+      addLog(getRoomDescription(saved || initialPlayerState), "narrative");
+      setIsLoaded(true);
+    }
+    init();
   }, []);
 
   // 3. EFECTOS DE CORDURA Y FINALES
@@ -490,6 +503,16 @@ export default function GameScreen() {
       return () => clearInterval(interval);
     }
   }, [state.sanity, state.gameOver]);
+
+  // 5. AUTO-SAVE (guarda partida tras cada cambio de estado)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (!isLoaded) return;
+    saveGame(state);
+  }, [state, isLoaded]);
 
   const addLog = (text: string, type: LogMessage["type"] = "narrative") => {
     setLogMessages((prev) => {
