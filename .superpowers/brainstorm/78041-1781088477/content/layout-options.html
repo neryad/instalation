@@ -1,0 +1,131 @@
+<h2>Layout de botones — 3 propuestas</h2>
+<p class="subtitle">El layout actual mezcla la cruceta direccional con INVESTIGAR en el centro. Acá van 3 alternativas.</p>
+
+<div class="cards">
+  <div class="card" data-choice="current" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>Actual</h3>
+      <div style="background:#000;border:1px solid #0f0;padding:15px;border-radius:4px;font-family:monospace;font-size:12px;color:#0f0">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="border:1px solid #004400;padding:8px 16px;background:rgba(0,20,0,0.8)">N</div>
+          <div style="display:flex;gap:6px">
+            <div style="border:1px solid #004400;padding:8px 12px;background:rgba(0,20,0,0.8)">O</div>
+            <div style="border:1px solid #008800;padding:8px 20px;background:rgba(0,20,0,0.8);border-bottom:3px solid #0f0">INVESTIGAR</div>
+            <div style="border:1px solid #004400;padding:8px 12px;background:rgba(0,20,0,0.8)">E</div>
+          </div>
+          <div style="border:1px solid #004400;padding:8px 16px;background:rgba(0,20,0,0.8)">S</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <div style="border:1px solid #00aa00;padding:6px 10px;background:#001a00;font-size:11px">USAR SEDANTE</div>
+            <div style="border:1px solid #004400;padding:6px 14px;background:rgba(0,20,0,0.8);font-size:11px">MIRAR</div>
+          </div>
+          <div style="border:1px solid #008800;padding:8px 30px;background:rgba(0,50,0,0.5);font-size:11px">MAPA</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#888;margin-top:5px">Problemas: INVESTIGAR en medio de la cruceta (confuso), MAPA al fondo (poco reachable), MIRAR separado de INVESTIGAR.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>Propuesta A — Mapa arriba, D-pad + acciones</h3>
+      <div style="background:#000;border:1px solid #0f0;padding:15px;border-radius:4px;font-family:monospace;font-size:12px;color:#0f0">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="border:1px solid #008800;padding:8px 40px;background:rgba(0,50,0,0.5);border-bottom:3px solid #0f0">🗺 MAPA</div>
+          <div style="border:1px solid #004400;padding:8px 16px;background:rgba(0,20,0,0.8)">N</div>
+          <div style="display:flex;gap:6px">
+            <div style="border:1px solid #004400;padding:8px 12px;background:rgba(0,20,0,0.8)">O</div>
+            <div style="border:1px solid #004400;padding:8px 12px;background:rgba(0,20,0,0.8)">•</div>
+            <div style="border:1px solid #004400;padding:8px 12px;background:rgba(0,20,0,0.8)">E</div>
+          </div>
+          <div style="border:1px solid #004400;padding:8px 16px;background:rgba(0,20,0,0.8)">S</div>
+          <div style="display:flex;gap:6px;margin-top:4px;width:100%">
+            <div style="flex:1;border:1px solid #008800;padding:8px;text-align:center;background:rgba(0,20,0,0.8);border-bottom:3px solid #0f0">🔍 INVESTIGAR</div>
+            <div style="flex:1;border:1px solid #004400;padding:8px;text-align:center;background:rgba(0,20,0,0.8)">👁 MIRAR</div>
+          </div>
+          <div style="border:1px solid #00aa00;padding:6px 20px;background:#001a00;font-size:11px">💉 USAR SEDANTE</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#aaa;margin-top:5px">MAPA arriba (fácil pulgar). D-pad limpio sin INVESTIGAR en el centro. Acciones agrupadas debajo. Contextuales al fondo.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>Propuesta B — Dos filas: explorar + mover</h3>
+      <div style="background:#000;border:1px solid #0f0;padding:15px;border-radius:4px;font-family:monospace;font-size:12px;color:#0f0">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="display:flex;gap:6px;width:100%">
+            <div style="flex:1;border:1px solid #008800;padding:8px;text-align:center;background:rgba(0,20,0,0.8);border-bottom:3px solid #0f0">🔍 INVESTIGAR</div>
+            <div style="flex:1;border:1px solid #004400;padding:8px;text-align:center;background:rgba(0,20,0,0.8)">👁 MIRAR</div>
+            <div style="flex:1;border:1px solid #008800;padding:8px;text-align:center;background:rgba(0,50,0,0.5)">🗺 MAPA</div>
+          </div>
+          <div style="border:1px solid #004400;padding:8px 16px;background:rgba(0,20,0,0.8)">N</div>
+          <div style="display:flex;gap:6px">
+            <div style="border:1px solid #004400;padding:8px 12px;background:rgba(0,20,0,0.8)">O</div>
+            <div style="border:1px solid #004400;padding:8px 12px;background:rgba(0,20,0,0.8)">•</div>
+            <div style="border:1px solid #004400;padding:8px 12px;background:rgba(0,20,0,0.8)">E</div>
+          </div>
+          <div style="border:1px solid #004400;padding:8px 16px;background:rgba(0,20,0,0.8)">S</div>
+          <div style="border:1px solid #00aa00;padding:6px 20px;background:#001a00;font-size:11px">💉 USAR SEDANTE</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#aaa;margin-top:5px">Las 3 acciones principales arriba (alcance fácil). D-pad centrado abajo. Ideal para pulgar sin estirarse.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>Propuesta C — Barra inferior compacta</h3>
+      <div style="background:#000;border:1px solid #0f0;padding:15px;border-radius:4px;font-family:monospace;font-size:12px;color:#0f0">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="border:1px solid #004400;padding:8px 16px;background:rgba(0,20,0,0.8)">N</div>
+          <div style="display:flex;gap:6px">
+            <div style="border:1px solid #004400;padding:8px 12px;background:rgba(0,20,0,0.8)">O</div>
+            <div style="border:1px solid #008800;padding:8px 16px;background:rgba(0,50,0,0.5)">🔍</div>
+            <div style="border:1px solid #004400;padding:8px 12px;background:rgba(0,20,0,0.8)">E</div>
+          </div>
+          <div style="border:1px solid #004400;padding:8px 16px;background:rgba(0,20,0,0.8)">S</div>
+          <div style="display:flex;gap:6px;margin-top:4px;width:100%">
+            <div style="flex:1;border:1px solid #004400;padding:6px;text-align:center;font-size:11px">👁 MIRAR</div>
+            <div style="flex:1;border:1px solid #008800;padding:6px;text-align:center;font-size:11px;background:rgba(0,50,0,0.5)">🗺 MAPA</div>
+            <div style="flex:1;border:1px solid #004400;padding:6px;text-align:center;font-size:11px">💉 USAR</div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#aaa;margin-top:5px">Máxima compacidad. D-pad con INVESTIGAR como icono en el centro. Una fila inferior con el resto. Ahorra espacio vertical para la terminal.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle">Mi recomendación: <strong>Propuesta A</strong> — el mapa arriba es más natural para el pulgar, el d-pad limpio es familiar, y las acciones agrupadas tienen sentido semántico.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Mapa arriba + D-pad + Acciones</h3>
+      <p>Mi recomendada — mejor jerarquía visual</p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Acciones arriba + D-pad</h3>
+      <p>Acciones principales primero, mover después</p>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Compacto con iconos</h3>
+      <p>Más espacio para la terminal, pero botones pequeños</p>
+    </div>
+  </div>
+  <div class="option" data-choice="custom" onclick="toggleSelect(this)">
+    <div class="letter">?</div>
+    <div class="content">
+      <h3>Ninguna, tengo otra idea</h3>
+      <p>Combinar elementos de varias o proponer algo distinto</p>
+    </div>
+  </div>
+</div>
