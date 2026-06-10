@@ -1,0 +1,132 @@
+<h2>Atmósfera Aumentada — 3 estados de cordura</h2>
+<p class="subtitle">La paleta de colores y efectos cambian dinámicamente según la cordura del jugador</p>
+
+<div class="cards">
+  <div class="card" data-choice="normal" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>Normal (sanity &gt; 50)</h3>
+      <div style="background:#000;border:1px solid #0f0;padding:20px;border-radius:4px;margin:10px 0">
+        <div style="color:#0f0;font-family:monospace;font-size:12px">
+          <div style="background:rgba(0,255,0,0.03);position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,0,0.05) 2px,rgba(0,255,0,0.05) 3px)"></div>
+          <div style="border:1px solid rgba(0,255,0,0.2);border-radius:4px;padding:8px;position:relative;overflow:hidden">
+            <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(0,255,0,0.02) 20px,rgba(0,255,0,0.02) 21px)"></div>
+            <span style="color:#4a4">[SYS] </span><span>Vínculo neural establecido.</span>
+            <div style="margin-top:4px"><span style="color:#4a4">[SYS] </span><span>Niveles de estabilidad: 100%</span></div>
+            <div style="margin-top:4px"><span style="color:#cfc">Despiertas en una sala oscura. El suelo de metal frío... </span></div>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:4px">
+            <div style="border:1px solid #0f0;padding:6px 12px;font-size:11px">N</div>
+            <div style="border:1px solid #0f0;padding:6px 12px;font-size:11px">S</div>
+            <div style="border:1px solid #0f0;padding:6px 12px;font-size:11px">E</div>
+            <div style="border:1px solid #0f0;padding:6px 12px;font-size:11px">O</div>
+            <div style="border:1px solid #0f0;padding:6px 12px;font-size:11px;margin-left:auto">INVESTIGAR</div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#aaa">Grid con scanlines sutiles. Tinte verde. Sin estática. Líneas de cuadrícula tenues y uniformes.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="warning" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>Alerta (sanity 30-50)</h3>
+      <div style="background:#000;border:1px solid #fa0;padding:20px;border-radius:4px;margin:10px 0;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(255,100,0,0.04) 3px,rgba(255,100,0,0.04) 4px)"></div>
+        <div style="color:#fa0;font-family:monospace;font-size:12px;position:relative">
+          <div style="border:1px solid rgba(255,170,0,0.4);border-radius:4px;padding:8px;position:relative;overflow:hidden">
+            <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(255,170,0,0.03) 20px,rgba(255,170,0,0.03) 21px)"></div>
+            <span style="color:#880">[SYS] </span><span>Tu cordura se debilita.</span>
+            <div style="margin-top:4px"><span style="color:#880">[WARN] </span><span>Algo se mueve en la oscuridad...</span></div>
+            <div style="margin-top:4px"><span style="color:#fc6">El pasillo parece más largo de lo que recordabas. Las paredes... respiran? </span></div>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:4px;opacity:0.9">
+            <div style="border:1px solid #fa0;padding:6px 12px;font-size:11px">N</div>
+            <div style="border:1px solid #fa0;padding:6px 12px;font-size:11px">S</div>
+            <div style="border:1px solid #fa0;padding:6px 12px;font-size:11px">E</div>
+            <div style="border:1px solid #fa0;padding:6px 12px;font-size:11px">O</div>
+            <div style="border:1px solid #fa0;padding:6px 12px;font-size:11px;margin-left:auto">INVESTIGAR</div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#aaa">Tinte naranja. Estática sutil en el fondo. La cuadrícula parpadea levemente. Scanlines más notorios. La terminal vibra con cada movimiento.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="critical" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>Crítico (sanity &lt; 30)</h3>
+      <div style="background:#000;border:1px solid #f00;padding:20px;border-radius:4px;margin:10px 0;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0px,transparent 2px,rgba(255,0,0,0.08) 2px,rgba(255,0,0,0.08) 3px)"></div>
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0px,transparent 8px,rgba(255,0,0,0.04) 8px,rgba(255,0,0,0.04) 10px,transparent 10px,transparent 18px)"></div>
+        <div style="color:#f33;font-family:monospace;font-size:12px;position:relative">
+          <div style="border:1px solid rgba(255,0,0,0.6);border-radius:4px;padding:8px;position:relative;overflow:hidden">
+            <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 15px,rgba(255,0,0,0.05) 15px,rgba(255,0,0,0.05) 16px)"></div>
+            <span style="color:#800">[ERR] </span><span>ERROR DE MEMORIA. ARCHIVO CORRUPTO.</span>
+            <div style="margin-top:4px"><span style="color:#800">[ERR] </span><span>PRESENCIA NO AUTORIZADA.</span></div>
+            <div style="margin-top:4px"><span style="color:#f00;text-shadow:0 0 8px #f00">No puedes distinguir la realidad del código. TODO es estática. TODO es ruido. </span></div>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:4px;opacity:0.6">
+            <div style="border:1px solid #f00;padding:6px 12px;font-size:11px">N</div>
+            <div style="border:1px solid #f00;padding:6px 12px;font-size:11px">S</div>
+            <div style="border:1px solid #f00;padding:6px 12px;font-size:11px">E</div>
+            <div style="border:1px solid #f00;padding:6px 12px;font-size:11px">O</div>
+            <div style="border:1px solid #f00;padding:6px 12px;font-size:11px;margin-left:auto">INVESTIGAR</div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#aaa">Tinte rojo intenso. Estática densa. Cuadrícula distorsionada con líneas fuera de fase. Scanlines gruesos. Brillo pulsante. La interfaz se siente inestable.</p>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top:30px">Efectos adicionales (animados)</h3>
+<div class="section">
+  <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <div style="flex:1;min-width:200px;border-left:3px solid #0f0;padding-left:15px">
+      <h4 style="margin:0 0 5px 0">🔄 Transición glitch</h4>
+      <p style="font-size:13px;color:#aaa;margin:0">Al cambiar de sala: la pantalla se distorsiona 200ms con barras horizontales desplazadas, similar a un monitor CRT al cambiar de canal.</p>
+    </div>
+    <div style="flex:1;min-width:200px;border-left:3px solid #0f0;padding-left:15px">
+      <h4 style="margin:0 0 5px 0">📡 Interferencia IA</h4>
+      <p style="font-size:13px;color:#aaa;margin:0">Cuando entityAwareness > 50, ondas de interferencia recorren la pantalla verticalmente cada 3-5 segundos, como si algo estuviera "escaneando".</p>
+    </div>
+    <div style="flex:1;min-width:200px;border-left:3px solid #0f0;padding-left:15px">
+      <h4 style="margin:0 0 5px 0">🌫️ Partículas de estática</h4>
+      <p style="font-size:13px;color:#aaa;margin:0">Pequeños puntos brillantes parpadean aleatoriamente en el fondo (efecto "nieve" de TV). A menor cordura, mayor densidad.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:20px">Todos los efectos se aplican suavemente con animaciones nativas (useNativeDriver) para mantener 60fps en móvil.</p>
+
+<div style="margin-top:20px;padding:15px;background:rgba(0,255,0,0.05);border:1px solid rgba(0,255,0,0.2);border-radius:4px">
+  <p style="margin:0;font-size:13px"><strong>Archivos a tocar:</strong> components/game/GridBackground.tsx, components/game/CRTOverlay.tsx, app/game.tsx</p>
+  <p style="margin:5px 0 0 0;font-size:13px"><strong>Enfoque:</strong> usar Animated API de RN + Canvas para estática. Sin librerías externas.</p>
+</div>
+
+<h3>¿Te parece bien esta dirección?</h3>
+<p class="subtitle">Selecciona una opción o dime qué cambiarías</p>
+
+<div class="options">
+  <div class="option" data-choice="yes" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Me gusta, implementemos</h3>
+      <p>Arranca con la atmósfera mejorada</p>
+    </div>
+  </div>
+  <div class="option" data-choice="partial" onclick="toggleSelect(this)">
+    <div class="letter">~</div>
+    <div class="content">
+      <h3>Me gusta pero con cambios</h3>
+      <p>Quiero ajustar algunos efectos</p>
+    </div>
+  </div>
+  <div class="option" data-choice="no" onclick="toggleSelect(this)">
+    <div class="letter">✗</div>
+    <div class="content">
+      <h3>Otra dirección</h3>
+      <p>Prefiero enfocarme en otra cosa</p>
+    </div>
+  </div>
+</div>

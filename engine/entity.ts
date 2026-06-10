@@ -43,7 +43,7 @@ export function moveEntity(state: PlayerState): PlayerState {
   if (state.sanity > 65) {
     return {
       ...state,
-      entityRoom: "void",
+      entityRoom: undefined,
       entityAwareness: Math.max(0, awareness - 5),
     };
   }
@@ -86,6 +86,17 @@ function predictNextDirection(history: Direction[]): Direction | null {
 
   // Patrón Repetitivo (Norte-Norte-Norte -> Predice Norte)
   if (last === prev && prev === antePrev) return last;
+
+  // Patrón Circular (Norte-Este-Sur -> Predice Oeste)
+  const opposites: Record<Direction, Direction> = {
+    norte: "sur", sur: "norte", este: "oeste", oeste: "este",
+  };
+  if (history.length >= 4) {
+    const anteAntePrev = history[history.length - 4];
+    if (last === opposites[antePrev] && prev === opposites[anteAntePrev]) {
+      return opposites[last];
+    }
+  }
 
   return null;
 }

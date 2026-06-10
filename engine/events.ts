@@ -18,8 +18,10 @@ export const mentalEvents: MentalEvent[] = [
   },
   {
     id: "ai_direct_threat",
-    text: (state) =>
-      `La IA proyecta tu nombre en las paredes: "No puedes escapar de ti mismo, ${state.inventory.length > 0 ? "aunque lleves esa " + state.inventory[0] : "sujeto 00"}"`,
+    text: (state) => {
+      const item = state.inventory.length > 0 ? state.inventory[state.inventory.length - 1] : null;
+      return `La IA proyecta tu nombre en las paredes: "No puedes escapar de ti mismo, ${item ? "aunque lleves esa " + item : "sujeto 00"}"`;
+    },
     sanityChange: -10,
     probability: (state) => (state.sanity < 30 ? 0.3 : 0.05),
   },
@@ -30,13 +32,13 @@ export const mentalEvents: MentalEvent[] = [
       return `Las paredes de ${room.id} parecen recordarte algo que aún no ha sucedido.`;
     },
     sanityChange: -4,
-    probability: (state) => 0.2,
+    probability: (state) => (state.sanity < 70 ? 0.2 : 0.02),
   },
   // En events.ts añade este nuevo evento:
   {
     id: "item_hallucination",
     text: (state) => {
-      const item = state.inventory[0];
+      const item = state.inventory[state.inventory.length - 1];
       return `Miras la ${item} en tu mano. Por un segundo, parece un ojo abierto parpadeando hacia ti.`;
     },
     sanityChange: -7,
@@ -47,7 +49,7 @@ export const mentalEvents: MentalEvent[] = [
   {
     id: "item_corruption",
     text: (state) => {
-      const item = state.inventory[0] || "tus manos";
+      const item = state.inventory.length > 0 ? state.inventory[state.inventory.length - 1] : "tus manos";
       return `Miras fijamente la ${item}. Por un instante, parece estar hecha de píxeles que se desvanecen.`;
     },
     sanityChange: -5,
