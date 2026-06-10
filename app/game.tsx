@@ -362,6 +362,7 @@ import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
 import { GridBackground } from "../components/game/GridBackground";
+import { MapModal } from "../components/game/MapModal";
 import { SanityBar } from "../components/game/SanityBar";
 import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import {
@@ -388,6 +389,7 @@ export default function GameScreen() {
   const [logMessages, setLogMessages] = useState<LogMessage[]>([]);
   const [isGlitchActive, setIsGlitchActive] = useState(false);
   const [settings, setSettings] = useState({ soundEnabled: true, volume: 0.5 });
+  const [showMap, setShowMap] = useState(false);
 
   const backgroundMusic = useRef<Audio.Sound | null>(null);
   const sfxBeep = useRef<Audio.Sound | null>(null);
@@ -619,8 +621,20 @@ export default function GameScreen() {
           disabled={state.gameOver}
           hasSedative={state.inventory.includes("sedative")}
           forceableDirections={getForceableDirections(state)}
+          onOpenMap={() => setShowMap(true)}
         />
       </View>
+
+      <MapModal
+        visible={showMap}
+        onClose={() => setShowMap(false)}
+        visitedRooms={state.visitedRooms}
+        currentRoom={state.currentRoom}
+        inventory={state.inventory}
+        entityRoom={state.entityRoom}
+        roomHistory={state.roomHistory}
+        collectedItems={state.collectedItems}
+      />
     </View>
   );
 }

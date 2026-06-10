@@ -6,6 +6,7 @@ interface QuickActionsProps {
   disabled?: boolean;
   hasSedative?: boolean;
   forceableDirections?: string[];
+  onOpenMap?: () => void;
 }
 
 export function QuickActions({
@@ -13,6 +14,7 @@ export function QuickActions({
   disabled,
   hasSedative,
   forceableDirections = [],
+  onOpenMap,
 }: QuickActionsProps) {
   return (
     <View style={styles.container}>
@@ -87,6 +89,19 @@ export function QuickActions({
               style={styles.forceButton}
             />
           ))}
+        </View>
+      )}
+
+      {/* Botón de Mapa */}
+      {onOpenMap && (
+        <View style={[styles.row, { marginTop: 10 }]}>
+          <ActionButton
+            label="MAPA"
+            cmd=""
+            onPress={() => onOpenMap()}
+            disabled={disabled}
+            style={styles.mapButton}
+          />
         </View>
       )}
     </View>
@@ -173,6 +188,12 @@ const styles = StyleSheet.create({
     borderColor: "#880000",
     borderBottomColor: "#ff0000",
     backgroundColor: "#1a0000",
+  },
+  mapButton: {
+    borderColor: "#008800",
+    borderBottomColor: "#00ff00",
+    backgroundColor: "rgba(0, 50, 0, 0.5)",
+    minWidth: 130,
   },
   text: {
     color: "#0f0",

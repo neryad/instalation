@@ -53,6 +53,10 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     ...newState,
     currentRoom: nextRoomId,
     lastDirections: [...state.lastDirections, dir].slice(-5),
+    roomHistory: [...state.roomHistory, nextRoomId].slice(-8),
+    visitedRooms: state.visitedRooms.includes(nextRoomId)
+      ? state.visitedRooms
+      : [...state.visitedRooms, nextRoomId],
     sanity: Math.max(0, state.sanity - 2),
   };
 
@@ -160,6 +164,7 @@ export function investigate(state: PlayerState): PlayerState {
   let newState: PlayerState = {
     ...state,
     inventory: [...state.inventory, foundItem],
+    collectedItems: [...state.collectedItems, foundItem],
     entityAwareness: state.entityAwareness + 10,
     lastEvent: `LOG: Has obtenido ${itemNames[foundItem] || foundItem.toUpperCase()}. El ruido atrajo atención.`,
   };
@@ -194,9 +199,13 @@ export function forceDoor(state: PlayerState, dir: Direction): PlayerState {
 
   let newState: PlayerState = {
     ...state,
-    sanity: Math.max(0, state.sanity - 25), // Gran golpe a la cordura
-    entityAwareness: state.entityAwareness + 30, // Mucho ruido
+    sanity: Math.max(0, state.sanity - 25),
+    entityAwareness: state.entityAwareness + 30,
     currentRoom: nextRoomId,
+    roomHistory: [...state.roomHistory, nextRoomId].slice(-8),
+    visitedRooms: state.visitedRooms.includes(nextRoomId)
+      ? state.visitedRooms
+      : [...state.visitedRooms, nextRoomId],
     lastEvent: "¡CRACK! Forzaste la entrada. El sistema está en alerta máxima.",
   };
 
