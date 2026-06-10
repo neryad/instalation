@@ -24,10 +24,10 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
 
   const nextRoomData = rooms[nextRoomId];
 
-  // 3. Validación de Existencia (minSanity)
+  // 3. Validación de Existencia (maxSanity — la sala solo existe con cordura ≤ umbral)
   if (
-    nextRoomData.minSanityToExist &&
-    state.sanity > nextRoomData.minSanityToExist
+    nextRoomData.maxSanityToExist &&
+    state.sanity > nextRoomData.maxSanityToExist
   ) {
     return {
       ...newState,
@@ -205,6 +205,7 @@ export function forceDoor(state: PlayerState, dir: Direction): PlayerState {
     };
   }
 
+  const forceMsg = "¡CRACK! Forzaste la entrada. El sistema está en alerta máxima.";
   let newState: PlayerState = {
     ...state,
     sanity: Math.max(0, state.sanity - 25),
@@ -214,21 +215,29 @@ export function forceDoor(state: PlayerState, dir: Direction): PlayerState {
     visitedRooms: state.visitedRooms.includes(nextRoomId)
       ? state.visitedRooms
       : [...state.visitedRooms, nextRoomId],
-    lastEvent: "¡CRACK! Forzaste la entrada. El sistema está en alerta máxima.",
+    lastEvent: forceMsg,
   };
 
-  return moveEntity(newState);
+  const entityResult = moveEntity(newState);
+  if (entityResult.lastEvent !== forceMsg) {
+    entityResult.lastEvent = `${forceMsg}\n${entityResult.lastEvent}`;
+  }
+  return entityResult;
 }
 
 export function getRoomDescription(state: PlayerState): string {
   const room = rooms[state.currentRoom];
   let desc = room.baseDescription;
 
-  // Variantes de cordura
+  // Variantes de cordura (elige la variante más severa que aplique)
   if (room.sanityVariants) {
+    let best: (typeof room.sanityVariants)[number] | null = null;
     for (const v of room.sanityVariants) {
-      if (state.sanity <= v.minSanity) desc = v.description;
+      if (state.sanity <= v.minSanity && (!best || v.minSanity < best.minSanity)) {
+        best = v;
+      }
     }
+    if (best) desc = best.description;
   }
 
   // Pistas de la IA
@@ -279,8 +288,9 @@ export function useItem(state: PlayerState, item: string): PlayerState {
       ...state,
       inventory: newInventory,
       sanity: Math.min(100, state.sanity + 40),
+      entityAwareness: Math.max(0, state.entityAwareness - 40),
       lastEvent:
-        "Te inyectas el sedante. La realidad se vuelve más... estable.",
+        "Te inyectas el sedante. La realidad se vuelve más... estable. La presencia se aleja.",
     };
   }
 

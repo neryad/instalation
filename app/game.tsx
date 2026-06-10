@@ -394,6 +394,10 @@ export default function GameScreen() {
   const [showMap, setShowMap] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const isFirstRender = useRef(true);
+  const stateRef = useRef(state);
+  const settingsRef = useRef(settings);
+  useEffect(() => { stateRef.current = state; }, [state]);
+  useEffect(() => { settingsRef.current = settings; }, [settings]);
   const [currentAchievement, setCurrentAchievement] = useState<EndingType | null>(null);
   const [transitionGlitch, setTransitionGlitch] = useState(false);
 
@@ -578,56 +582,53 @@ export default function GameScreen() {
   };
 
   const handleCommand = (cmd: string) => {
-    if (state.gameOver) return;
+    const s = stateRef.current;
+    const sets = settingsRef.current;
+    if (s.gameOver) return;
     const lower = cmd.toLowerCase().trim();
     const args = lower.split(" ");
     addLog(cmd, "player");
 
     // MECÁNICA DE CORRUPCIÓN DE TEXTO
-    if (state.sanity <= 20 && Math.random() > 0.8) {
+    if (s.sanity <= 20 && Math.random() > 0.8) {
       addLog("SISTEMA: ERROR DE MEMORIA. ARCHIVO CORRUPTO.", "error");
     }
 
-    let newState = { ...state };
+    let newState = { ...s };
 
     if (["norte", "sur", "este", "oeste"].includes(lower)) {
-      newState = move(state, lower as Direction);
-      if (newState.currentRoom !== state.currentRoom && settings.soundEnabled) {
-        sfxMove.current?.setVolumeAsync(settings.volume);
+      newState = move(s, lower as Direction);
+      if (newState.currentRoom !== s.currentRoom && sets.soundEnabled) {
+        sfxMove.current?.setVolumeAsync(sets.volume);
         sfxMove.current?.replayAsync().catch(() => {});
       }
     } else if (["investigar", "buscar"].includes(lower)) {
-      newState = investigate(state);
+      newState = investigate(s);
     } else if (lower.startsWith("forzar")) {
-      newState = forceDoor(state, args[1] as Direction);
-      if (newState.currentRoom !== state.currentRoom && settings.soundEnabled) {
-        sfxForce.current?.setVolumeAsync(settings.volume);
+      newState = forceDoor(s, args[1] as Direction);
+      if (newState.currentRoom !== s.currentRoom && sets.soundEnabled) {
+        sfxForce.current?.setVolumeAsync(sets.volume);
         sfxForce.current?.replayAsync().catch(() => {});
       }
     } else if (lower === "mirar" || lower === "look") {
-      addLog(getRoomDescription(state), "narrative");
+      addLog(getRoomDescription(s), "narrative");
       return;
     } else if (lower.startsWith("usar")) {
       let itemToUse = args[1];
-      // Normalizar nombres de items en español a inglés
       if (itemToUse === "sedante") itemToUse = "sedative";
       
-      newState = useItem(state, itemToUse);
-      if (newState.lastEvent !== state.lastEvent) {
-        // Verifica si hubo evento
-        // Sonido específico para sedante
-        if (itemToUse.includes("sedat") && settings.soundEnabled) {
-          sfxSedative.current?.setVolumeAsync(settings.volume);
+      newState = useItem(s, itemToUse);
+      if (newState.lastEvent !== s.lastEvent) {
+        if (itemToUse.includes("sedat") && sets.soundEnabled) {
+          sfxSedative.current?.setVolumeAsync(sets.volume);
           sfxSedative.current?.replayAsync().catch(() => {});
         }
 
-        // esteER EGG: Desbloquear logro si se lee el log
         if (newState.lastEvent?.includes("Registro del Desarrollador")) {
           unlockEnding("secret_log");
           setCurrentAchievement("secret_log");
-          if (settings.soundEnabled) {
-            // Sonido extra creepy para el logro
-            sfxIA.current?.setVolumeAsync(settings.volume);
+          if (sets.soundEnabled) {
+            sfxIA.current?.setVolumeAsync(sets.volume);
             sfxIA.current?.replayAsync().catch(() => {});
           }
         }
@@ -639,33 +640,24 @@ export default function GameScreen() {
 
     setState(newState);
     if (newState.lastEvent) addLog(newState.lastEvent, "warning");
-    if (newState.currentRoom !== state.currentRoom) {
+    if (newState.currentRoom !== s.currentRoom) {
       addLog(getRoomDescription(newState), "narrative");
       setTransitionGlitch(true);
       setTimeout(() => setTransitionGlitch(false), 200);
     }
 
-    // DISPARAR SUSURRO IA (Si awareness > 70)
     if (
       newState.entityAwareness > 70 &&
       Math.random() > 0.6 &&
-      settings.soundEnabled
+      sets.soundEnabled
     ) {
-      sfxIA.current?.setVolumeAsync(settings.volume);
+      sfxIA.current?.setVolumeAsync(sets.volume);
       sfxIA.current?.replayAsync().catch(() => {});
     }
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          paddingTop: Math.max(insets.top, 20),
-          paddingBottom: Math.max(insets.bottom, 20),
-        },
-      ]}
-    >
+    <View style={styles.root}>
       <GridBackground sanity={state.sanity} />
       <StaticNoise density={Math.max(0, (50 - state.sanity) / 50)} />
       <ScanWave active={state.entityAwareness > 50} />
@@ -675,34 +667,44 @@ export default function GameScreen() {
         sanity={state.sanity}
       />
 
-      {/* HUD Superior */}
-      <View style={styles.header}>
-        <SanityBar sanity={state.sanity} />
-        <View style={styles.headerRow}>
-          <InventoryHUD items={state.inventory} />
-          <Text style={styles.progressText}>
-            {state.visitedRooms.length}/{Object.keys(rooms).length} SALAS
-          </Text>
+      <View
+        style={[
+          styles.container,
+          {
+            paddingTop: Math.max(insets.top, 20),
+            paddingBottom: Math.max(insets.bottom, 20),
+          },
+        ]}
+      >
+        {/* HUD Superior */}
+        <View style={styles.header}>
+          <SanityBar sanity={state.sanity} />
+          <View style={styles.headerRow}>
+            <InventoryHUD items={state.inventory} />
+            <Text style={styles.progressText}>
+              {state.visitedRooms.length}/{Object.keys(rooms).length} SALAS
+            </Text>
+          </View>
         </View>
-      </View>
 
-      {/* TERMINAL: Ahora ocupa todo el centro */}
-      <View style={styles.terminalContainer}>
-        <TerminalLog
-          messages={logMessages}
-          onDirectionPress={(dir) => handleCommand(dir)}
-        />
-      </View>
+        {/* TERMINAL: Ahora ocupa todo el centro */}
+        <View style={styles.terminalContainer}>
+          <TerminalLog
+            messages={logMessages}
+            onDirectionPress={(dir) => handleCommand(dir)}
+          />
+        </View>
 
-      {/* ACCIONES: Solo botones, sin input */}
-      <View style={styles.controlsContainer}>
-        <QuickActions
-          onAction={handleCommand}
-          disabled={state.gameOver}
-          hasSedative={state.inventory.includes("sedative")}
-          forceableDirections={getForceableDirections(state)}
-          onOpenMap={() => setShowMap(true)}
-        />
+        {/* ACCIONES: Solo botones, sin input */}
+        <View style={styles.controlsContainer}>
+          <QuickActions
+            onAction={handleCommand}
+            disabled={state.gameOver}
+            hasSedative={state.inventory.includes("sedative")}
+            forceableDirections={getForceableDirections(state)}
+            onOpenMap={() => setShowMap(true)}
+          />
+        </View>
       </View>
 
       <MapModal
@@ -724,19 +726,14 @@ export default function GameScreen() {
 }
 
 const styles = StyleSheet.create({
-  //container: { flex: 1, backgroundColor: "#000500" },
-  safeArea: { flex: 1, marginHorizontal: 10 },
-  // terminalContainer: {
-  //   flex: 1,
-  //   borderColor: "#003300",
-  //   borderWidth: 1,
-  //   backgroundColor: "rgba(0, 15, 0, 0.3)",
-  //   marginVertical: 10,
-  // },
+  root: {
+    flex: 1,
+    backgroundColor: "#000000",
+  },
 
   container: {
     flex: 1,
-    backgroundColor: "transparent", // Permitir que se vea el grid
+    backgroundColor: "#000500",
     paddingHorizontal: 15,
     maxWidth: 800,
     alignSelf: "center",
@@ -757,15 +754,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
     letterSpacing: 1,
   },
-  // terminalContainer: {
-  //   flex: 1,
-  //   borderColor: "#003300",
-  //   borderWidth: 1,
-  //   backgroundColor: "rgba(0, 15, 0, 0.3)",
-  //   marginBottom: 10,
-  // },
   terminalContainer: {
-    flex: 1, // Se expande para llenar el hueco
+    flex: 1,
     borderColor: "#003300",
     borderWidth: 1,
     backgroundColor: "rgba(0, 15, 0, 0.3)",

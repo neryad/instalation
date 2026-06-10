@@ -145,13 +145,8 @@ export function ScanWave({ active = false }: { active?: boolean }) {
 
 const styles = StyleSheet.create({
   background: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: "#000000",
-    zIndex: -1,
   },
   scanWave: {
     position: "absolute",
