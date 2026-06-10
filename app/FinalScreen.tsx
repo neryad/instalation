@@ -5,19 +5,26 @@ import { getSettings } from "@/storage/settings";
 import { Audio } from "expo-av";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
-import { GridBackground } from "../components/game/GridBackground";
+import { Animated, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { GridBackground, StaticNoise } from "../components/game/GridBackground";
 
 export default function FinalScreen() {
-  // Actualizamos el tipo para incluir los 6 finales
   const { type } = useLocalSearchParams<{
     type: "good" | "bad" | "insane" | "captured" | "transcend" | "escape";
   }>();
   const router = useRouter();
   const soundRef = useRef<Audio.Sound | null>(null);
   const [achievementToast, setAchievementToast] = useState<EndingType | null>(null);
+  const [showContent, setShowContent] = useState(false);
 
-  // Guardar el logro al cargar la pantalla y manejar audio
+  const titleAnim = useRef(new Animated.Value(0)).current;
+  const textAnim = useRef(new Animated.Value(0)).current;
+  const buttonAnim = useRef(new Animated.Value(0)).current;
+  const glitchAnim = useRef(new Animated.Value(0)).current;
+
+  const [displayedText, setDisplayedText] = useState("");
+  const [showButton, setShowButton] = useState(false);
+
   useEffect(() => {
     if (type) {
       unlockEnding(type as any);
@@ -25,10 +32,52 @@ export default function FinalScreen() {
       loadAndPlayAudio();
     }
 
+    const timer = setTimeout(() => setShowContent(true), 600);
     return () => {
+      clearTimeout(timer);
       soundRef.current?.unloadAsync();
     };
   }, [type]);
+
+  useEffect(() => {
+    if (!showContent) return;
+
+    Animated.sequence([
+      Animated.timing(titleAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
+      Animated.delay(400),
+      Animated.timing(textAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
+    ]).start();
+
+    const content = getEndingContent();
+    let idx = 0;
+    const chars = content.text.split("");
+    const twInterval = setInterval(() => {
+      if (idx < chars.length) {
+        setDisplayedText(chars.slice(0, idx + 1).join(""));
+        idx++;
+      } else {
+        clearInterval(twInterval);
+        setTimeout(() => {
+          Animated.timing(buttonAnim, { toValue: 1, duration: 400, useNativeDriver: true }).start();
+          setShowButton(true);
+        }, 500);
+      }
+    }, 25);
+
+    return () => clearInterval(twInterval);
+  }, [showContent]);
+
+  useEffect(() => {
+    if (!showContent) return;
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(glitchAnim, { toValue: 1, duration: 100, useNativeDriver: true }),
+        Animated.timing(glitchAnim, { toValue: 0, duration: 3000, useNativeDriver: true }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [showContent]);
 
   const loadAndPlayAudio = async () => {
     try {
@@ -52,7 +101,6 @@ export default function FinalScreen() {
     }
   };
 
-  // Helper para decidir el contenido según el final
   const getEndingContent = () => {
     switch (type) {
       case "good":
@@ -105,25 +153,81 @@ export default function FinalScreen() {
 
   return (
     <View style={styles.container}>
-      <GridBackground />
-      <CRTOverlay />
+      <GridBackground sanity={50} />
+      <StaticNoise density={0.6} />
+      <CRTOverlay
+        isGlitchActive={glitchAnim.interpolate({ inputRange: [0, 1], outputRange: [false, true] as any }) ? true : false}
+        sanity={15}
+        dangerLevel={0.8}
+      />
       <AchievementToast
         endingType={achievementToast}
         onComplete={() => setAchievementToast(null)}
       />
-      <Text style={[styles.title, content.style]}>{content.title}</Text>
 
-      <Text style={styles.text}>{content.text}</Text>
+      {showContent && (
+        <>
+          <Animated.Text
+            style={[
+              styles.title,
+              content.style,
+              {
+                opacity: titleAnim,
+                transform: [
+                  {
+                    scale: titleAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.5, 1],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            {content.title}
+          </Animated.Text>
 
-      <Pressable
-        style={({ pressed }) => [
-          styles.button,
-          pressed && { backgroundColor: "rgba(255,255,255,0.1)" },
-        ]}
-        onPress={() => router.replace("/")}
-      >
-        <Text style={styles.buttonText}>{content.button}</Text>
-      </Pressable>
+          <Animated.Text
+            style={[
+              styles.text,
+              {
+                opacity: textAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, 1],
+                }),
+              },
+            ]}
+          >
+            {displayedText}
+          </Animated.Text>
+
+          {showButton && (
+            <Animated.View
+              style={{
+                opacity: buttonAnim,
+                transform: [
+                  {
+                    translateY: buttonAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [20, 0],
+                    }),
+                  },
+                ],
+              }}
+            >
+              <Pressable
+                style={({ pressed }) => [
+                  styles.button,
+                  pressed && { backgroundColor: "rgba(255,255,255,0.1)" },
+                ]}
+                onPress={() => router.replace("/")}
+              >
+                <Text style={styles.buttonText}>{content.button}</Text>
+              </Pressable>
+            </Animated.View>
+          )}
+        </>
+      )}
     </View>
   );
 }
@@ -147,37 +251,37 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   good: {
-    color: "#00ff88", // Verde neón
+    color: "#00ff88",
     textShadowColor: "rgba(0, 255, 136, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
   bad: {
-    color: "#ff0033", // Rojo sangre
+    color: "#ff0033",
     textShadowColor: "rgba(255, 0, 51, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
   insane: {
-    color: "#ffcc00", // Amarillo/Naranja de advertencia
+    color: "#ffcc00",
     textShadowColor: "rgba(255, 204, 0, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
   captured: {
-    color: "#cc00ff", // Púrpura/Violeta (IA tecnológica)
+    color: "#cc00ff",
     textShadowColor: "rgba(204, 0, 255, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
   transcend: {
-    color: "#00ddff", // Cyan/Azul eléctrico (digital)
+    color: "#00ddff",
     textShadowColor: "rgba(0, 221, 255, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
   escape: {
-    color: "#ff9900", // Naranja (libertad agridulce)
+    color: "#ff9900",
     textShadowColor: "rgba(255, 153, 0, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,

@@ -360,7 +360,7 @@ import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
 import { GridBackground, ScanWave, StaticNoise } from "../components/game/GridBackground";
@@ -376,7 +376,7 @@ import {
     useItem,
 } from "../engine/engine";
 import { initialPlayerState } from "../engine/player";
-import { Direction } from "../engine/rooms";
+import { Direction, rooms } from "../engine/rooms";
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 const getTimestamp = () => {
@@ -526,6 +526,37 @@ export default function GameScreen() {
     saveGame(state);
   }, [state, isLoaded]);
 
+  // 6. SONIDO DINÁMICO (volumen/ritmo según cordura y IA)
+  useEffect(() => {
+    const music = backgroundMusic.current;
+    if (!music || state.gameOver || !settings.soundEnabled) return;
+
+    const baseVol = settings.volume;
+    if (state.sanity < 30) {
+      const intensity = (30 - state.sanity) / 30;
+      music.setVolumeAsync(baseVol * (0.3 + intensity * 0.5));
+      music.setRateAsync(0.95 + intensity * 0.1, false);
+    } else {
+      music.setVolumeAsync(baseVol * 0.3);
+      music.setRateAsync(0.95, false);
+    }
+  }, [state.sanity, state.gameOver, settings.soundEnabled, settings.volume]);
+
+  // 7. INTERFERENCIA IA (sonido periódico cuando awareness > 50)
+  useEffect(() => {
+    if (!settings.soundEnabled || state.gameOver) return;
+    if (state.entityAwareness > 50) {
+      const interval = setInterval(() => {
+        const ia = sfxIA.current;
+        if (ia) {
+          ia.setVolumeAsync(settings.volume * 0.3);
+          ia.replayAsync().catch(() => {});
+        }
+      }, state.entityAwareness > 80 ? 4000 : 8000);
+      return () => clearInterval(interval);
+    }
+  }, [state.entityAwareness, state.gameOver, settings.soundEnabled, settings.volume]);
+
   const addLog = (text: string, type: LogMessage["type"] = "narrative") => {
     setLogMessages((prev) => {
       const next = [
@@ -647,7 +678,12 @@ export default function GameScreen() {
       {/* HUD Superior */}
       <View style={styles.header}>
         <SanityBar sanity={state.sanity} />
-        <InventoryHUD items={state.inventory} />
+        <View style={styles.headerRow}>
+          <InventoryHUD items={state.inventory} />
+          <Text style={styles.progressText}>
+            {state.visitedRooms.length}/{Object.keys(rooms).length} SALAS
+          </Text>
+        </View>
       </View>
 
       {/* TERMINAL: Ahora ocupa todo el centro */}
@@ -708,6 +744,18 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 10,
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 4,
+  },
+  progressText: {
+    color: "#335533",
+    fontFamily: "monospace",
+    fontSize: 11,
+    letterSpacing: 1,
   },
   // terminalContainer: {
   //   flex: 1,
