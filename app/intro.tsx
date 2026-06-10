@@ -2,13 +2,21 @@ import { CRTOverlay } from "@/components/game/CRTOverlay";
 import { clearSave } from "@/storage/gameState";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { GridBackground } from "../components/game/GridBackground";
 
 export default function IntroScreen() {
   const router = useRouter();
   const [lines, setLines] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [hasSkipped, setHasSkipped] = useState(false);
+
+  const handleSkip = async () => {
+    if (hasSkipped) return;
+    setHasSkipped(true);
+    await clearSave();
+    router.replace("/game");
+  };
 
   const introText = [
     "> ESTABLECIENDO VÍNCULO NEURAL...",
@@ -25,20 +33,20 @@ export default function IntroScreen() {
       const timeout = setTimeout(() => {
         setLines((prev) => [...prev, introText[currentIndex]]);
         setCurrentIndex(currentIndex + 1);
-      }, 600); // Velocidad de aparición de cada línea
+      }, 250);
       return () => clearTimeout(timeout);
     } else {
       // Esperar un segundo después de la última línea y entrar al juego
       const finalTimeout = setTimeout(async () => {
         await clearSave();
         router.replace("/game");
-      }, 1500);
+      }, 500);
       return () => clearTimeout(finalTimeout);
     }
   }, [currentIndex]);
 
   return (
-    <View style={styles.container}>
+    <Pressable style={styles.container} onPress={handleSkip}>
       <GridBackground />
       <CRTOverlay />
       <View style={styles.content}>
@@ -56,7 +64,7 @@ export default function IntroScreen() {
         ))}
         <Text style={styles.cursor}>_</Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
