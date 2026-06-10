@@ -473,6 +473,15 @@ export default function GameScreen() {
       }
       addLog(getRoomDescription(saved || initialPlayerState), "narrative");
       setIsLoaded(true);
+
+      if (!saved?.hasSeenTutorial) {
+        setTimeout(() => addLog("USA LOS BOTONES N/S/E/O PARA MOVERTE", "system"), 2000);
+        setTimeout(() => addLog("TOCA 'INVESTIGAR' PARA BUSCAR OBJETOS", "system"), 4000);
+        setTimeout(() => {
+          addLog("CADA MOVIMIENTO CONSUME CORDURA. ELIGE CON CUIDADO.", "system");
+          setState((prev) => ({ ...prev, hasSeenTutorial: true }));
+        }, 6000);
+      }
     }
     init();
   }, []);

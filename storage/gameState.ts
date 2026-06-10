@@ -18,6 +18,7 @@ export async function saveGame(state: PlayerState): Promise<void> {
       roomHistory: state.roomHistory,
       collectedItems: state.collectedItems,
       gameOver: state.gameOver,
+      hasSeenTutorial: state.hasSeenTutorial,
     };
 
     await AsyncStorage.setItem(SAVE_KEY, JSON.stringify(toSave));

@@ -13,6 +13,7 @@ export interface PlayerState {
   collectedItems: string[];
   gameOver?: boolean;
   endingType?: "good" | "bad" | "insane" | "captured" | "transcend" | "escape";
+  hasSeenTutorial?: boolean;
 }
 
 export const initialPlayerState: PlayerState = {
