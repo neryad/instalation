@@ -160,13 +160,21 @@ export function investigate(state: PlayerState): PlayerState {
     thermal_fuse: "un FUSIBLE TÉRMICO (Permite abrir puertas de seguridad)",
   };
 
+  const itemHints: Record<string, string> = {
+    sedative: "PISTA: USA 'usar sedante' CUANDO LA CORDURA ESTÉ BAJA",
+    keycard_red: "PISTA: BUSCA UNA PUERTA CON LECTOR ROJO",
+    data_link: "PISTA: HAY UNA TERMINAL BLOQUEADA EN LA ZONA DE DATOS",
+    thermal_fuse: "PISTA: USA EL FUSIBLE EN UNA CAJA DE SEGURIDAD",
+  };
+
   const foundItem = room.item;
+  const hint = itemHints[foundItem];
   let newState: PlayerState = {
     ...state,
     inventory: [...state.inventory, foundItem],
     collectedItems: [...state.collectedItems, foundItem],
     entityAwareness: state.entityAwareness + 10,
-    lastEvent: `LOG: Has obtenido ${itemNames[foundItem] || foundItem.toUpperCase()}. El ruido atrajo atención.`,
+    lastEvent: `LOG: Has obtenido ${itemNames[foundItem] || foundItem.toUpperCase()}. El ruido atrajo atención.${hint ? `\n${hint}` : ""}`,
   };
 
   return moveEntity(newState);
