@@ -42,8 +42,9 @@ const TypewriterText = ({
   const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (hasAnimated.current) {
+    if (hasAnimated.current || text.length > 80) {
       setDisplayedText(text);
+      hasAnimated.current = true;
       return;
     }
 
@@ -60,7 +61,7 @@ const TypewriterText = ({
         hasAnimated.current = true;
         clearInterval(interval);
       }
-    }, 10);
+    }, 3);
 
     return () => clearInterval(interval);
   }, [text]);
