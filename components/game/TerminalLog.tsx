@@ -10,6 +10,7 @@ export interface LogMessage {
 
 interface TerminalLogProps {
   messages: LogMessage[];
+  onDirectionPress?: (dir: string) => void;
 }
 
 const FadeInView = (props: any) => {
@@ -92,7 +93,7 @@ const BlinkingCursor = () => {
   return <Animated.Text style={[styles.cursor, { opacity }]}>▉</Animated.Text>;
 };
 
-export const TerminalLog = ({ messages }: TerminalLogProps) => {
+export const TerminalLog = ({ messages, onDirectionPress }: TerminalLogProps) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
@@ -100,7 +101,7 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
   }, [messages]);
 
   const renderStyledText = (text: string, baseStyle: any) => {
-    const directionRegex = /\b(norte|sur|este|oeste|norte|sur|este|oeste)\b/gi;
+    const directionRegex = /\b(norte|sur|este|oeste)\b/gi;
     const parts = text.split(directionRegex);
 
     return (
@@ -108,7 +109,11 @@ export const TerminalLog = ({ messages }: TerminalLogProps) => {
         {parts.map((part, index) => {
           if (directionRegex.test(part)) {
             return (
-              <Text key={index} style={styles.highlightedDirection}>
+              <Text
+                key={index}
+                style={styles.highlightedDirection}
+                onPress={() => onDirectionPress?.(part)}
+              >
                 {part}
               </Text>
             );

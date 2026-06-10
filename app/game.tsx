@@ -647,7 +647,10 @@ export default function GameScreen() {
 
       {/* TERMINAL: Ahora ocupa todo el centro */}
       <View style={styles.terminalContainer}>
-        <TerminalLog messages={logMessages} />
+        <TerminalLog
+          messages={logMessages}
+          onDirectionPress={(dir) => handleCommand(dir)}
+        />
       </View>
 
       {/* ACCIONES: Solo botones, sin input */}
