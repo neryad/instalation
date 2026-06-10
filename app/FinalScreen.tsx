@@ -1,9 +1,10 @@
+import { AchievementToast } from "@/components/game/AchievementToast";
 import { CRTOverlay } from "@/components/game/CRTOverlay";
-import { unlockEnding } from "@/storage/achievements";
+import { EndingType, unlockEnding } from "@/storage/achievements";
 import { getSettings } from "@/storage/settings";
 import { Audio } from "expo-av";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { GridBackground } from "../components/game/GridBackground";
 
@@ -14,11 +15,13 @@ export default function FinalScreen() {
   }>();
   const router = useRouter();
   const soundRef = useRef<Audio.Sound | null>(null);
+  const [achievementToast, setAchievementToast] = useState<EndingType | null>(null);
 
   // Guardar el logro al cargar la pantalla y manejar audio
   useEffect(() => {
     if (type) {
       unlockEnding(type as any);
+      setAchievementToast(type as EndingType);
       loadAndPlayAudio();
     }
 
@@ -104,6 +107,10 @@ export default function FinalScreen() {
     <View style={styles.container}>
       <GridBackground />
       <CRTOverlay />
+      <AchievementToast
+        endingType={achievementToast}
+        onComplete={() => setAchievementToast(null)}
+      />
       <Text style={[styles.title, content.style]}>{content.title}</Text>
 
       <Text style={styles.text}>{content.text}</Text>

@@ -350,9 +350,10 @@
 //     paddingBottom: 20,
 //   },
 // });
+import { AchievementToast } from "@/components/game/AchievementToast";
 import { InventoryHUD } from "@/components/game/inventoryHud";
 import { QuickActions } from "@/components/game/quickActions";
-import { unlockEnding } from "@/storage/achievements";
+import { EndingType, unlockEnding } from "@/storage/achievements";
 import { loadGame, saveGame } from "@/storage/gameState";
 import { getSettings } from "@/storage/settings";
 import { Audio } from "expo-av";
@@ -393,6 +394,7 @@ export default function GameScreen() {
   const [showMap, setShowMap] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const isFirstRender = useRef(true);
+  const [currentAchievement, setCurrentAchievement] = useState<EndingType | null>(null);
 
   const backgroundMusic = useRef<Audio.Sound | null>(null);
   const sfxBeep = useRef<Audio.Sound | null>(null);
@@ -590,6 +592,7 @@ export default function GameScreen() {
         // esteER EGG: Desbloquear logro si se lee el log
         if (newState.lastEvent?.includes("Registro del Desarrollador")) {
           unlockEnding("secret_log");
+          setCurrentAchievement("secret_log");
           if (settings.soundEnabled) {
             // Sonido extra creepy para el logro
             sfxIA.current?.setVolumeAsync(settings.volume);
@@ -667,6 +670,10 @@ export default function GameScreen() {
         entityRoom={state.entityRoom}
         roomHistory={state.roomHistory}
         collectedItems={state.collectedItems}
+      />
+      <AchievementToast
+        endingType={currentAchievement}
+        onComplete={() => setCurrentAchievement(null)}
       />
     </View>
   );
