@@ -22,6 +22,22 @@ El proyecto explora cómo la lógica de estado y la "cordura" del jugador pueden
 
 ---
 
+## ✨ v1.1.0 — Novedades
+
+| Característica | Descripción |
+|---|---|
+| 🗺️ **Mapa interactivo** | Visualiza la instalación completa, habitaciones visitadas, items disponibles y ubicación de la IA |
+| 🏆 **Logros** | Desbloquea finales y secretos, con notificaciones en pantalla |
+| 🔊 **Paisaje sonoro** | Música ambiental dinámica, SFX de movimiento, sedante, IA y puertas |
+| 🌫️ **Atmósfera reactiva** | Efectos visuales y de sonido que cambian según tu cordura y la proximidad de la IA |
+| 📜 **Tutorial** | Guía inicial con 3 mensajes para nuevos jugadores |
+| 🐞 **Correcciones iOS** | Eliminadas franjas blancas en dispositivos con notch |
+| ⚙️ **Optimizaciones** | Motor más estable, feedback visual mejorado al forzar puertas |
+
+👉 [Ver CHANGELOG completo](./CHANGELOG.md)
+
+---
+
 ## 📚 Documentación
 
 La documentación técnica completa, guía de instalación y arquitectura se encuentra en la carpeta `/docs`.

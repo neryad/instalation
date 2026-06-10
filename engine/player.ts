@@ -8,8 +8,12 @@ export interface PlayerState {
   entityRoom?: string;
   entityAwareness: number;
   lastDirections: Direction[];
+  visitedRooms: string[];
+  roomHistory: string[];
+  collectedItems: string[];
   gameOver?: boolean;
   endingType?: "good" | "bad" | "insane" | "captured" | "transcend" | "escape";
+  hasSeenTutorial?: boolean;
 }
 
 export const initialPlayerState: PlayerState = {
@@ -18,5 +22,8 @@ export const initialPlayerState: PlayerState = {
   inventory: [],
   entityAwareness: 0,
   lastDirections: [],
+  visitedRooms: ["awakening"],
+  roomHistory: ["awakening"],
+  collectedItems: [],
   gameOver: false,
 };

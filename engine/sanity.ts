@@ -17,24 +17,6 @@ export function distortText(text: string, sanity: number): string {
     return `[SISTEMA INESTABLE]: ${stutter}... *Click... Click...*`;
   }
 
-  // const lies = [
-  //   "La IA te susurra que la salida está detrás de ti.",
-  //   "No confíes en lo que ves.",
-  //   "¿Seguro que esta habitación es real?",
-  //   "Escuchas tu propio nombre desde el pasillo.",
-  // ];
-  // const randomLie = lies[Math.floor(Math.random() * lies.length)];
-
-  // // Retornamos la mitad del texto original (para mantener algo de pista)
-  // // seguido de una mentira de la IA.
-  // return `[ERROR DE PERCEPCIÓN]: ${text.substring(0, text.length / 2)}... ${randomLie}`;
-
   return `${text.substring(0, text.length / 2)}... ¿Seguro que esto es real?`;
 }
 
-export function applySanity(state: PlayerState, amount: number): PlayerState {
-  return {
-    ...state,
-    sanity: Math.max(0, Math.min(100, state.sanity + amount)),
-  };
-}

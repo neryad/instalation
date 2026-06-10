@@ -24,10 +24,10 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
 
   const nextRoomData = rooms[nextRoomId];
 
-  // 3. Validación de Existencia (minSanity)
+  // 3. Validación de Existencia (maxSanity — la sala solo existe con cordura ≤ umbral)
   if (
-    nextRoomData.minSanityToExist &&
-    state.sanity > nextRoomData.minSanityToExist
+    nextRoomData.maxSanityToExist &&
+    state.sanity > nextRoomData.maxSanityToExist
   ) {
     return {
       ...newState,
@@ -53,6 +53,10 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     ...newState,
     currentRoom: nextRoomId,
     lastDirections: [...state.lastDirections, dir].slice(-5),
+    roomHistory: [...state.roomHistory, nextRoomId].slice(-8),
+    visitedRooms: state.visitedRooms.includes(nextRoomId)
+      ? state.visitedRooms
+      : [...state.visitedRooms, nextRoomId],
     sanity: Math.max(0, state.sanity - 2),
   };
 
@@ -156,12 +160,21 @@ export function investigate(state: PlayerState): PlayerState {
     thermal_fuse: "un FUSIBLE TÉRMICO (Permite abrir puertas de seguridad)",
   };
 
+  const itemHints: Record<string, string> = {
+    sedative: "PISTA: USA 'usar sedante' CUANDO LA CORDURA ESTÉ BAJA",
+    keycard_red: "PISTA: BUSCA UNA PUERTA CON LECTOR ROJO",
+    data_link: "PISTA: HAY UNA TERMINAL BLOQUEADA EN LA ZONA DE DATOS",
+    thermal_fuse: "PISTA: USA EL FUSIBLE EN UNA CAJA DE SEGURIDAD",
+  };
+
   const foundItem = room.item;
+  const hint = itemHints[foundItem];
   let newState: PlayerState = {
     ...state,
     inventory: [...state.inventory, foundItem],
+    collectedItems: [...state.collectedItems, foundItem],
     entityAwareness: state.entityAwareness + 10,
-    lastEvent: `LOG: Has obtenido ${itemNames[foundItem] || foundItem.toUpperCase()}. El ruido atrajo atención.`,
+    lastEvent: `LOG: Has obtenido ${itemNames[foundItem] || foundItem.toUpperCase()}. El ruido atrajo atención.${hint ? `\n${hint}` : ""}`,
   };
 
   return moveEntity(newState);
@@ -192,26 +205,39 @@ export function forceDoor(state: PlayerState, dir: Direction): PlayerState {
     };
   }
 
+  const forceMsg = "¡CRACK! Forzaste la entrada. El sistema está en alerta máxima.";
   let newState: PlayerState = {
     ...state,
-    sanity: Math.max(0, state.sanity - 25), // Gran golpe a la cordura
-    entityAwareness: state.entityAwareness + 30, // Mucho ruido
+    sanity: Math.max(0, state.sanity - 25),
+    entityAwareness: state.entityAwareness + 30,
     currentRoom: nextRoomId,
-    lastEvent: "¡CRACK! Forzaste la entrada. El sistema está en alerta máxima.",
+    roomHistory: [...state.roomHistory, nextRoomId].slice(-8),
+    visitedRooms: state.visitedRooms.includes(nextRoomId)
+      ? state.visitedRooms
+      : [...state.visitedRooms, nextRoomId],
+    lastEvent: forceMsg,
   };
 
-  return moveEntity(newState);
+  const entityResult = moveEntity(newState);
+  if (entityResult.lastEvent !== forceMsg) {
+    entityResult.lastEvent = `${forceMsg}\n${entityResult.lastEvent}`;
+  }
+  return entityResult;
 }
 
 export function getRoomDescription(state: PlayerState): string {
   const room = rooms[state.currentRoom];
   let desc = room.baseDescription;
 
-  // Variantes de cordura
+  // Variantes de cordura (elige la variante más severa que aplique)
   if (room.sanityVariants) {
+    let best: (typeof room.sanityVariants)[number] | null = null;
     for (const v of room.sanityVariants) {
-      if (state.sanity <= v.minSanity) desc = v.description;
+      if (state.sanity <= v.minSanity && (!best || v.minSanity < best.minSanity)) {
+        best = v;
+      }
     }
+    if (best) desc = best.description;
   }
 
   // Pistas de la IA
@@ -262,8 +288,9 @@ export function useItem(state: PlayerState, item: string): PlayerState {
       ...state,
       inventory: newInventory,
       sanity: Math.min(100, state.sanity + 40),
+      entityAwareness: Math.max(0, state.entityAwareness - 40),
       lastEvent:
-        "Te inyectas el sedante. La realidad se vuelve más... estable.",
+        "Te inyectas el sedante. La realidad se vuelve más... estable. La presencia se aleja.",
     };
   }
 

@@ -6,6 +6,7 @@ interface QuickActionsProps {
   disabled?: boolean;
   hasSedative?: boolean;
   forceableDirections?: string[];
+  onOpenMap?: () => void;
 }
 
 export function QuickActions({
@@ -13,25 +14,12 @@ export function QuickActions({
   disabled,
   hasSedative,
   forceableDirections = [],
+  onOpenMap,
 }: QuickActionsProps) {
   return (
     <View style={styles.container}>
-      {/* Cruzeta de movimiento */}
+      {/* Fila superior: Acciones principales */}
       <View style={styles.row}>
-        <ActionButton
-          label="N"
-          cmd="norte"
-          onPress={onAction}
-          disabled={disabled}
-        />
-      </View>
-      <View style={styles.row}>
-        <ActionButton
-          label="O"
-          cmd="oeste"
-          onPress={onAction}
-          disabled={disabled}
-        />
         <ActionButton
           label="INVESTIGAR"
           cmd="investigar"
@@ -40,6 +28,46 @@ export function QuickActions({
           isMain
         />
         <ActionButton
+          label="MIRAR"
+          cmd="mirar"
+          onPress={onAction}
+          disabled={disabled}
+        />
+        {onOpenMap && (
+          <ActionButton
+            label="MAPA"
+            cmd=""
+            onPress={() => onOpenMap()}
+            disabled={disabled}
+            style={styles.mapButton}
+          />
+        )}
+      </View>
+
+      {/* Cruzeta de movimiento */}
+      <View style={styles.row}>
+        <View style={{ width: 55 }} />
+        <ActionButton
+          label="N"
+          cmd="norte"
+          onPress={onAction}
+          disabled={disabled}
+        />
+        <View style={{ width: 55 }} />
+      </View>
+      <View style={styles.row}>
+        <ActionButton
+          label="O"
+          cmd="oeste"
+          onPress={onAction}
+          disabled={disabled}
+        />
+        <View style={styles.dpadCenter}>
+          <View style={styles.compassRing}>
+            <View style={styles.compassNub} />
+          </View>
+        </View>
+        <ActionButton
           label="E"
           cmd="este"
           onPress={onAction}
@@ -47,17 +75,19 @@ export function QuickActions({
         />
       </View>
       <View style={styles.row}>
+        <View style={{ width: 55 }} />
         <ActionButton
           label="S"
           cmd="sur"
           onPress={onAction}
           disabled={disabled}
         />
+        <View style={{ width: 55 }} />
       </View>
 
-      {/* Botones de Acción Especiales */}
-      <View style={[styles.row, { marginTop: 15 }]}>
-        {hasSedative && (
+      {/* Contextuales */}
+      {hasSedative && (
+        <View style={styles.row}>
           <ActionButton
             label="USAR SEDANTE"
             cmd="usar sedante"
@@ -65,18 +95,11 @@ export function QuickActions({
             disabled={disabled}
             style={styles.useButton}
           />
-        )}
-        <ActionButton
-          label="MIRAR"
-          cmd="mirar"
-          onPress={onAction}
-          disabled={disabled}
-        />
-      </View>
+        </View>
+      )}
 
-      {/* Botones de FORZAR PUERTA (Contextuales) */}
       {forceableDirections.length > 0 && (
-        <View style={[styles.row, { marginTop: 10 }]}>
+        <View style={styles.row}>
           {forceableDirections.map((dir) => (
             <ActionButton
               key={dir}
@@ -149,7 +172,31 @@ function ActionButton({ label, cmd, onPress, disabled, isMain, style }: any) {
 
 const styles = StyleSheet.create({
   container: { alignItems: "center" },
-  row: { flexDirection: "row", gap: 10, marginBottom: 10 },
+  row: { flexDirection: "row", gap: 10, marginBottom: 10, alignItems: "center" },
+  dpadCenter: {
+    width: 55,
+    height: 55,
+    borderWidth: 1,
+    borderColor: "#002200",
+    backgroundColor: "rgba(0, 10, 0, 0.3)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  compassRing: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#004400",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  compassNub: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#006600",
+  },
   button: {
     padding: 12,
     borderWidth: 1,
@@ -173,6 +220,12 @@ const styles = StyleSheet.create({
     borderColor: "#880000",
     borderBottomColor: "#ff0000",
     backgroundColor: "#1a0000",
+  },
+  mapButton: {
+    borderColor: "#008800",
+    borderBottomColor: "#00ff00",
+    backgroundColor: "rgba(0, 50, 0, 0.5)",
+    minWidth: 130,
   },
   text: {
     color: "#0f0",
