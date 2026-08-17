@@ -34,7 +34,7 @@ describe("buildScene", () => {
     expect(scene.grid[0][2]).toBe(1);
   });
 
-  it("marca puerta bloqueada cuando no se tiene la llave", () => {
+  it("construye puertas abiertas para conexiones sin bloqueo", () => {
     const state = {
       ...initialPlayerState,
       currentRoom: "data_terminal",
@@ -42,8 +42,10 @@ describe("buildScene", () => {
       inventory: [],
     };
     const scene = buildScene(state);
-    // data_terminal está bloqueada por data_link (entrar a ella), su salida oeste = data_morgue
-    expect(scene.doors.oeste?.targetRoomId).toBe("data_morgue");
+    const oeste = scene.doors.oeste;
+    expect(oeste?.targetRoomId).toBe("data_morgue");
+    expect(oeste?.locked).toBe(false);
+    expect(oeste?.forceable).toBe(false);
   });
 
   it("marca la puerta hacia core_door como bloqueada e inforzable", () => {

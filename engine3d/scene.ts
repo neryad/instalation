@@ -11,7 +11,7 @@ export interface DoorCell {
   direction: Direction;
   targetRoomId: string;
   locked: boolean; // requiere llave que el jugador no tiene
-  forceable: boolean; // bloqueada y no inforzable
+  forceable: boolean; // bloqueada y forzable (no es unbreakable)
 }
 
 export interface RoomScene {
