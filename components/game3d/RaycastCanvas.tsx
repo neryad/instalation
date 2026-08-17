@@ -1,8 +1,8 @@
 import { Canvas, Rect } from "@shopify/react-native-skia";
-import { useMemo, type ReactNode } from "react";
-import { Player3D } from "../../engine3d/controls";
+import { memo, useMemo, type ReactNode } from "react";
+import type { Player3D } from "../../engine3d/controls";
 import { castRays, facingAngle } from "../../engine3d/raycaster";
-import { Grid } from "../../engine3d/scene";
+import type { Grid } from "../../engine3d/scene";
 import { projectSprite } from "../../engine3d/sprite";
 
 const NUM_COLUMNS = 120;
@@ -24,7 +24,7 @@ function shade(hex: string, t: number): string {
   return `rgb(${r},${g},${b})`;
 }
 
-export function RaycastCanvas({
+function RawRaycastCanvas({
   grid,
   player,
   entityDist,
@@ -99,3 +99,5 @@ export function RaycastCanvas({
 
   return <Canvas style={{ width, height }}>{rects}</Canvas>;
 }
+
+export const RaycastCanvas = memo(RawRaycastCanvas);
