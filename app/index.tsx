@@ -118,6 +118,21 @@ export default function Home() {
           </Pressable>
         </Link>
 
+        {/* Botón de Modo 3D */}
+        <Link href="/game3d" asChild>
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              { marginTop: 15, borderColor: "#770077" },
+              pressed && { backgroundColor: "rgba(80, 0, 80, 0.3)" },
+            ]}
+          >
+            <Text style={[styles.buttonText, { color: "#cc44cc", fontSize: 14 }]}>
+              MODO 3D
+            </Text>
+          </Pressable>
+        </Link>
+
         {/* Botón de Configuración / Ajustes */}
         <Link href="/SettingsScreen" asChild>
           <Pressable
