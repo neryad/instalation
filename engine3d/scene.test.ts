@@ -46,17 +46,17 @@ describe("buildScene", () => {
     expect(scene.doors.oeste?.targetRoomId).toBe("data_morgue");
   });
 
-  it("marca puerta del core como bloqueada e inforzable sin keycard", () => {
+  it("marca la puerta hacia core_door como bloqueada e inforzable", () => {
     const state = {
       ...initialPlayerState,
-      currentRoom: "core_door",
+      currentRoom: "ventilation_shaft",
       sanity: 60,
       inventory: [],
     };
     const scene = buildScene(state);
     const north = scene.doors.norte;
-    expect(north?.targetRoomId).toBe("core");
+    expect(north?.targetRoomId).toBe("core_door");
     expect(north?.locked).toBe(true);
-    expect(north?.forceable).toBe(false); // core_door.target = core, unbreakable: true
+    expect(north?.forceable).toBe(false); // core_door es unbreakable
   });
 });

@@ -63,7 +63,6 @@ export function effectiveConnections(
 
 export function buildScene(state: PlayerState): RoomScene {
   const roomId = state.currentRoom;
-  const room = rooms[roomId];
   const conns = effectiveConnections(roomId, state.sanity);
 
   const grid: Grid = Array.from({ length: GRID_SIZE }, () =>
@@ -84,16 +83,13 @@ export function buildScene(state: PlayerState): RoomScene {
     const [x, y] = DOOR_COORDS[d];
     grid[y][x] = 2;
     const targetRoom = rooms[target];
-    // El bloqueo puede vivir en la sala barrera (core_door/data_terminal)
-    // o en la sala destino (rooms con lockedBy propio).
-    const lockItem = room.lockedBy || targetRoom.lockedBy;
-    const unbreakable = !!room.unbreakable || !!targetRoom.unbreakable;
-    const hasKey = !!lockItem && state.inventory.includes(lockItem);
+    const hasKey = !!targetRoom.lockedBy && state.inventory.includes(targetRoom.lockedBy);
     doors[d] = {
       direction: d,
       targetRoomId: target,
-      locked: !!lockItem && !hasKey,
-      forceable: !!lockItem && !hasKey && !unbreakable,
+      locked: !!targetRoom.lockedBy && !hasKey,
+      forceable:
+        !!targetRoom.lockedBy && !hasKey && !targetRoom.unbreakable,
     };
   }
 
