@@ -14,6 +14,27 @@ export interface DoorCell {
   forceable: boolean; // bloqueada y forzable (no es unbreakable)
 }
 
+export type DoorSpriteKey =
+  | "estandar"
+  | "cerrada"
+  | "forzable"
+  | "nucleo"
+  | "inestable";
+
+export function doorSpriteKey(
+  door: DoorCell | undefined,
+  isGlitch: boolean,
+): DoorSpriteKey {
+  if (isGlitch) return "inestable";
+  if (!door) return "estandar";
+  if (door.targetRoomId === "core" || door.targetRoomId === "core_door") {
+    return "nucleo";
+  }
+  if (door.locked && door.forceable) return "forzable";
+  if (door.locked) return "cerrada";
+  return "estandar";
+}
+
 export interface RoomScene {
   roomId: string;
   grid: Grid;

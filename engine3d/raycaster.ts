@@ -1,9 +1,11 @@
+import { Direction } from "../engine/rooms";
 import { Cell, Grid } from "./scene";
 
 export interface RayColumn {
   perpDist: number;
   side: "N" | "S" | "E" | "W";
   type: Cell;
+  doorDir?: Direction;
 }
 
 export interface RaycasterOptions {
@@ -77,6 +79,7 @@ export function castRays(
 
     let side: "N" | "S" | "E" | "W" = "N";
     let type: Cell = 1;
+    let doorDir: Direction | undefined;
     let dist = MAX_DIST;
     const maxSteps = 64; // rejilla 7x7: cota superior holgada
 
@@ -105,12 +108,25 @@ export function castRays(
         // cara visible desde el jugador (la que mira hacia él),
         // consistente con la branch de fuera de rejilla
         side = steppingX ? (rayDirX > 0 ? "W" : "E") : rayDirY > 0 ? "N" : "S";
+        doorDir =
+          cell === 2 ? doorDirectionAt(grid, mapX, mapY) : undefined;
         break;
       }
     }
 
-    columns.push({ perpDist: dist, side, type });
+    columns.push({ perpDist: dist, side, type, doorDir });
   }
 
   return columns;
+}
+
+// Las puertas están en el centro de cada muro perimetral (ver scene.ts
+// DOOR_COORDS). La celda golpeada determina de qué lado es la puerta.
+function doorDirectionAt(grid: Grid, mapX: number, mapY: number): Direction | undefined {
+  const last = grid.length - 1;
+  if (mapX === 0) return "oeste";
+  if (mapX === last) return "este";
+  if (mapY === 0) return "norte";
+  if (mapY === last) return "sur";
+  return undefined;
 }

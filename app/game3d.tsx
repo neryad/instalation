@@ -215,6 +215,7 @@ export default function Game3DScreen() {
           {canvasSize.width > 0 && canvasSize.height > 0 && (
             <RaycastCanvas
               grid={scene.grid}
+              doors={scene.doors}
               player={player}
               entityDist={entityDist}
               sanity={state.sanity}

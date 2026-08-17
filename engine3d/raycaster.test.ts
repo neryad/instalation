@@ -24,6 +24,7 @@ describe("facingAngle", () => {
     const center = cols[Math.floor(cols.length / 2)];
     expect(center.perpDist).toBeCloseTo(2.5, 1);
     expect(center.type).toBe(2); // la columna central impacta la puerta norte (3,0)
+    expect(center.doorDir).toBe("norte");
   });
 
   it("la puerta norte de awakening es sólida (no atraviesa)", () => {
@@ -35,6 +36,16 @@ describe("facingAngle", () => {
     const center = cols[Math.floor(cols.length / 2)];
     expect(center.type).toBe(2);
     expect(center.perpDist).toBeLessThanOrEqual(2.6);
+  });
+
+  it("la columna central mirando al este impacta la pared (sin puerta)", () => {
+    const cols = castRays(grid, 3.5, 3.5, facingAngle("este"), {
+      numColumns: 120,
+      fovDeg: 66,
+    });
+    const center = cols[Math.floor(cols.length / 2)];
+    expect(center.type).toBe(1);
+    expect(center.doorDir).toBeUndefined();
   });
 
   it("reporta la cara visible del muro (convención de texturizado)", () => {

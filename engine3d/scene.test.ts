@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { initialPlayerState } from "../engine/player";
-import { buildScene, effectiveConnections, GRID_SIZE } from "./scene";
+import { buildScene, doorSpriteKey, effectiveConnections, GRID_SIZE } from "./scene";
 
 const northState = { ...initialPlayerState, sanity: 100 };
 
@@ -60,5 +60,60 @@ describe("buildScene", () => {
     expect(north?.targetRoomId).toBe("core_door");
     expect(north?.locked).toBe(true);
     expect(north?.forceable).toBe(false); // core_door es unbreakable
+  });
+});
+
+describe("doorSpriteKey", () => {
+  it("glitch devuelve imagen inestable", () => {
+    expect(doorSpriteKey(undefined, true)).toBe("inestable");
+    expect(
+      doorSpriteKey(
+        { direction: "norte", targetRoomId: "hallway_a", locked: false, forceable: false },
+        true,
+      ),
+    ).toBe("inestable");
+  });
+
+  it("sin puerta o puerta abierta usa estandar", () => {
+    expect(doorSpriteKey(undefined, false)).toBe("estandar");
+    expect(
+      doorSpriteKey(
+        { direction: "norte", targetRoomId: "hallway_a", locked: false, forceable: false },
+        false,
+      ),
+    ).toBe("estandar");
+  });
+
+  it("la puerta hacia core usa imagen del núcleo", () => {
+    expect(
+      doorSpriteKey(
+        { direction: "norte", targetRoomId: "core", locked: true, forceable: false },
+        false,
+      ),
+    ).toBe("nucleo");
+    expect(
+      doorSpriteKey(
+        { direction: "norte", targetRoomId: "core_door", locked: true, forceable: false },
+        false,
+      ),
+    ).toBe("nucleo");
+  });
+
+  it("bloqueada y forzable usa su propia imagen", () => {
+    expect(
+      doorSpriteKey(
+        { direction: "oeste", targetRoomId: "data_terminal", locked: true, forceable: true },
+        false,
+      ),
+    ).toBe("forzable");
+  });
+
+  it("bloqueada no forzable sin llave usa cerrada", () => {
+    expect(
+      doorSpriteKey(
+        { direction: "sur", targetRoomId: "shutdown_protocol", locked: true, forceable: false },
+        false,
+      ),
+    ).toBe("cerrada");
   });
 });
