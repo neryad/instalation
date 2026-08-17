@@ -49,11 +49,9 @@ export default function Game3DScreen() {
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const onCanvasLayout = useCallback(
     (e: { nativeEvent: { layout: { width: number; height: number } } }) => {
+      const { width, height } = e.nativeEvent.layout;
       setCanvasSize((cur) =>
-        cur.width === e.nativeEvent.layout.width &&
-        cur.height === e.nativeEvent.layout.height
-          ? cur
-          : { width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height },
+        cur.width === width && cur.height === height ? cur : { width, height },
       );
     },
     [],
