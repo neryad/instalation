@@ -33,7 +33,8 @@ const DIRECTIONS: Direction[] = ["norte", "sur", "este", "oeste"];
 export default function Game3DScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { width: winW } = useWindowDimensions();
+  const { width: winW, height: winH } = useWindowDimensions();
+  const isLandscape = winH < winW;
 
   const [state, setState] = useState<PlayerState>(initialPlayerState);
   const [logs, setLogs] = useState<LogMessage[]>([]);
@@ -45,9 +46,18 @@ export default function Game3DScreen() {
   const [player, setPlayer] = useState<Player3D>(() =>
     spawnPlayer(initialPlayerState.currentRoom, null),
   );
-
-  const canvasH = Math.max(220, Math.round(winW * 0.78));
-  const canvasW = Math.round(winW - 20);
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  const onCanvasLayout = useCallback(
+    (e: { nativeEvent: { layout: { width: number; height: number } } }) => {
+      setCanvasSize((cur) =>
+        cur.width === e.nativeEvent.layout.width &&
+        cur.height === e.nativeEvent.layout.height
+          ? cur
+          : { width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height },
+      );
+    },
+    [],
+  );
 
   const addLog = useCallback(
     (text: string, type: LogMessage["type"] = "narrative") => {
@@ -203,18 +213,20 @@ export default function Game3DScreen() {
           <SanityBar sanity={state.sanity} />
         </View>
 
-        <View style={[styles.canvasBox, { height: canvasH }]}>
-          <RaycastCanvas
-            grid={scene.grid}
-            player={player}
-            entityDist={entityDist}
-            sanity={state.sanity}
-            width={canvasW}
-            height={canvasH}
-          />
+        <View style={styles.canvasBox} onLayout={onCanvasLayout}>
+          {canvasSize.width > 0 && canvasSize.height > 0 && (
+            <RaycastCanvas
+              grid={scene.grid}
+              player={player}
+              entityDist={entityDist}
+              sanity={state.sanity}
+              width={canvasSize.width}
+              height={canvasSize.height}
+            />
+          )}
         </View>
 
-        <LogPanel messages={logs} />
+        <LogPanel messages={logs} height={isLandscape ? 86 : 130} />
 
         <ControlPad
           onForward={handleForward}
@@ -250,6 +262,8 @@ const styles = StyleSheet.create({
   },
   header: { marginBottom: 8 },
   canvasBox: {
+    flex: 1,
+    minHeight: 120,
     borderWidth: 1,
     borderColor: "#003300",
     backgroundColor: "#000",
