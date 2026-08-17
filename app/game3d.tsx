@@ -115,6 +115,7 @@ export default function Game3DScreen() {
 
   const handleChoose = useCallback(
     (dir: Direction) => {
+      if (fading) return;
       const newState = move(state, dir);
       if (newState.currentRoom !== state.currentRoom) {
         setFading(true);
@@ -128,7 +129,7 @@ export default function Game3DScreen() {
         if (newState.lastEvent) addLog(newState.lastEvent, "system");
       }
     },
-    [state, addLog, handleEnterRoom],
+    [state, addLog, handleEnterRoom, fading],
   );
 
   const handleForce = useCallback(
