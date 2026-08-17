@@ -68,4 +68,26 @@ describe("projectSprite", () => {
     );
     expect(s.xCenter).toBe(cols / 2);
   });
+
+  it("la altura en px coincide con la escala de un muro", () => {
+    const s = projectSprite(
+      { visible: true, distance: 4 },
+      cols,
+      height,
+      66,
+    );
+    const wallFactor = height / 2 / Math.tan(((66 / 2) * Math.PI) / 180);
+    const expectedH = (1.7 / 4) * wallFactor;
+    expect(s.y2 - s.y1).toBeCloseTo(expectedH, 5);
+    expect(s.visible).toBe(true);
+  });
+
+  it("invisible devuelve rectángulo nulo", () => {
+    const s = projectSprite({ visible: false, distance: 0 }, cols, height);
+    expect(s.visible).toBe(false);
+    expect(s.y1).toBe(0);
+    expect(s.y2).toBe(0);
+    expect(s.halfWidth).toBe(0);
+    expect(s.xCenter).toBe(0);
+  });
 });

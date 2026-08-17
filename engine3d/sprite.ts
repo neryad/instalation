@@ -36,9 +36,10 @@ export function projectSprite(
   if (!params.visible || params.distance <= 0) {
     return { visible: false, y1: 0, y2: 0, halfWidth: 0, xCenter: 0 };
   }
-  const projectionPlane =
-    numColumns / 2 / Math.tan(((fovDeg / 2) * Math.PI) / 180);
-  const screenHeight = (SPRITE_HEIGHT / params.distance) * projectionPlane;
+  const halfTan = Math.tan(((fovDeg / 2) * Math.PI) / 180);
+  const wallFactor = heightPx / 2 / halfTan;
+  const screenHeight = (SPRITE_HEIGHT / params.distance) * wallFactor;
+  const projectionPlane = numColumns / 2 / halfTan;
   const screenWidth = (SPRITE_WIDTH / params.distance) * projectionPlane;
   const y1 = heightPx / 2 - screenHeight / 2;
   const y2 = heightPx / 2 + screenHeight / 2;
