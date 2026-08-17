@@ -37,8 +37,19 @@ describe("facingAngle", () => {
     expect(center.perpDist).toBeLessThanOrEqual(2.6);
   });
 
+  it("reporta la cara visible del muro (convención de texturizado)", () => {
+    // de (3.5, 3.5) hacia el este, la columna central impacta el muro este
+    // (col 6); la cara visible desde el jugador es su cara OESTE
+    const cols = castRays(grid, 3.5, 3.5, facingAngle("este"), {
+      numColumns: 120,
+      fovDeg: 66,
+    });
+    const center = cols[Math.floor(cols.length / 2)];
+    expect(center.side).toBe("W");
+  });
+
   it("fuera de la rejilla devuelve distancia máxima", () => {
     const cols = castRays(grid, 100, 100, 0, { numColumns: 10, fovDeg: 66 });
-    expect(cols.every((c) => c.perpDist === MAX_DIST || c.type !== 0)).toBe(true);
+    expect(cols.every((c) => c.perpDist === MAX_DIST)).toBe(true);
   });
 });

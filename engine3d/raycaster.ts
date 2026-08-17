@@ -78,7 +78,7 @@ export function castRays(
     let side: "N" | "S" | "E" | "W" = "N";
     let type: Cell = 1;
     let dist = MAX_DIST;
-    const maxSteps = 64;
+    const maxSteps = 64; // rejilla 7x7: cota superior holgada
 
     for (let step = 0; step < maxSteps; step++) {
       let steppingX: boolean;
@@ -102,7 +102,9 @@ export function castRays(
       if (cell !== 0) {
         dist = steppingX ? sideDistX - deltaX : sideDistY - deltaY;
         type = cell;
-        side = steppingX ? (rayDirX > 0 ? "E" : "W") : rayDirY > 0 ? "S" : "N";
+        // cara visible desde el jugador (la que mira hacia él),
+        // consistente con la branch de fuera de rejilla
+        side = steppingX ? (rayDirX > 0 ? "W" : "E") : rayDirY > 0 ? "N" : "S";
         break;
       }
     }
