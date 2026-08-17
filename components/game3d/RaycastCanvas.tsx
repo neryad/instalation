@@ -11,11 +11,11 @@ const NUM_COLUMNS = 120;
 const FOV = 66;
 
 const DOOR_IMAGES: Record<DoorSpriteKey, number> = {
-  estandar: require("../../assets/images/3d/puerta-estandar-(abierta:usable).jpeg"),
+  estandar: require("../../assets/images/3d/puerta-estandar-abierta.jpeg"),
   cerrada: require("../../assets/images/3d/puerta-cerrada-sin-llave.jpeg"),
   forzable: require("../../assets/images/3d/puerta-bloqueada-forzable.jpeg"),
-  nucleo: require("../../assets/images/3d/puerta-del-nucleo-(core_door-blindada).jpeg"),
-  inestable: require("../../assets/images/3d/puert-inestable:ilusion.jpeg"),
+  nucleo: require("../../assets/images/3d/puerta-del-nucleo-core-door.jpeg"),
+  inestable: require("../../assets/images/3d/puerta-inestable-ilusion.jpeg"),
 };
 
 interface RaycastCanvasProps {
