@@ -120,7 +120,7 @@ function RawRaycastCanvas({
           y={startY}
           width={x1 - x0}
           height={endY - startY}
-          fit="fill"
+          fit="contain"
         />,
         <Rect
           key={`door-shade-${run.start}`}
