@@ -365,6 +365,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
 import { GridBackground, ScanWave, StaticNoise } from "../components/game/GridBackground";
 import { MapModal } from "../components/game/MapModal";
+import { RoomVisual } from "../components/game/RoomVisual";
 import { SanityBar } from "../components/game/SanityBar";
 import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import {
@@ -659,6 +660,7 @@ export default function GameScreen() {
   return (
     <View style={styles.root}>
       <GridBackground sanity={state.sanity} />
+      <RoomVisual roomId={state.currentRoom} sanity={state.sanity} />
       <StaticNoise density={Math.max(0, (50 - state.sanity) / 50)} />
       <ScanWave active={state.entityAwareness > 50} />
       <CRTOverlay
@@ -733,7 +735,7 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: "#000500",
+    backgroundColor: "transparent",
     paddingHorizontal: 15,
     maxWidth: 800,
     alignSelf: "center",
@@ -758,7 +760,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderColor: "#003300",
     borderWidth: 1,
-    backgroundColor: "rgba(0, 15, 0, 0.3)",
+    backgroundColor: "rgba(0, 10, 0, 0.6)",
     marginBottom: 15,
   },
   controlsContainer: {

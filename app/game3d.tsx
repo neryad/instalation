@@ -1,11 +1,8 @@
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
+import * as ScreenOrientation from "expo-screen-orientation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
 import { SanityBar } from "../components/game/SanityBar";
@@ -33,8 +30,6 @@ const DIRECTIONS: Direction[] = ["norte", "sur", "este", "oeste"];
 export default function Game3DScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { width: winW, height: winH } = useWindowDimensions();
-  const isLandscape = winH < winW;
 
   const [state, setState] = useState<PlayerState>(initialPlayerState);
   const [logs, setLogs] = useState<LogMessage[]>([]);
@@ -191,51 +186,80 @@ export default function Game3DScreen() {
     if (newState.lastEvent) addLog(newState.lastEvent, "system");
   }, [state, addLog]);
 
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).catch(
+      () => undefined,
+    );
+    return () => {
+      ScreenOrientation.unlockAsync().catch(() => undefined);
+    };
+  }, []);
+
   return (
     <View style={styles.root}>
+      <View style={styles.canvasBox} onLayout={onCanvasLayout}>
+        {canvasSize.width > 0 && canvasSize.height > 0 && (
+          <RaycastCanvas
+            grid={scene.grid}
+            doors={scene.doors}
+            player={player}
+            entityDist={entityDist}
+            sanity={state.sanity}
+            width={canvasSize.width}
+            height={canvasSize.height}
+          />
+        )}
+      </View>
+
       <CRTOverlay
         isGlitchActive={glitch || fading}
         dangerLevel={state.entityAwareness / 100}
         sanity={state.sanity}
       />
-      <View
-        style={[
-          styles.container,
-          {
-            paddingTop: Math.max(insets.top, 12),
-            paddingBottom: Math.max(insets.bottom, 12),
-          },
-        ]}
-      >
-        <View style={styles.header}>
+
+      <View style={styles.hud} pointerEvents="box-none">
+        <View
+          style={[
+            styles.hudTop,
+            { top: Math.max(insets.top, 10), left: Math.max(insets.left, 10) },
+          ]}
+        >
           <SanityBar sanity={state.sanity} />
         </View>
 
-        <View style={styles.canvasBox} onLayout={onCanvasLayout}>
-          {canvasSize.width > 0 && canvasSize.height > 0 && (
-            <RaycastCanvas
-              grid={scene.grid}
-              doors={scene.doors}
-              player={player}
-              entityDist={entityDist}
-              sanity={state.sanity}
-              width={canvasSize.width}
-              height={canvasSize.height}
-            />
-          )}
+        <View
+          style={[
+            styles.logWrap,
+            {
+              bottom: Math.max(insets.bottom, 10),
+              left: Math.max(insets.left, 10),
+            },
+          ]}
+        >
+          <LogPanel messages={logs} height={80} />
         </View>
 
-        <LogPanel messages={logs} height={isLandscape ? 86 : 130} />
-
-        <ControlPad
-          onForward={handleForward}
-          onTurn={handleTurn}
-          onInvestigate={handleInvestigate}
-          onLook={handleLook}
-          onUseSedative={handleUseSedative}
-          hasSedative={state.inventory.includes("sedative")}
-          disabled={state.gameOver || fading}
-        />
+        <View
+          style={[
+            styles.controlsWrap,
+            {
+              bottom: Math.max(insets.bottom, 10),
+              right: Math.max(insets.right, 10),
+            },
+          ]}
+        >
+          <ControlPad
+            onForward={handleForward}
+            onTurn={handleTurn}
+            onInvestigate={handleInvestigate}
+            onLook={handleLook}
+            onUseSedative={handleUseSedative}
+            hasSedative={state.inventory.includes("sedative")}
+            disabled={state.gameOver || fading}
+            compact
+          />
+        </View>
       </View>
 
       <DoorPrompt
@@ -251,21 +275,25 @@ export default function Game3DScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#000" },
-  container: {
-    flex: 1,
-    backgroundColor: "#000500",
-    paddingHorizontal: 10,
-    maxWidth: 800,
-    alignSelf: "center",
-    width: "100%",
-  },
-  header: { marginBottom: 8 },
   canvasBox: {
-    flex: 1,
-    minHeight: 120,
-    borderWidth: 1,
-    borderColor: "#003300",
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: "#000",
     overflow: "hidden",
+  },
+  hud: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  hudTop: {
+    position: "absolute",
+    maxWidth: 320,
+  },
+  logWrap: {
+    position: "absolute",
+    width: "42%",
+    minWidth: 180,
+    maxWidth: 340,
+  },
+  controlsWrap: {
+    position: "absolute",
   },
 });

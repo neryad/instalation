@@ -9,6 +9,7 @@ interface ControlPadProps {
   onUseSedative: () => void;
   hasSedative: boolean;
   disabled?: boolean;
+  compact?: boolean;
 }
 
 export function ControlPad({
@@ -19,22 +20,23 @@ export function ControlPad({
   onUseSedative,
   hasSedative,
   disabled,
+  compact,
 }: ControlPadProps) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, compact && styles.compactContainer]}>
       <View style={styles.row}>
-        <Button label="INVESTIGAR" onPress={onInvestigate} disabled={disabled} main />
-        <Button label="MIRAR" onPress={onLook} disabled={disabled} />
+        <Button label="INVESTIGAR" onPress={onInvestigate} disabled={disabled} main compact={compact} />
+        <Button label="MIRAR" onPress={onLook} disabled={disabled} compact={compact} />
       </View>
       {hasSedative && (
         <View style={styles.row}>
-          <Button label="USAR SEDANTE" onPress={onUseSedative} disabled={disabled} use />
+          <Button label="SEDANTE" onPress={onUseSedative} disabled={disabled} use compact={compact} />
         </View>
       )}
-      <View style={styles.moveRow}>
-        <Button label="◀" onPress={() => onTurn(true)} disabled={disabled} round />
-        <Button label="▲" onPress={onForward} disabled={disabled} big />
-        <Button label="▶" onPress={() => onTurn(false)} disabled={disabled} round />
+      <View style={[styles.moveRow, compact && styles.compactMoveRow]}>
+        <Button label="◀" onPress={() => onTurn(true)} disabled={disabled} round compact={compact} />
+        <Button label="▲" onPress={onForward} disabled={disabled} big compact={compact} />
+        <Button label="▶" onPress={() => onTurn(false)} disabled={disabled} round compact={compact} />
       </View>
     </View>
   );
@@ -48,6 +50,7 @@ function Button({
   use,
   big,
   round,
+  compact,
 }: {
   label: string;
   onPress: () => void;
@@ -56,6 +59,7 @@ function Button({
   use?: boolean;
   big?: boolean;
   round?: boolean;
+  compact?: boolean;
 }) {
   return (
     <Pressable
@@ -67,19 +71,23 @@ function Button({
         use && styles.useButton,
         big && styles.bigButton,
         round && styles.roundButton,
+        compact && styles.compactButton,
+        compact && big && styles.compactBigButton,
         pressed && styles.pressed,
         disabled && styles.disabled,
       ]}
     >
-      <Text style={styles.text}>{label}</Text>
+      <Text style={[styles.text, compact && styles.compactText]}>{label}</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: { alignItems: "center", gap: 10, padding: 8 },
+  compactContainer: { gap: 6, padding: 6 },
   row: { flexDirection: "row", gap: 10 },
   moveRow: { flexDirection: "row", gap: 14, alignItems: "center", marginTop: 4 },
+  compactMoveRow: { gap: 8 },
   button: {
     borderWidth: 1,
     borderBottomWidth: 4,
@@ -94,6 +102,8 @@ const styles = StyleSheet.create({
   useButton: { backgroundColor: "#001a00", borderColor: "#00aa00" },
   bigButton: { minWidth: 70, paddingVertical: 26 },
   roundButton: { minWidth: 62, paddingVertical: 10 },
+  compactButton: { paddingVertical: 7, paddingHorizontal: 10, minWidth: 54 },
+  compactBigButton: { minWidth: 58, paddingVertical: 22 },
   text: {
     color: "#0f0",
     fontFamily: "monospace",
@@ -101,6 +111,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 1,
   },
+  compactText: { fontSize: 11, letterSpacing: 0.5 },
   pressed: { borderBottomWidth: 1, marginTop: 3, backgroundColor: "#003300" },
   disabled: { opacity: 0.3 },
 });

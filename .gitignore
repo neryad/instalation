@@ -41,3 +41,11 @@ app-example
 # generated native folders
 /ios
 /android
+
+# AI generation temp files
+*.psd
+*.ai
+*.sketch
+*.xcf
+assets/images/*/*.tmp
+assets/images/*/*.partial
