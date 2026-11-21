@@ -485,5 +485,32 @@ Todo el plan de assets visuales y traducción al inglés ha sido implementado:
 - `npx tsc --noEmit --skipLibCheck` pasa limpio. Comandos bilingües funcionales.
 
 ### ✓ Documentación actualizada
-- `README.md` actualizado a v1.2.0 con nuevas características.
-- `CHANGELOG.md` actualizado con sección [1.2.0] detallando todos los cambios.
+- `README.md` actualizado a v1.3.0 con nuevas características.
+- `CHANGELOG.md` actualizado con sección [1.3.0] detallando todos los cambios.
+
+### ✓ Marketing implementado
+- `docs/MARKETING.md` con guía completa de marketing para itch.io, Reddit, Twitter, WhatsApp e Instagram.
+- `docs/PROMO_PROMPTS.md` con prompts actualizados para assets promocionales.
+- Juego publicado en itch.io: https://neryad.itch.io/sanity
+- Plantillas de posts bilingües listas para copiar y pegar.
+
+### ✓ Mejoras de narrativa
+- 16 fragmentos de lore al investigar (cada sala revela historia del Proyecto S.A.N.I.T.Y.)
+- Contexto narrativo en items (thermal_fuse y data_link con texto)
+- Balance de IA por 4 fases (exploración libre → persecución activa)
+- 5 eventos mentales con narrativa (grabaciones, logs, advertencias)
+- Referencias a otros sujetos (01-46) en el lore
+
+### ✓ Mejoras de UI
+- Barra de cordura con efecto glow pulsante
+- Terminal con bordes redondeados y sombra
+- Botones con feedback háptico
+- Jerarquía visual del texto
+- Transiciones entre salas
+- HUD más compacto
+
+### ✓ Builds para tiendas configurados
+- `app.json` actualizado a v1.3.0, nombre "S.A.N.I.T.Y.", orientación portrait
+- `eas.json` configurado con profiles production y production-preview
+- `docs/BUILD_GUIDE.md` con guía completa para Google Play y App Store
+- Descripciones de tienda listas para copiar y pegar
