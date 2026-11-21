@@ -47,9 +47,12 @@ export function RoomVisual({ roomId, sanity }: RoomVisualProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Determinar si usar la versión insane según cordura y si la sala tiene variante
     let key = roomId;
-    if (insaneRooms.has(roomId) && sanity < 30 && roomImages[`${roomId}_insane`]) {
+    if (
+      insaneRooms.has(roomId) &&
+      sanity < 30 &&
+      roomImages[`${roomId}_insane`]
+    ) {
       key = `${roomId}_insane`;
     }
 
@@ -68,7 +71,7 @@ export function RoomVisual({ roomId, sanity }: RoomVisualProps) {
       <Image
         source={roomImages[imageKey]}
         style={[styles.image, !isLoaded && styles.fadeIn]}
-        resizeMode="contain"
+        resizeMode="cover"
         onLoad={() => setIsLoaded(true)}
         fadeDuration={800}
       />
@@ -77,7 +80,7 @@ export function RoomVisual({ roomId, sanity }: RoomVisualProps) {
         style={[
           styles.overlay,
           {
-            backgroundColor: `rgba(0, 5, 0, ${Math.min(0.7, 0.35 + (100 - sanity) / 200)})`,
+            backgroundColor: `rgba(0, 5, 0, ${Math.min(0.55, 0.2 + (100 - sanity) / 200)})`,
           },
         ]}
       />
@@ -87,12 +90,18 @@ export function RoomVisual({ roomId, sanity }: RoomVisualProps) {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 0,
+    width: "100%",
+    aspectRatio: 1376 / 768, // proporción real de tus imágenes
+    overflow: "hidden",
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "#003300",
+    backgroundColor: "#000",
   },
   image: {
     ...StyleSheet.absoluteFillObject,
-    opacity: 1.0,
+    width: "100%",
+    height: "100%",
   },
   fadeIn: {
     opacity: 0,

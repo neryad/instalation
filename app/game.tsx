@@ -539,11 +539,11 @@ export default function GameScreen() {
     const baseVol = settings.volume;
     if (state.sanity < 30) {
       const intensity = (30 - state.sanity) / 30;
-      music.setVolumeAsync(baseVol * (0.3 + intensity * 0.5));
-      music.setRateAsync(0.95 + intensity * 0.1, false);
+      music.setVolumeAsync(baseVol * (0.3 + intensity * 0.5)).catch(() => {});
+      music.setRateAsync(0.95 + intensity * 0.1, false).catch(() => {});
     } else {
-      music.setVolumeAsync(baseVol * 0.3);
-      music.setRateAsync(0.95, false);
+      music.setVolumeAsync(baseVol * 0.3).catch(() => {});
+      music.setRateAsync(0.95, false).catch(() => {});
     }
   }, [state.sanity, state.gameOver, settings.soundEnabled, settings.volume]);
 
@@ -554,7 +554,7 @@ export default function GameScreen() {
       const interval = setInterval(() => {
         const ia = sfxIA.current;
         if (ia) {
-          ia.setVolumeAsync(settings.volume * 0.3);
+          ia.setVolumeAsync(settings.volume * 0.3).catch(() => {});
           ia.replayAsync().catch(() => {});
         }
       }, state.entityAwareness > 80 ? 4000 : 8000);
@@ -577,7 +577,7 @@ export default function GameScreen() {
     else Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
     if (settings.soundEnabled) {
-      sfxBeep.current?.setVolumeAsync(settings.volume);
+      sfxBeep.current?.setVolumeAsync(settings.volume).catch(() => {});
       sfxBeep.current?.replayAsync().catch(() => {});
     }
   };
@@ -600,7 +600,7 @@ export default function GameScreen() {
     if (["norte", "sur", "este", "oeste"].includes(lower)) {
       newState = move(s, lower as Direction);
       if (newState.currentRoom !== s.currentRoom && sets.soundEnabled) {
-        sfxMove.current?.setVolumeAsync(sets.volume);
+        sfxMove.current?.setVolumeAsync(sets.volume).catch(() => {});
         sfxMove.current?.replayAsync().catch(() => {});
       }
     } else if (["investigar", "buscar"].includes(lower)) {
@@ -608,7 +608,7 @@ export default function GameScreen() {
     } else if (lower.startsWith("forzar")) {
       newState = forceDoor(s, args[1] as Direction);
       if (newState.currentRoom !== s.currentRoom && sets.soundEnabled) {
-        sfxForce.current?.setVolumeAsync(sets.volume);
+        sfxForce.current?.setVolumeAsync(sets.volume).catch(() => {});
         sfxForce.current?.replayAsync().catch(() => {});
       }
     } else if (lower === "mirar" || lower === "look") {
@@ -621,7 +621,7 @@ export default function GameScreen() {
       newState = useItem(s, itemToUse);
       if (newState.lastEvent !== s.lastEvent) {
         if (itemToUse.includes("sedat") && sets.soundEnabled) {
-          sfxSedative.current?.setVolumeAsync(sets.volume);
+          sfxSedative.current?.setVolumeAsync(sets.volume).catch(() => {});
           sfxSedative.current?.replayAsync().catch(() => {});
         }
 
@@ -629,7 +629,7 @@ export default function GameScreen() {
           unlockEnding("secret_log");
           setCurrentAchievement("secret_log");
           if (sets.soundEnabled) {
-            sfxIA.current?.setVolumeAsync(sets.volume);
+            sfxIA.current?.setVolumeAsync(sets.volume).catch(() => {});
             sfxIA.current?.replayAsync().catch(() => {});
           }
         }
@@ -652,7 +652,7 @@ export default function GameScreen() {
       Math.random() > 0.6 &&
       sets.soundEnabled
     ) {
-      sfxIA.current?.setVolumeAsync(sets.volume);
+      sfxIA.current?.setVolumeAsync(sets.volume).catch(() => {});
       sfxIA.current?.replayAsync().catch(() => {});
     }
   };
@@ -660,7 +660,6 @@ export default function GameScreen() {
   return (
     <View style={styles.root}>
       <GridBackground sanity={state.sanity} />
-      <RoomVisual roomId={state.currentRoom} sanity={state.sanity} />
       <StaticNoise density={Math.max(0, (50 - state.sanity) / 50)} />
       <ScanWave active={state.entityAwareness > 50} />
       <CRTOverlay
@@ -689,7 +688,10 @@ export default function GameScreen() {
           </View>
         </View>
 
-        {/* TERMINAL: Ahora ocupa todo el centro */}
+        {/* Ilustración de la sala - contenedor fijo */}
+        <RoomVisual roomId={state.currentRoom} sanity={state.sanity} />
+
+        {/* TERMINAL: Texto del juego */}
         <View style={styles.terminalContainer}>
           <TerminalLog
             messages={logMessages}
@@ -730,7 +732,7 @@ export default function GameScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#050805",
   },
 
   container: {
@@ -742,7 +744,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   header: {
-    marginBottom: 10,
+    marginBottom: 8,
   },
   headerRow: {
     flexDirection: "row",
@@ -760,8 +762,9 @@ const styles = StyleSheet.create({
     flex: 1,
     borderColor: "#003300",
     borderWidth: 1,
-    backgroundColor: "rgba(0, 10, 0, 0.6)",
-    marginBottom: 15,
+    backgroundColor: "rgba(0, 5, 0, 0.7)",
+    marginBottom: 10,
+    marginTop: 8,
   },
   controlsContainer: {
     paddingBottom: 10,
