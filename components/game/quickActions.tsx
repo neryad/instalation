@@ -1,3 +1,4 @@
+import * as Haptics from "expo-haptics";
 import React from "react";
 import { useI18n } from "@/locales/I18nContext";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -120,9 +121,15 @@ export function QuickActions({
 
 // Sub-componente para botones limpios
 function ActionButton({ label, cmd, onPress, disabled, isMain, style }: any) {
+  const handlePress = () => {
+    if (!disabled) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+      onPress(cmd);
+    }
+  };
   return (
     <Pressable
-      onPress={() => onPress(cmd)}
+      onPress={handlePress}
       disabled={disabled}
       style={({ pressed }) => [
         styles.button,
@@ -204,29 +211,31 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderBottomWidth: 4, // Efecto mecánico
     borderColor: "#004400",
-    backgroundColor: "rgba(0, 20, 0, 0.8)",
+    backgroundColor: "rgba(0, 20, 0, 0.85)",
     minWidth: 55,
     alignItems: "center",
+    borderRadius: 4,
   },
   mainButton: {
     borderColor: "#008800",
     borderBottomColor: "#00ff00",
     minWidth: 130,
+    backgroundColor: "rgba(0, 40, 0, 0.9)",
   },
   useButton: {
-    backgroundColor: "#001a00",
+    backgroundColor: "rgba(0, 26, 0, 0.9)",
     borderColor: "#00aa00",
     borderBottomColor: "#0f0",
   },
   forceButton: {
     borderColor: "#880000",
     borderBottomColor: "#ff0000",
-    backgroundColor: "#1a0000",
+    backgroundColor: "rgba(26, 0, 0, 0.9)",
   },
   mapButton: {
     borderColor: "#008800",
     borderBottomColor: "#00ff00",
-    backgroundColor: "rgba(0, 50, 0, 0.5)",
+    backgroundColor: "rgba(0, 50, 0, 0.6)",
     minWidth: 130,
   },
   text: {
@@ -240,8 +249,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginTop: 3, // Se "hunde" al presionar
     backgroundColor: "#003300",
+    borderColor: "#00ff00",
   },
-  disabled: { opacity: 0.3 },
+  disabled: { opacity: 0.25 },
 });
 
 // const styles = StyleSheet.create({

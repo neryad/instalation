@@ -153,9 +153,6 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
     fontWeight: "bold",
     letterSpacing: 1,
-    textShadowColor: "rgba(0, 255, 0, 0.5)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
   },
   cardTitle: {
     fontSize: 12,

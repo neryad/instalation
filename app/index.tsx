@@ -188,8 +188,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
-    textShadowColor: "rgba(0, 255, 0, 0.8)",
-    textShadowRadius: 15,
     fontSize: 42,
     fontWeight: "bold",
     color: "#0f0",
@@ -206,7 +204,6 @@ const styles = StyleSheet.create({
   glitchText: {
     color: "#f00",
     transform: [{ scale: 1.03 }, { translateX: 2 }],
-    textShadowColor: "rgba(255, 0, 0, 0.5)",
   },
   version: {
     color: "#050",

@@ -112,8 +112,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
     fontFamily: "monospace",
     fontWeight: "bold",
-    textShadowColor: "rgba(0, 255, 0, 0.7)",
-    textShadowRadius: 4,
   },
   inputWrapper: {
     flex: 1,

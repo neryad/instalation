@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Animated, Image, StyleSheet, View } from "react-native";
 
 interface RoomVisualProps {
   roomId: string;
@@ -45,6 +45,7 @@ const insaneRooms = new Set([
 export function RoomVisual({ roomId, sanity }: RoomVisualProps) {
   const [imageKey, setImageKey] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     let key = roomId;
@@ -57,8 +58,20 @@ export function RoomVisual({ roomId, sanity }: RoomVisualProps) {
     }
 
     if (roomImages[key]) {
-      setImageKey(key);
-      setIsLoaded(false);
+      // Fade out, then change image, then fade in
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setImageKey(key);
+        setIsLoaded(false);
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }).start();
+      });
     } else {
       setImageKey(null);
     }
@@ -67,13 +80,13 @@ export function RoomVisual({ roomId, sanity }: RoomVisualProps) {
   if (!imageKey) return null;
 
   return (
-    <View style={styles.container} pointerEvents="none">
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]} pointerEvents="none">
       <Image
         source={roomImages[imageKey]}
         style={[styles.image, !isLoaded && styles.fadeIn]}
         resizeMode="cover"
         onLoad={() => setIsLoaded(true)}
-        fadeDuration={800}
+        fadeDuration={600}
       />
       {/* Overlay oscuro para que el texto sea legible */}
       <View
@@ -84,7 +97,7 @@ export function RoomVisual({ roomId, sanity }: RoomVisualProps) {
           },
         ]}
       />
-    </View>
+    </Animated.View>
   );
 }
 

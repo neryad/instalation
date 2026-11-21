@@ -216,39 +216,21 @@ const styles = StyleSheet.create({
   },
   good: {
     color: "#00ff88",
-    textShadowColor: "rgba(0, 255, 136, 0.5)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
   },
   bad: {
     color: "#ff0033",
-    textShadowColor: "rgba(255, 0, 51, 0.5)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
   },
   insane: {
     color: "#ffcc00",
-    textShadowColor: "rgba(255, 204, 0, 0.5)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
   },
   captured: {
     color: "#cc00ff",
-    textShadowColor: "rgba(204, 0, 255, 0.5)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
   },
   transcend: {
     color: "#00ddff",
-    textShadowColor: "rgba(0, 221, 255, 0.5)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
   },
   escape: {
     color: "#ff9900",
-    textShadowColor: "rgba(255, 153, 0, 0.5)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
   },
   text: {
     color: "#aaa",

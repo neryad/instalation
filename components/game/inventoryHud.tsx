@@ -18,7 +18,7 @@ export const InventoryHUD: React.FC<InventoryHUDProps> = ({ items }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>INVENTARIO_ACTIVO:</Text>
+      <Text style={styles.title}>INVENTARIO_ACTIVO</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -28,14 +28,18 @@ export const InventoryHUD: React.FC<InventoryHUDProps> = ({ items }) => {
           const imageSource = ITEM_IMAGE_MAP[item];
           return (
             <View key={index} style={styles.itemBadge}>
-              <View style={styles.corner} />
+              {/* Corner accents */}
+              <View style={styles.cornerTL} />
+              <View style={styles.cornerBR} />
               {imageSource ? (
                 <>
-                  <Image source={imageSource} style={styles.itemImage} resizeMode="contain" />
-                  <Text style={styles.itemText}>{item.toUpperCase()}</Text>
+                  <View style={styles.imageGlow}>
+                    <Image source={imageSource} style={styles.itemImage} resizeMode="contain" />
+                  </View>
+                  <Text style={styles.itemText} numberOfLines={1}>{item.toUpperCase()}</Text>
                 </>
               ) : (
-                <Text style={styles.itemText}>{item.toUpperCase()}</Text>
+                <Text style={styles.itemText} numberOfLines={1}>{item.toUpperCase()}</Text>
               )}
             </View>
           );
@@ -47,50 +51,66 @@ export const InventoryHUD: React.FC<InventoryHUDProps> = ({ items }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 15,
-    marginBottom: 10,
+    marginBottom: 6,
   },
   title: {
-    color: "#445544", // Un verde muy oscuro, tipo comentario de código
-    fontSize: 10,
+    color: "#335533",
+    fontSize: 9,
     fontFamily: "monospace",
-    marginBottom: 5,
-    letterSpacing: 1,
+    marginBottom: 4,
+    letterSpacing: 2,
   },
   list: {
-    gap: 8,
+    gap: 6,
   },
   itemBadge: {
-    backgroundColor: "rgba(0, 255, 0, 0.05)",
+    backgroundColor: "rgba(0, 20, 0, 0.8)",
     borderWidth: 1,
-    borderColor: "rgba(0, 255, 0, 0.3)",
-    paddingHorizontal: 8,
-    paddingVertical: 6,
+    borderColor: "rgba(0, 255, 0, 0.25)",
+    paddingHorizontal: 6,
+    paddingVertical: 4,
     alignItems: "center",
     position: "relative",
+    borderRadius: 4,
+    minWidth: 60,
+  },
+  imageGlow: {
+    shadowColor: "#00ff00",
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   itemImage: {
-    width: 48,
-    height: 48,
-    marginBottom: 4,
+    width: 40,
+    height: 40,
   },
-  // Ese pequeño detalle que lo hace parecer una interfaz militar/retro
-  corner: {
+  cornerTL: {
     position: "absolute",
-    top: -1,
-    left: -1,
-    width: 4,
-    height: 4,
+    top: 0,
+    left: 0,
+    width: 6,
+    height: 6,
     borderTopWidth: 2,
     borderLeftWidth: 2,
     borderColor: "#00ff00",
+    borderRadius: 2,
+  },
+  cornerBR: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 6,
+    height: 6,
+    borderBottomWidth: 2,
+    borderRightWidth: 2,
+    borderColor: "#00ff00",
+    borderRadius: 2,
   },
   itemText: {
-    color: "#00ff00",
-    fontSize: 11,
+    color: "#00cc00",
+    fontSize: 8,
     fontFamily: "monospace",
     fontWeight: "bold",
-    textShadowColor: "rgba(0, 255, 0, 0.5)",
-    textShadowRadius: 4,
+    marginTop: 2,
+    letterSpacing: 0.5,
   },
 });

@@ -197,24 +197,22 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   container: { flex: 1, backgroundColor: "transparent" },
-  content: { paddingVertical: 10, paddingTop: 40, paddingBottom: 20 },
-  messageRow: { flexDirection: "row", marginBottom: 8, paddingHorizontal: 5 },
+  content: { paddingVertical: 12, paddingTop: 10, paddingBottom: 20, paddingHorizontal: 8 },
+  messageRow: { flexDirection: "row", marginBottom: 10, paddingHorizontal: 5 },
   timestamp: { color: "#445544", fontFamily: "monospace", fontSize: 12 },
   text: { fontFamily: "monospace", fontSize: 14, lineHeight: 20 },
 
   // --- ESTILOS DE COLORES ---
-  system: { color: "#88aa88" },
-  player: { color: "#00ff00", fontWeight: "bold" },
-  narrative: { color: "#ccffcc" },
-  warning: { color: "#ffcc00" },
-  error: { color: "#ff3333" },
+  system: { color: "#668866", fontSize: 12 },
+  player: { color: "#00ff00", fontWeight: "bold", fontSize: 14 },
+  narrative: { color: "#ccffcc", fontSize: 14, lineHeight: 22 },
+  warning: { color: "#ffcc00", fontWeight: "bold", fontSize: 14 },
+  error: { color: "#ff3333", fontWeight: "bold", fontSize: 14 },
 
   // --- ESTILO PARA RESALTAR DIRECCIONES ---
   highlightedDirection: {
     color: "#00ff00",
     fontWeight: "bold",
-    textShadowColor: "rgba(0, 255, 0, 0.8)",
-    textShadowRadius: 8,
     textDecorationLine: "underline",
   },
   cursor: {
@@ -222,7 +220,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 5,
     marginTop: 5,
-    textShadowColor: "rgba(0, 255, 0, 0.5)",
-    textShadowRadius: 5,
   },
 });
