@@ -388,6 +388,18 @@ Crear los assets funcionales para el motor de juego.
 ### ✓ Step 4: Integrar assets en el código del juego
 Hacer que los nuevos assets visuales se muestren en el juego.
 - Crear `components/game/RoomVisual.tsx` para mostrar ilustraciones de habitaciones como fondo
-- Integrar RoomVisual en `app/game.tsx` entre GridBackground y CRTOverlay
+- Integrar RoomVisual en `app/game.tsx` — ilustraciones visibles en contenedor con aspectRatio 16:9
 - Las variantes insane se activan automáticamente cuando cordura < 30
-- Los assets de texturas, items, UI y promo están listos para uso futuro en el motor 3D y marketing
+- Integrar texturas 3D en `components/game3d/RaycastCanvas.tsx` — paredes, suelo y techo usan texturas tileables con overlays de niebla
+- Los assets de items, UI y promo están listos para uso futuro en el motor 3D y marketing
+
+### ✓ Step 5: Mejorar motor 3D (MODO 3D)
+Reescribir el motor raycaster para movimiento fluido y renderizado mejorado.
+- Player3D: cambiar `dir` (4 direcciones fijas) por `angle` (rotación libre en radianes)
+- Movimiento suave: pasos de 0.15 unidades con colisión por esquinas y deslizamiento por paredes
+- Rotación libre: 30° por turno en lugar de 90° fijos
+- Raycaster: 240 columnas (doblado), coordenadas UV (wallX) para texturizado por columna
+- Floor/ceiling perspective mapping: franjas horizontales convergentes con alternancia de color
+- Entidad IA: silueta oscura con ojos rojos y aura en lugar de rectángulo plano
+- Puertas: mejor sombreado y fallback visual cuando no hay imagen
+- Tests actualizados para nuevo sistema de ángulos
