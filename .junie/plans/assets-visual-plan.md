@@ -393,13 +393,25 @@ Hacer que los nuevos assets visuales se muestren en el juego.
 - Integrar texturas 3D en `components/game3d/RaycastCanvas.tsx` — paredes, suelo y techo usan texturas tileables con overlays de niebla
 - Los assets de items, UI y promo están listos para uso futuro en el motor 3D y marketing
 
-### ✓ Step 5: Mejorar motor 3D (MODO 3D)
-Reescribir el motor raycaster para movimiento fluido y renderizado mejorado.
-- Player3D: cambiar `dir` (4 direcciones fijas) por `angle` (rotación libre en radianes)
-- Movimiento suave: pasos de 0.15 unidades con colisión por esquinas y deslizamiento por paredes
-- Rotación libre: 30° por turno en lugar de 90° fijos
-- Raycaster: 240 columnas (doblado), coordenadas UV (wallX) para texturizado por columna
-- Floor/ceiling perspective mapping: franjas horizontales convergentes con alternancia de color
-- Entidad IA: silueta oscura con ojos rojos y aura en lugar de rectángulo plano
-- Puertas: mejor sombreado y fallback visual cuando no hay imagen
-- Tests actualizados para nuevo sistema de ángulos
+###   Step 5: Mejorar motor 3D (MODO 3D) — ELIMINADO
+El modo 3D fue eliminado del proyecto porque no se veía bien. Se borraron `app/game3d.tsx`, `components/game3d/`, y `engine3d/` completos. El botón del menú principal también fue removido.
+
+### ✓ Stage 6: Mostrar items visuales en el inventario
+Reemplazar los badges de texto del inventario con los sprites de items generados.
+- Modificar `components/game/inventoryHud.tsx` para mostrar la imagen del item en lugar de solo texto
+- Mapear los nombres de items (`sedative`, `keycard_red`, `data_link`, `thermal_fuse`, `dev_log_aes`) a los archivos PNG en `assets/images/items/`
+- Cada item se mostrará como un sprite cuadrado (64x64) con borde verde terminal
+- Mantener el texto como tooltip o debajo de la imagen para accesibilidad
+
+### ✓ Stage 7: Mejorar la pantalla de intro con splash screen
+Usar el `splash_screen.png` generado para reemplazar la intro de texto puro.
+- Modificar `app/intro.tsx` para mostrar el splash screen como fondo con la imagen de `assets/images/ui/splash_screen.png`
+- Mantener las líneas de texto de carga como overlay encima de la imagen
+- Añadir fade-in de la imagen para una transición suave
+- El botón de saltar (skip) seguirá funcionando
+
+### ✓ Stage 8: Organizar assets promocionales
+Preparar los assets de `assets/images/promo/` para subir a tiendas y redes.
+- Verificar que los 6 assets promocionales existen y tienen las dimensiones correctas
+- `app_icon.png` (1024x1024), `screenshot_game.png`, `screenshot_horror.png`, `screenshot_map.png` (1080x1920), `banner_horizontal.png` (1920x600), `video_thumbnail.png` (1280x720)
+- Crear `docs/PROMO_ASSETS.md` con instrucciones de cómo usarlos en App Store, Google Play, itch.io, y redes sociales

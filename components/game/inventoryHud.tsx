@@ -1,9 +1,17 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 interface InventoryHUDProps {
   items: string[];
 }
+
+const ITEM_IMAGE_MAP: Record<string, number> = {
+  sedative: require("@/assets/images/items/sedative.png"),
+  keycard_red: require("@/assets/images/items/keycard_red.png"),
+  data_link: require("@/assets/images/items/data_link.png"),
+  thermal_fuse: require("@/assets/images/items/thermal_fuse.png"),
+  dev_log_aes: require("@/assets/images/items/dev_log_aes.png"),
+};
 
 export const InventoryHUD: React.FC<InventoryHUDProps> = ({ items }) => {
   if (items.length === 0) return null;
@@ -16,12 +24,22 @@ export const InventoryHUD: React.FC<InventoryHUDProps> = ({ items }) => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.list}
       >
-        {items.map((item, index) => (
-          <View key={index} style={styles.itemBadge}>
-            <View style={styles.corner} />
-            <Text style={styles.itemText}>{item.toUpperCase()}</Text>
-          </View>
-        ))}
+        {items.map((item, index) => {
+          const imageSource = ITEM_IMAGE_MAP[item];
+          return (
+            <View key={index} style={styles.itemBadge}>
+              <View style={styles.corner} />
+              {imageSource ? (
+                <>
+                  <Image source={imageSource} style={styles.itemImage} resizeMode="contain" />
+                  <Text style={styles.itemText}>{item.toUpperCase()}</Text>
+                </>
+              ) : (
+                <Text style={styles.itemText}>{item.toUpperCase()}</Text>
+              )}
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -46,9 +64,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 255, 0, 0.05)",
     borderWidth: 1,
     borderColor: "rgba(0, 255, 0, 0.3)",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    alignItems: "center",
     position: "relative",
+  },
+  itemImage: {
+    width: 48,
+    height: 48,
+    marginBottom: 4,
   },
   // Ese pequeño detalle que lo hace parecer una interfaz militar/retro
   corner: {

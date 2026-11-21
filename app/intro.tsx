@@ -2,7 +2,7 @@ import { CRTOverlay } from "@/components/game/CRTOverlay";
 import { clearSave } from "@/storage/gameState";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { GridBackground } from "../components/game/GridBackground";
 
 export default function IntroScreen() {
@@ -10,6 +10,7 @@ export default function IntroScreen() {
   const [lines, setLines] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hasSkipped, setHasSkipped] = useState(false);
+  const splashOpacity = useState(new Animated.Value(0))[0];
 
   const handleSkip = async () => {
     if (hasSkipped) return;
@@ -45,9 +46,22 @@ export default function IntroScreen() {
     }
   }, [currentIndex]);
 
+  useEffect(() => {
+    Animated.timing(splashOpacity, {
+      toValue: 0.6,
+      duration: 1500,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
     <Pressable style={styles.container} onPress={handleSkip}>
       <GridBackground />
+      <Animated.Image
+        source={require("@/assets/images/ui/splash_screen.png")}
+        style={[styles.splashImage, { opacity: splashOpacity }]}
+        resizeMode="contain"
+      />
       <CRTOverlay />
       <View style={styles.content}>
         {lines.map((line, index) => (
@@ -71,12 +85,17 @@ export default function IntroScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "transparent",
-    padding: 30,
+    backgroundColor: "#050805",
     justifyContent: "center",
+  },
+  splashImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: "100%",
+    height: "100%",
   },
   content: {
     width: "100%",
+    paddingHorizontal: 30,
   },
   text: {
     color: "#00aa00",
