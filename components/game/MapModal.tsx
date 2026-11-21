@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useI18n } from "@/locales/I18nContext";
 import {
   Animated,
   Modal,
@@ -32,6 +33,7 @@ export function MapModal({
   roomHistory,
   collectedItems,
 }: MapModalProps) {
+  const { t } = useI18n();
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const pulseRed = useRef(new Animated.Value(1)).current;
   const { width: screenW, height: screenH } = useWindowDimensions();
@@ -201,9 +203,9 @@ export function MapModal({
     >
       <View style={styles.overlay}>
         <View style={styles.header}>
-          <Text style={styles.title}>MAPA DE LA INSTALACIÓN</Text>
+          <Text style={styles.title}>{t("map.title")}</Text>
           <Pressable onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeText}>[CERRAR]</Text>
+            <Text style={styles.closeText}>{t("map.close")}</Text>
           </Pressable>
         </View>
 
@@ -369,8 +371,8 @@ export function MapModal({
                   numberOfLines={1}
                 >
                   {hasKey
-                    ? `TIENES ${itemName}`
-                    : `NECESITA: ${itemName}`}
+                    ? t("map.has_key", { item: itemName })
+                    : t("map.needs_key", { item: itemName })}
                 </Text>
               </View>
             );

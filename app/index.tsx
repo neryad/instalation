@@ -1,4 +1,5 @@
 import { Link, useRouter } from "expo-router";
+import { useI18n } from "@/locales/I18nContext";
 import { useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -8,17 +9,16 @@ import { GridBackground } from "../components/game/GridBackground";
 export default function Home() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useI18n();
   const [glitch, setGlitch] = useState(false);
-  const [currentSubtitle, setCurrentSubtitle] = useState(
-    "Análisis Sistemático de Integridad Neural",
-  );
+  const [currentSubtitle, setCurrentSubtitle] = useState("menu.subtitle");
 
   const horrorMessages = [
-    "S.ISTEMA A.UTÓNOMO N.EURAL I.NTEGRADO T.OTAL Y.IELD",
-    "SOLO HAY OSCURIDAD AQUÍ",
-    "NO PUEDES DESCONECTARTE",
-    "¿ESTÁS SEGURO DE QUE ERES TÚ?",
-    "EL NÚCLEO TE NECESITA",
+    "menu.horror_1",
+    "menu.horror_2",
+    "menu.horror_3",
+    "menu.horror_4",
+    "menu.horror_5",
   ];
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function Home() {
             numberOfLines={1}
             adjustsFontSizeToFit={true}
           >
-            S.A.N.I.T.Y.
+            {t("menu.title")}
           </Text>
           <View
             style={[
@@ -71,7 +71,7 @@ export default function Home() {
 
         <View style={styles.subtitleContainer}>
           <Text style={[styles.subtitle, glitch && styles.glitchSubtitle]}>
-            {currentSubtitle}
+            {t(currentSubtitle)}
           </Text>
         </View>
       </View>
@@ -81,10 +81,10 @@ export default function Home() {
         <View style={styles.warningBox}>
           <View style={styles.warningLine} />
           <Text style={styles.warningText}>
-            ESTADO: FALLO DE MEMORIA DETECTADO
+            {t("menu.warning_1")}
           </Text>
           <Text style={styles.warningText}>
-            PROCESO DE INTEGRACIÓN PENDIENTE...
+            {t("menu.warning_2")}
           </Text>
           <View style={styles.warningLine} />
         </View>
@@ -98,7 +98,7 @@ export default function Home() {
             ]}
           >
             <Text style={[styles.buttonText, glitch && { color: "#f00" }]}>
-              INICIAR SECUENCIA
+              {t("menu.start")}
             </Text>
           </Pressable>
         </Link>
@@ -113,7 +113,7 @@ export default function Home() {
             ]}
           >
             <Text style={[styles.buttonText, { color: "#00aa00", fontSize: 14 }]}>
-              ARCHIVOS
+              {t("menu.archives")}
             </Text>
           </Pressable>
         </Link>
@@ -128,7 +128,7 @@ export default function Home() {
             ]}
           >
             <Text style={[styles.buttonText, { color: "#0f0", fontSize: 14 }]}>
-              CONFIGURACIÓN
+              {t("menu.settings")}
             </Text>
           </Pressable>
         </Link>
@@ -143,7 +143,7 @@ export default function Home() {
             ]}
           >
             <Text style={[styles.buttonText, { color: "#005500", fontSize: 12 }]}>
-              SISTEMA
+              {t("menu.system")}
             </Text>
           </Pressable>
         </Link>
@@ -159,7 +159,7 @@ export default function Home() {
             ]}
           >
             <Text style={styles.footerHeader}>
-              [ ABRIR MANUAL DE OPERACIONES ]
+              {t("menu.manual")}
             </Text>
           </Pressable>
         </Link>

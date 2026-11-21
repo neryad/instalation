@@ -101,7 +101,7 @@ export const TerminalLog = ({ messages, onDirectionPress }: TerminalLogProps) =>
   }, [messages]);
 
   const renderStyledText = (text: string, baseStyle: any) => {
-    const directionRegex = /\b(norte|sur|este|oeste)\b/gi;
+    const directionRegex = /\b(norte|sur|este|oeste|north|south|east|west)\b/gi;
     const parts = text.split(directionRegex);
 
     return (

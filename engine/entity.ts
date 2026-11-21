@@ -1,8 +1,8 @@
-
 import { PlayerState } from "./player";
 import { Direction, rooms } from "./rooms";
+import { tSync } from "./i18n";
 
-export function moveEntity(state: PlayerState): PlayerState {
+export function moveEntity(state: PlayerState, lang: "es" | "en" = "es"): PlayerState {
   let awareness = state.entityAwareness;
   const predicted = predictNextDirection(state.lastDirections);
 
@@ -11,7 +11,7 @@ export function moveEntity(state: PlayerState): PlayerState {
     return {
       ...state,
       entityAwareness: Math.min(100, awareness + 15),
-      lastEvent: `IA: "He analizado tus patrones, Sujeto 00. No hay nada para ti al ${predicted.toUpperCase()}."`,
+      lastEvent: tSync(lang, "entity.gaslight", { dir: predicted.toUpperCase() }),
     };
   }
 
@@ -23,8 +23,7 @@ export function moveEntity(state: PlayerState): PlayerState {
         ...state,
         entityRoom: target,
         entityAwareness: Math.min(100, awareness + 10),
-        lastEvent:
-          "Un zumbido eléctrico recorre el aire. Algo sabe a dónde vas...",
+        lastEvent: tSync(lang, "entity.ambush"),
       };
     }
   }
@@ -34,8 +33,7 @@ export function moveEntity(state: PlayerState): PlayerState {
     return {
       ...state,
       entityAwareness: Math.min(100, awareness + 20),
-      lastEvent:
-        "Las luces parpadean violentamente. Una voz distorsionada susurra: 'ESTÁS CERCA'.",
+      lastEvent: tSync(lang, "entity.confrontation"),
     };
   }
 
@@ -50,20 +48,16 @@ export function moveEntity(state: PlayerState): PlayerState {
 
   // 5. PERSECUCIÓN ACTIVA (Cordura Crítica < 30)
   if (state.sanity < 30) {
-    const stalkingMessages = [
-      "Escuchas pasos metálicos pesados justo detrás de ti.",
-      "Un aliento frío recorre tu nuca.",
-      "La sombra en la pared no imita tus movimientos.",
-      "Sientes una presión inmensa en el pecho. ESTÁ AQUÍ.",
-      "El metal cruje bajo un peso invisible.",
+    const stalkingKeys = [
+      "entity.stalking_1", "entity.stalking_2", "entity.stalking_3",
+      "entity.stalking_4", "entity.stalking_5",
     ];
 
     return {
       ...state,
       entityRoom: state.currentRoom,
       entityAwareness: Math.min(100, awareness + 10),
-      lastEvent:
-        stalkingMessages[Math.floor(Math.random() * stalkingMessages.length)],
+      lastEvent: tSync(lang, stalkingKeys[Math.floor(Math.random() * stalkingKeys.length)]),
     };
   }
 

@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.2.0] — 2026-07
+
+### Added
+- 🎨 **Ilustraciones de salas**: 23 imágenes visuales (18 salas normales + 5 variantes insane de baja cordura) generadas con IA, integradas en `components/game/RoomVisual.tsx`
+- 🎒 **Items visuales**: Sprites PNG (48x48) para cada objeto coleccionable en el inventario (sedative, keycard_red, data_link, thermal_fuse, dev_log_aes)
+- 🖼️ **Splash screen**: Pantalla de intro con `splash_screen.png` como fondo, animación fade-in de 1.5s, y texto de terminal encima
+- 🌐 **Traducción al inglés**: Sistema i18n completo con `locales/es.json` y `locales/en.json` (~200 cadenas), selector de idioma en CONFIGURACIÓN > IDIOMA
+- 📦 **Assets promocionales**: Icono de app (1024x1024), screenshots, banner horizontal, y thumbnail para marketing
+- 📝 **Documentación de assets**: `docs/ASSET_PROMPTS.md` con 45 prompts para generar imágenes, `docs/PROMO_ASSETS.md` con guía para tiendas
+
+### Changed
+- 🌐 **Engine traducido**: `engine/rooms.ts`, `engine/engine.ts`, `engine/events.ts`, `engine/entity.ts` ahora aceptan `lang` y usan `tSync()` para traducciones dinámicas
+- 🌐 **UI traducida**: `app/game.tsx`, `app/index.tsx`, `app/intro.tsx`, `app/FinalScreen.tsx`, `app/SettingsScreen.tsx`, `app/ManualScreen.tsx`, `app/AboutScreen.tsx`, `app/AchievementsScreen.tsx`, `components/game/quickActions.tsx`, `components/game/MapModal.tsx`
+- 🌐 **Comandos bilingües**: El engine acepta comandos en español e inglés (norte/north, sur/south, este/east, oeste/west, investigar/investigate, mirar/look, forzar/force, usar/use)
+- 🔧 **Audio protegido**: Todas las llamadas de `setVolumeAsync`, `setRateAsync`, y `replayAsync` ahora tienen `.catch(() => {})` para evitar errores en consola
+- 📋 **Manual y About traducidos**: Textos hardcodeados reemplazados con `t()` usando `useI18n()`
+- 🗄️ **Storage logs mejorados**: Prefijo `[S.A.N.I.T.Y.]` en logs de `storage/gameState.ts` para identificarlos en debugger
+
+### Removed
+- ❌ **Modo 3D eliminado**: Se borraron `app/game3d.tsx`, `components/game3d/` (RaycastCanvas.tsx), y `engine3d/` (raycaster.ts, controls.ts, scene.ts, sprite.ts, doorRuns.ts, tests). El botón "MODO 3D" del menú principal también fue removido. El motor raycaster se consideró inferior al modo 2D con ilustraciones.
+
+### Fixed
+- 🔊 **Errores de audio en consola**: "Cannot complete operation because sound is not loaded" silenciados con `.catch(() => {})` en `app/game.tsx`
+- 🌐 **Mensajes del engine en español**: Todos los strings hardcodeados del engine ahora se traducen según el idioma activo
+
+### Technical
+- 📁 **Estructura de assets**: Nuevos directorios `assets/images/rooms/`, `textures/`, `items/`, `ui/`, `promo/` organizados por categoría
+- 🔧 **I18nContext**: `locales/I18nContext.tsx` con `t(key, params)` y persistencia del idioma en AsyncStorage
+- 🔧 **engine/i18n.ts**: Funciones para traducir descripciones de salas y normalizar comandos en inglés
+- 📱 **GameSettings extendido**: Nueva propiedad `language: 'es' | 'en'` con persistencia
+
 ## [1.1.0] — 2026-06-10
 
 ### Added

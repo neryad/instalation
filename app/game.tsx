@@ -353,6 +353,7 @@
 import { AchievementToast } from "@/components/game/AchievementToast";
 import { InventoryHUD } from "@/components/game/inventoryHud";
 import { QuickActions } from "@/components/game/quickActions";
+import { useI18n } from "@/locales/I18nContext";
 import { EndingType, unlockEnding } from "@/storage/achievements";
 import { loadGame, saveGame } from "@/storage/gameState";
 import { getSettings } from "@/storage/settings";
@@ -371,11 +372,11 @@ import { LogMessage, TerminalLog } from "../components/game/TerminalLog";
 import {
     forceDoor,
     getForceableDirections,
-    getRoomDescription,
     investigate,
     move,
     useItem,
 } from "../engine/engine";
+import { getRoomDescriptionI18n, normalizeCommand, normalizeDirection } from "../engine/i18n";
 import { initialPlayerState } from "../engine/player";
 import { Direction, rooms } from "../engine/rooms";
 
@@ -388,6 +389,7 @@ const getTimestamp = () => {
 export default function GameScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { t, lang } = useI18n();
   const [state, setState] = useState(initialPlayerState);
   const [logMessages, setLogMessages] = useState<LogMessage[]>([]);
   const [isGlitchActive, setIsGlitchActive] = useState(false);
@@ -475,18 +477,18 @@ export default function GameScreen() {
       const saved = await loadGame();
       if (saved) {
         setState(saved);
-        addLog("PARTIDA ANTERIOR RESTAURADA.", "system");
+        addLog(t("ui.game_restored"), "system");
       } else {
-        addLog("SISTEMA ONLINE. VÍNCULO NEURAL ESTABLECIDO.", "system");
+        addLog(t("ui.system_online"), "system");
       }
-      addLog(getRoomDescription(saved || initialPlayerState), "narrative");
+      addLog(getRoomDescriptionI18n(saved || initialPlayerState, lang), "narrative");
       setIsLoaded(true);
 
       if (!saved?.hasSeenTutorial) {
-        setTimeout(() => addLog("USA LOS BOTONES N/S/E/O PARA MOVERTE", "system"), 2000);
-        setTimeout(() => addLog("TOCA 'INVESTIGAR' PARA BUSCAR OBJETOS", "system"), 4000);
+        setTimeout(() => addLog(t("ui.tutorial_move"), "system"), 2000);
+        setTimeout(() => addLog(t("ui.tutorial_investigate"), "system"), 4000);
         setTimeout(() => {
-          addLog("CADA MOVIMIENTO CONSUME CORDURA. ELIGE CON CUIDADO.", "system");
+          addLog(t("ui.tutorial_sanity"), "system");
           setState((prev) => ({ ...prev, hasSeenTutorial: true }));
         }, 6000);
       }
@@ -582,50 +584,52 @@ export default function GameScreen() {
     }
   };
 
-  const handleCommand = (cmd: string) => {
+  const handleCommand = async (cmd: string) => {
     const s = stateRef.current;
     const sets = settingsRef.current;
     if (s.gameOver) return;
     const lower = cmd.toLowerCase().trim();
-    const args = lower.split(" ");
+    const normalized = normalizeCommand(lower);
+    const args = normalized.split(" ");
     addLog(cmd, "player");
 
     // MECÁNICA DE CORRUPCIÓN DE TEXTO
     if (s.sanity <= 20 && Math.random() > 0.8) {
-      addLog("SISTEMA: ERROR DE MEMORIA. ARCHIVO CORRUPTO.", "error");
+      addLog(t("ui.memory_error"), "error");
     }
 
     let newState = { ...s };
 
-    if (["norte", "sur", "este", "oeste"].includes(lower)) {
-      newState = move(s, lower as Direction);
+    const dir = normalizeDirection(args[0]);
+    if (dir) {
+      newState = move(s, dir, lang);
       if (newState.currentRoom !== s.currentRoom && sets.soundEnabled) {
         sfxMove.current?.setVolumeAsync(sets.volume).catch(() => {});
         sfxMove.current?.replayAsync().catch(() => {});
       }
-    } else if (["investigar", "buscar"].includes(lower)) {
-      newState = investigate(s);
-    } else if (lower.startsWith("forzar")) {
-      newState = forceDoor(s, args[1] as Direction);
+    } else if (["investigar", "buscar"].includes(normalized)) {
+      newState = investigate(s, lang);
+    } else if (normalized.startsWith("forzar")) {
+      newState = forceDoor(s, args[1] as Direction, lang);
       if (newState.currentRoom !== s.currentRoom && sets.soundEnabled) {
         sfxForce.current?.setVolumeAsync(sets.volume).catch(() => {});
         sfxForce.current?.replayAsync().catch(() => {});
       }
-    } else if (lower === "mirar" || lower === "look") {
-      addLog(getRoomDescription(s), "narrative");
+    } else if (normalized === "mirar" || normalized === "look") {
+      addLog(getRoomDescriptionI18n(s, lang), "narrative");
       return;
-    } else if (lower.startsWith("usar")) {
+    } else if (normalized.startsWith("usar")) {
       let itemToUse = args[1];
       if (itemToUse === "sedante") itemToUse = "sedative";
       
-      newState = useItem(s, itemToUse);
+      newState = useItem(s, itemToUse, lang);
       if (newState.lastEvent !== s.lastEvent) {
         if (itemToUse.includes("sedat") && sets.soundEnabled) {
           sfxSedative.current?.setVolumeAsync(sets.volume).catch(() => {});
           sfxSedative.current?.replayAsync().catch(() => {});
         }
 
-        if (newState.lastEvent?.includes("Registro del Desarrollador")) {
+        if (newState.lastEvent?.includes("Registro del Desarrollador") || newState.lastEvent?.includes("Developer Log")) {
           unlockEnding("secret_log");
           setCurrentAchievement("secret_log");
           if (sets.soundEnabled) {
@@ -635,14 +639,14 @@ export default function GameScreen() {
         }
       }
     } else {
-      addLog("COMANDO NO RECONOCIDO.", "error");
+      addLog(t("ui.command_not_recognized"), "error");
       return;
     }
 
     setState(newState);
     if (newState.lastEvent) addLog(newState.lastEvent, "warning");
     if (newState.currentRoom !== s.currentRoom) {
-      addLog(getRoomDescription(newState), "narrative");
+      addLog(getRoomDescriptionI18n(newState, lang), "narrative");
       setTransitionGlitch(true);
       setTimeout(() => setTransitionGlitch(false), 200);
     }
@@ -683,7 +687,7 @@ export default function GameScreen() {
           <View style={styles.headerRow}>
             <InventoryHUD items={state.inventory} />
             <Text style={styles.progressText}>
-              {state.visitedRooms.length}/{Object.keys(rooms).length} SALAS
+              {t("ui.rooms_visited", { visited: state.visitedRooms.length, total: Object.keys(rooms).length })}
             </Text>
           </View>
         </View>

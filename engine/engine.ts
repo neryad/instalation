@@ -1,10 +1,11 @@
 import { moveEntity } from "./entity";
 import { rollMentalEvent } from "./events";
+import { tSync } from "./i18n";
 import { PlayerState } from "./player";
 import { Direction, rooms } from "./rooms";
 import { distortText } from "./sanity";
 
-export function move(state: PlayerState, dir: Direction): PlayerState {
+export function move(state: PlayerState, dir: Direction, lang: "es" | "en" = "es"): PlayerState {
   const room = rooms[state.currentRoom];
   let connections = { ...room.connections };
 
@@ -20,7 +21,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   }
 
   const nextRoomId = connections[dir];
-  if (!nextRoomId) return { ...newState, lastEvent: "No puedes ir por ahí." };
+  if (!nextRoomId) return { ...newState, lastEvent: tSync(lang, "engine.cannot_go_there") };
 
   const nextRoomData = rooms[nextRoomId];
 
@@ -31,7 +32,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   ) {
     return {
       ...newState,
-      lastEvent: "El camino parece desvanecerse. No hay nada allí.",
+      lastEvent: tSync(lang, "engine.path_vanishes"),
     };
   }
 
@@ -40,11 +41,11 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     if (!state.inventory.includes(nextRoomData.lockedBy)) {
       return {
         ...newState,
-        lastEvent: `BLOQUEO: Requiere ${nextRoomData.lockedBy.toUpperCase()}.`,
+        lastEvent: tSync(lang, "engine.blocked_requires", { key: nextRoomData.lockedBy.toUpperCase() }),
       };
     } else {
       // Si SÍ tiene la llave, añadimos feedback de uso
-      newState.lastEvent = `Usas ${nextRoomData.lockedBy.toUpperCase()}. La puerta se abre con un click metálico.`;
+      newState.lastEvent = tSync(lang, "engine.key_used", { key: nextRoomData.lockedBy.toUpperCase() });
     }
   }
 
@@ -63,11 +64,11 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   // 6. PROCESO DE EVENTOS (Jerarquía de importancia)
 
   // A. Primero la IA (Si ella decide aparecer o hablar, tiene prioridad)
-  newState = moveEntity(newState);
+  newState = moveEntity(newState, lang);
 
   // B. Si la IA no hizo nada (lastEvent sigue vacío), tiramos para Evento Mental
   if (!newState.lastEvent && !newState.gameOver) {
-    const mentalEvent = rollMentalEvent(newState);
+    const mentalEvent = rollMentalEvent(newState, lang);
     if (mentalEvent) {
       newState = {
         ...newState,
@@ -84,12 +85,10 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
     newState.gameOver = true;
     if (newState.sanity < 55) {
       newState.endingType = "bad";
-      newState.lastEvent =
-        "Tu mente tiembla. Fallas la secuencia de apagado. La IA te captura en el último momento.";
+      newState.lastEvent = tSync(lang, "engine.shutdown_bad");
     } else {
       newState.endingType = "good";
-      newState.lastEvent =
-        "Ejecutas la secuencia perfectamente. El núcleo colapsa. SISTEMA APAGADO. Eres libre.";
+      newState.lastEvent = tSync(lang, "engine.shutdown_good");
     }
     return newState;
   }
@@ -98,8 +97,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   if (newState.currentRoom === "transcendence_chamber") {
     newState.gameOver = true;
     newState.endingType = "transcend";
-    newState.lastEvent =
-      "Te conectas a la interfaz. Los límites entre tú y la IA se disuelven. Ya no hay 'Sujeto 00'. Solo... existencia.";
+    newState.lastEvent = tSync(lang, "engine.transcend");
     return newState;
   }
 
@@ -107,8 +105,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
   if (newState.currentRoom === "emergency_escape") {
     newState.gameOver = true;
     newState.endingType = "escape";
-    newState.lastEvent =
-      "Corres escaleras arriba. Ves luz solar por primera vez en... ¿días? ¿meses? La IA sigue viva allá abajo. Pero tú escapaste.";
+    newState.lastEvent = tSync(lang, "engine.escape");
     return newState;
   }
 
@@ -118,8 +115,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
       ...newState,
       gameOver: true,
       endingType: "captured",
-      lastEvent:
-        "ALERTA CRÍTICA: La IA te ha localizado. Las puertas se sellan. Escuchas pasos metálicos aproximándose. No hay escapatoria.",
+      lastEvent: tSync(lang, "engine.captured"),
     };
   }
 
@@ -129,8 +125,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
       ...newState,
       gameOver: true,
       endingType: "insane",
-      lastEvent:
-        "CONEXIÓN PERDIDA: Tu mente se fragmenta en el vacío digital. Ya no hay 'ti'.",
+      lastEvent: tSync(lang, "engine.insane_death"),
     };
   }
 
@@ -140,7 +135,7 @@ export function move(state: PlayerState, dir: Direction): PlayerState {
 /**
  * Busca objetos en la sala actual.
  */
-export function investigate(state: PlayerState): PlayerState {
+export function investigate(state: PlayerState, lang: "es" | "en" = "es"): PlayerState {
   const room = rooms[state.currentRoom];
 
   // Si no hay nada o ya lo tenemos, la IA se acerca por el ruido
@@ -148,64 +143,50 @@ export function investigate(state: PlayerState): PlayerState {
     return moveEntity({
       ...state,
       entityAwareness: state.entityAwareness + 5,
-      lastEvent: "Rebuscas... pero no hay nada útil aquí.",
-    });
+      lastEvent: tSync(lang, "engine.investigate_nothing"),
+    }, lang);
   }
 
-  // Mapeo de mensajes de objetos
-  const itemNames: Record<string, string> = {
-    sedative: "un SEDANTE (Úsalo para recuperar cordura)",
-    keycard_red: "la TARJETA ROJA (Acceso al CORE)",
-    data_link: "un DATA LINK (Acceso a terminales)",
-    thermal_fuse: "un FUSIBLE TÉRMICO (Permite abrir puertas de seguridad)",
-  };
-
-  const itemHints: Record<string, string> = {
-    sedative: "PISTA: USA 'usar sedante' CUANDO LA CORDURA ESTÉ BAJA",
-    keycard_red: "PISTA: BUSCA UNA PUERTA CON LECTOR ROJO",
-    data_link: "PISTA: HAY UNA TERMINAL BLOQUEADA EN LA ZONA DE DATOS",
-    thermal_fuse: "PISTA: USA EL FUSIBLE EN UNA CAJA DE SEGURIDAD",
-  };
-
   const foundItem = room.item;
-  const hint = itemHints[foundItem];
+  const itemName = tSync(lang, `engine.item_name_${foundItem}`);
+  const hintKey = `engine.item_hint_${foundItem}`;
+  const hint = tSync(lang, hintKey);
   let newState: PlayerState = {
     ...state,
     inventory: [...state.inventory, foundItem],
     collectedItems: [...state.collectedItems, foundItem],
     entityAwareness: state.entityAwareness + 10,
-    lastEvent: `LOG: Has obtenido ${itemNames[foundItem] || foundItem.toUpperCase()}. El ruido atrajo atención.${hint ? `\n${hint}` : ""}`,
+    lastEvent: tSync(lang, "engine.item_found", { item: itemName }) + (hint && hint !== hintKey ? `\n${hint}` : ""),
   };
 
-  return moveEntity(newState);
+  return moveEntity(newState, lang);
 }
 
 /**
  * Forza una puerta bloqueada (Alto coste).
  */
-export function forceDoor(state: PlayerState, dir: Direction): PlayerState {
+export function forceDoor(state: PlayerState, dir: Direction, lang: "es" | "en" = "es"): PlayerState {
   const room = rooms[state.currentRoom];
   const nextRoomId = room.connections[dir];
 
   if (!nextRoomId)
-    return { ...state, lastEvent: "No hay nada que forzar allí." };
+    return { ...state, lastEvent: tSync(lang, "engine.force_nothing") };
 
   const nextRoomData = rooms[nextRoomId];
 
   // Verificar si la puerta está bloqueada
   if (!nextRoomData.lockedBy)
-    return { ...state, lastEvent: "La puerta no está bloqueada." };
+    return { ...state, lastEvent: tSync(lang, "engine.force_not_locked") };
 
   // Verificar si la puerta es inforzable (nueva validación)
   if (nextRoomData.unbreakable) {
     return {
       ...state,
-      lastEvent:
-        "ERROR CRÍTICO: Puerta de grado militar. Sistemas anti-sabotaje detectados. Imposible forzar.",
+      lastEvent: tSync(lang, "engine.force_unbreakable"),
     };
   }
 
-  const forceMsg = "¡CRACK! Forzaste la entrada. El sistema está en alerta máxima.";
+  const forceMsg = tSync(lang, "engine.force_success");
   let newState: PlayerState = {
     ...state,
     sanity: Math.max(0, state.sanity - 25),
@@ -218,14 +199,14 @@ export function forceDoor(state: PlayerState, dir: Direction): PlayerState {
     lastEvent: forceMsg,
   };
 
-  const entityResult = moveEntity(newState);
+  const entityResult = moveEntity(newState, lang);
   if (entityResult.lastEvent !== forceMsg) {
     entityResult.lastEvent = `${forceMsg}\n${entityResult.lastEvent}`;
   }
   return entityResult;
 }
 
-export function getRoomDescription(state: PlayerState): string {
+export function getRoomDescription(state: PlayerState, lang: "es" | "en" = "es"): string {
   const room = rooms[state.currentRoom];
   let desc = room.baseDescription;
 
@@ -241,9 +222,9 @@ export function getRoomDescription(state: PlayerState): string {
   }
 
   // Pistas de la IA
-  if (state.entityAwareness > 70) desc += "\n[ALERTA: INTERFERENCIA CERCANA]";
+  if (state.entityAwareness > 70) desc += `\n${tSync(lang, "engine.alert_near")}`;
   else if (state.entityAwareness > 40)
-    desc += "\nSientes una mirada pesada en tu nuca.";
+    desc += `\n${tSync(lang, "engine.alert_heavy_gaze")}`;
 
   return distortText(desc, state.sanity);
 }
@@ -275,9 +256,9 @@ export function getForceableDirections(state: PlayerState): Direction[] {
 /**
  * Usa un objeto del inventario.
  */
-export function useItem(state: PlayerState, item: string): PlayerState {
+export function useItem(state: PlayerState, item: string, lang: "es" | "en" = "es"): PlayerState {
   if (!state.inventory.includes(item)) {
-    return { ...state, lastEvent: `No tienes ${item}.` };
+    return { ...state, lastEvent: tSync(lang, "engine.use_no_item", { item }) };
   }
 
   // Lógica de SEDANTE
@@ -289,8 +270,7 @@ export function useItem(state: PlayerState, item: string): PlayerState {
       inventory: newInventory,
       sanity: Math.min(100, state.sanity + 40),
       entityAwareness: Math.max(0, state.entityAwareness - 40),
-      lastEvent:
-        "Te inyectas el sedante. La realidad se vuelve más... estable. La presencia se aleja.",
+      lastEvent: tSync(lang, "engine.use_sedative"),
     };
   }
 
@@ -300,11 +280,11 @@ export function useItem(state: PlayerState, item: string): PlayerState {
     // Simulamos un delay narrativo en el texto
     return {
       ...state,
-      lastEvent: `[SISTEMA]: Desencriptando archivo...\n> Clave requerida...\n> Probando 'neryad'...\n> ACCESO CONCEDIDO.\n\n"Registro del Desarrollador, 2026. Todo parecía normal hasta que..."\n\n[ERROR DE LECTURA]\n\n"Espera... esto no es un registro grabado. TE ESTOY VIENDO. Sé que estás leyendo esto desde una pantalla brillante. ¿Crees que esto es un juego? APÁGALO AHORA."\n\n[CONEXIÓN TERMINADA POR EL HOST]`,
+      lastEvent: tSync(lang, "engine.use_devlog"),
       sanity: Math.max(0, state.sanity - 15), // Asusta al jugador
       entityAwareness: state.entityAwareness + 20, // La IA se da cuenta
     };
   }
 
-  return { ...state, lastEvent: `No puedes usar ${item} aquí o así.` };
+  return { ...state, lastEvent: tSync(lang, "engine.use_cannot", { item }) };
 }

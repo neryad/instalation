@@ -1,4 +1,5 @@
 import { CRTOverlay } from "@/components/game/CRTOverlay";
+import { useI18n } from "@/locales/I18nContext";
 import { resetEndings } from "@/storage/achievements";
 import { GameSettings, getSettings, saveSettings } from "@/storage/settings";
 import { useRouter } from "expo-router";
@@ -10,6 +11,7 @@ import { GridBackground } from "../components/game/GridBackground";
 export default function SettingsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t, lang, setLang } = useI18n();
   const [settings, setSettings] = useState<GameSettings | null>(null);
 
   useEffect(() => {
@@ -79,32 +81,32 @@ export default function SettingsScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-          <Text style={styles.header}>[ CONFIGURACIÓN_DEL_SISTEMA ]</Text>
+          <Text style={styles.header}>{t("settings.title")}</Text>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>DIMENSIÓN VISUAL</Text>
+            <Text style={styles.sectionTitle}>{t("settings.visual")}</Text>
             <SettingToggle 
-                label="FILTRO CRT" 
+                label={t("settings.crt")} 
                 active={settings.crtEnabled} 
                 onPress={() => toggleSetting('crtEnabled')} 
             />
             <SettingToggle 
-                label="EFECTO GLITCH" 
+                label={t("settings.glitch")} 
                 active={settings.glitchEnabled} 
                 onPress={() => toggleSetting('glitchEnabled')} 
             />
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>DIMENSIÓN AUDITIVA</Text>
+            <Text style={styles.sectionTitle}>{t("settings.audio")}</Text>
             <SettingToggle 
-                label="SONIDO E INTERFAZ" 
+                label={t("settings.sound")} 
                 active={settings.soundEnabled} 
                 onPress={() => toggleSetting('soundEnabled')} 
             />
             
             <View style={styles.volumeContainer}>
-                <Text style={styles.toggleLabel}>NIVEL DE VOLUMEN</Text>
+                <Text style={styles.toggleLabel}>{t("settings.volume")}</Text>
                 <View style={styles.volumeSliderLayout}>
                     <Pressable onPress={() => adjustVolume(-0.1)} style={styles.volumeStepBtn}>
                         <Text style={styles.volumeStepText}>-</Text>
@@ -122,38 +124,60 @@ export default function SettingsScreen() {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>NÚCLEO DE DATOS</Text>
+            <Text style={styles.sectionTitle}>{t("settings.data")}</Text>
             <Pressable 
                 style={[styles.resetBtn]} 
                 onPress={handleResetData}
             >
-                <Text style={styles.resetText}>BORRAR REGISTROS DE ARCHIVO</Text>
+                <Text style={styles.resetText}>{t("settings.reset")}</Text>
             </Pressable>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>PROTOCOLO LEGAL</Text>
+            <Text style={styles.sectionTitle}>{t("settings.legal")}</Text>
             <Pressable 
                 style={styles.legalBtn} 
                 // @ts-ignore
                 onPress={() => router.push("/legal/privacy")}
             >
-                <Text style={styles.legalText}>POLÍTICA DE PRIVACIDAD</Text>
+                <Text style={styles.legalText}>{t("settings.privacy")}</Text>
             </Pressable>
             <Pressable 
                 style={styles.legalBtn} 
                 // @ts-ignore
                 onPress={() => router.push("/legal/terms")}
             >
-                <Text style={styles.legalText}>TÉRMINOS DE USO</Text>
+                <Text style={styles.legalText}>{t("settings.terms")}</Text>
             </Pressable>
             <Pressable 
                 style={styles.legalBtn} 
                 // @ts-ignore
                 onPress={() => router.push("/legal/license")}
             >
-                <Text style={styles.legalText}>LICENCIA (MIT)</Text>
+                <Text style={styles.legalText}>{t("settings.license")}</Text>
             </Pressable>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>{t("settings.language")}</Text>
+            <View style={styles.langRow}>
+              <Pressable
+                style={[styles.langBtn, lang === "es" && styles.langBtnActive]}
+                onPress={() => setLang("es")}
+              >
+                <Text style={[styles.langBtnText, lang === "es" && styles.langBtnTextActive]}>
+                  {t("settings.lang_es")}
+                </Text>
+              </Pressable>
+              <Pressable
+                style={[styles.langBtn, lang === "en" && styles.langBtnActive]}
+                onPress={() => setLang("en")}
+              >
+                <Text style={[styles.langBtnText, lang === "en" && styles.langBtnTextActive]}>
+                  {t("settings.lang_en")}
+                </Text>
+              </Pressable>
+            </View>
           </View>
 
           <View style={styles.footer}>
@@ -161,7 +185,7 @@ export default function SettingsScreen() {
               style={styles.backButton}
               onPress={() => router.replace("/")}
             >
-              <Text style={styles.backText}>VOLVER AL MENÚ</Text>
+              <Text style={styles.backText}>{t("settings.back")}</Text>
             </Pressable>
           </View>
       </ScrollView>
@@ -326,5 +350,32 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     letterSpacing: 1,
+  },
+  langRow: {
+    flexDirection: "row",
+    gap: 15,
+    marginTop: 10,
+  },
+  langBtn: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#004400",
+    paddingVertical: 12,
+    alignItems: "center",
+    backgroundColor: "rgba(0, 20, 0, 0.3)",
+  },
+  langBtnActive: {
+    borderColor: "#0f0",
+    backgroundColor: "rgba(0, 255, 0, 0.1)",
+  },
+  langBtnText: {
+    color: "#005500",
+    fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
+    fontSize: 14,
+    fontWeight: "bold",
+    letterSpacing: 1,
+  },
+  langBtnTextActive: {
+    color: "#0f0",
   },
 });

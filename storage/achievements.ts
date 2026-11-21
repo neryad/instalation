@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { loadLanguage } from "@/locales/I18nContext";
 
 const STORAGE_KEY = "UNLOCKED_ENDINGS";
 
@@ -15,14 +16,22 @@ export const EndingDetails: Record<
   EndingType,
   { title: string; color: string; icon: string }
 > = {
-  good: { title: "SISTEMA APAGADO", color: "#00ff88", icon: "[OK]" },
-  bad: { title: "ASIMILADO", color: "#ff0033", icon: "X_X" },
-  insane: { title: "MENTE FRAGMENTADA", color: "#ffcc00", icon: "{~?~}" },
-  captured: { title: "LOCALIZADO", color: "#cc00ff", icon: "( o )" },
-  transcend: { title: "TRASCENDENCIA", color: "#00ddff", icon: "< . >" },
-  escape: { title: "HUÍDA IMPERFECTA", color: "#ff9900", icon: ">>_" },
-  secret_log: { title: "LA VERDAD", color: "#ffffff", icon: "👁️" },
+  good: { title: "achievements.good", color: "#00ff88", icon: "[OK]" },
+  bad: { title: "achievements.bad", color: "#ff0033", icon: "X_X" },
+  insane: { title: "achievements.insane", color: "#ffcc00", icon: "{~?~}" },
+  captured: { title: "achievements.captured", color: "#cc00ff", icon: "( o )" },
+  transcend: { title: "achievements.transcend", color: "#00ddff", icon: "< . >" },
+  escape: { title: "achievements.escape", color: "#ff9900", icon: ">>" },
+  secret_log: { title: "achievements.secret_log", color: "#ffffff", icon: "👁️" },
 };
+
+export async function getEndingTitle(ending: EndingType): Promise<string> {
+  const lang = await loadLanguage();
+  const es = require("@/locales/es.json");
+  const en = require("@/locales/en.json");
+  const translations = lang === "en" ? en : es;
+  return translations.achievements[ending] ?? EndingDetails[ending].title;
+}
 
 export async function unlockEnding(ending: EndingType) {
   try {

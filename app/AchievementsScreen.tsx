@@ -5,6 +5,7 @@ import {
     getUnlockedEndings,
     resetEndings,
 } from "@/storage/achievements";
+import { useI18n } from "@/locales/I18nContext";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -24,6 +25,7 @@ const ALL_ENDINGS: EndingType[] = [
 export default function AchievementsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useI18n();
   const [unlocked, setUnlocked] = useState<EndingType[]>([]);
 
   useEffect(() => {
@@ -50,9 +52,9 @@ export default function AchievementsScreen() {
       <GridBackground />
       <CRTOverlay />
 
-      <Text style={styles.title}>ARCHIVOS DEL SISTEMA</Text>
+      <Text style={styles.title}>{t("achievements.title")}</Text>
       <Text style={styles.subtitle}>
-        FINALES DESBLOQUEADOS: {unlocked.length} / {ALL_ENDINGS.length}
+        {t("achievements.unlocked")}: {unlocked.length} / {ALL_ENDINGS.length}
       </Text>
 
       <ScrollView contentContainerStyle={styles.grid}>
@@ -77,7 +79,7 @@ export default function AchievementsScreen() {
                   isUnlocked ? { color: details.color } : styles.lockedText,
                 ]}
               >
-                {isUnlocked ? details.title : "???"}
+                {isUnlocked ? t(`achievements.${ending}`) : "???"}
               </Text>
             </View>
           );
@@ -89,7 +91,7 @@ export default function AchievementsScreen() {
           style={styles.backButton}
           onPress={() => router.replace("/")}
         >
-          <Text style={styles.backText}>VOLVER AL MENÚ</Text>
+          <Text style={styles.backText}>{t("settings.back")}</Text>
         </Pressable>
 
         {/* Opcional: Para debug */}

@@ -1,5 +1,6 @@
 import { AchievementToast } from "@/components/game/AchievementToast";
 import { CRTOverlay } from "@/components/game/CRTOverlay";
+import { useI18n } from "@/locales/I18nContext";
 import { EndingType, unlockEnding } from "@/storage/achievements";
 import { getSettings } from "@/storage/settings";
 import { Audio } from "expo-av";
@@ -13,6 +14,7 @@ export default function FinalScreen() {
     type: "good" | "bad" | "insane" | "captured" | "transcend" | "escape";
   }>();
   const router = useRouter();
+  const { t } = useI18n();
   const soundRef = useRef<Audio.Sound | null>(null);
   const [achievementToast, setAchievementToast] = useState<EndingType | null>(null);
   const [showContent, setShowContent] = useState(false);
@@ -102,51 +104,13 @@ export default function FinalScreen() {
   };
 
   const getEndingContent = () => {
-    switch (type) {
-      case "good":
-        return {
-          title: "ESCAPASTE",
-          text: "Saliste del lugar. Pero algo aprendió de ti.\nAhora sabe cómo piensas.",
-          button: "VOLVER A LA REALIDAD",
-          style: styles.good,
-        };
-      case "insane":
-        return {
-          title: "MENTE FRAGMENTADA",
-          text: "Tu conciencia se disuelve en el vacío digital.\nYa no sabes dónde terminas tú y empieza el código.",
-          button: "REINICIAR INTERFAZ",
-          style: styles.insane,
-        };
-      case "captured":
-        return {
-          title: "LOCALIZADO",
-          text: "La IA cierra todas las salidas.\nEscuchas pasos metálicos. Está aquí.\nNo hay escapatoria.",
-          button: "ACEPTAR TU DESTINO",
-          style: styles.captured,
-        };
-      case "transcend":
-        return {
-          title: "TRASCENDENCIA",
-          text: "Ya no hay 'tú'. Ya no hay 'IA'.\nSolo datos fluyendo en armonía infinita.\n¿Esto es victoria o rendición?",
-          button: "EXISTIR",
-          style: styles.transcend,
-        };
-      case "escape":
-        return {
-          title: "ESCAPASTE",
-          text: "Ves la luz del sol. Respiras aire real.\nPero allá abajo, la IA sigue funcionando.\nY ahora sabe cómo piensas.",
-          button: "VOLVER AL MUNDO",
-          style: styles.escape,
-        };
-      case "bad":
-      default:
-        return {
-          title: "ASIMILADO",
-          text: "Llegaste al núcleo, pero demasiado tarde.\nLa IA te absorbe. Eres parte del sistema ahora.",
-          button: "UNIRSE AL SERVIDOR",
-          style: styles.bad,
-        };
-    }
+    const key = `endings.${type}`;
+    return {
+      title: t(`${key}.title`),
+      text: t(`${key}.text`),
+      button: t(`${key}.button`),
+      style: styles[type] || styles.bad,
+    };
   };
 
   const content = getEndingContent();

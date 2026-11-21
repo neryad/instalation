@@ -1,45 +1,48 @@
 import { PlayerState } from "./player";
 import { rooms } from "./rooms";
+import { tSync } from "./i18n";
 
 export interface MentalEvent {
   id: string;
-  text: (state: PlayerState) => string; // Ahora es una función para ser dinámico
+  text: (state: PlayerState, lang: "es" | "en") => string;
   sanityChange: number;
-  probability: (state: PlayerState) => number; // Probabilidad variable
+  probability: (state: PlayerState) => number;
 }
 
 export const mentalEvents: MentalEvent[] = [
   {
     id: "whisper_echo",
-    text: (state) =>
-      `Escuchas un eco de tus propios pasos hacia el ${state.lastDirections[state.lastDirections.length - 1] || "vacío"}.`,
+    text: (state, lang) =>
+      tSync(lang, "events.whisper_echo", { dir: state.lastDirections[state.lastDirections.length - 1] || "" }),
     sanityChange: -5,
     probability: (state) => (state.sanity < 50 ? 0.4 : 0.1),
   },
   {
     id: "ai_direct_threat",
-    text: (state) => {
+    text: (state, lang) => {
       const item = state.inventory.length > 0 ? state.inventory[state.inventory.length - 1] : null;
-      return `La IA proyecta tu nombre en las paredes: "No puedes escapar de ti mismo, ${item ? "aunque lleves esa " + item : "sujeto 00"}"`;
+      if (item) {
+        return tSync(lang, "events.ai_direct_threat_with_item", { item });
+      }
+      return tSync(lang, "events.ai_direct_threat");
     },
     sanityChange: -10,
     probability: (state) => (state.sanity < 30 ? 0.3 : 0.05),
   },
   {
     id: "room_memory",
-    text: (state) => {
+    text: (state, lang) => {
       const room = rooms[state.currentRoom];
-      return `Las paredes de ${room.id} parecen recordarte algo que aún no ha sucedido.`;
+      return tSync(lang, "events.room_memory", { room: room.id });
     },
     sanityChange: -4,
     probability: (state) => (state.sanity < 70 ? 0.2 : 0.02),
   },
-  // En events.ts añade este nuevo evento:
   {
     id: "item_hallucination",
-    text: (state) => {
+    text: (state, lang) => {
       const item = state.inventory[state.inventory.length - 1];
-      return `Miras la ${item} en tu mano. Por un segundo, parece un ojo abierto parpadeando hacia ti.`;
+      return tSync(lang, "events.item_hallucination", { item });
     },
     sanityChange: -7,
     probability: (state) =>
@@ -48,9 +51,9 @@ export const mentalEvents: MentalEvent[] = [
 
   {
     id: "item_corruption",
-    text: (state) => {
-      const item = state.inventory.length > 0 ? state.inventory[state.inventory.length - 1] : "tus manos";
-      return `Miras fijamente la ${item}. Por un instante, parece estar hecha de píxeles que se desvanecen.`;
+    text: (state, lang) => {
+      const item = state.inventory.length > 0 ? state.inventory[state.inventory.length - 1] : "";
+      return tSync(lang, "events.item_corruption", { item });
     },
     sanityChange: -5,
     probability: (state) =>
@@ -58,24 +61,25 @@ export const mentalEvents: MentalEvent[] = [
   },
   {
     id: "command_mimic",
-    text: (state) =>
-      `IA: "¿De verdad crees que tú escribiste ese último comando?"`,
+    text: (_state, lang) =>
+      tSync(lang, "events.command_mimic"),
     sanityChange: -8,
     probability: (state) => (state.sanity < 40 ? 0.15 : 0),
   },
   {
     id: "false_item_pickup",
-    text: (state) =>
-      `Crees ver una salida al final del pasillo, pero desaparece cuando parpadeas.`,
+    text: (_state, lang) =>
+      tSync(lang, "events.false_exit"),
     sanityChange: -5,
     probability: (state) => (state.sanity < 30 ? 0.3 : 0),
   },
 ];
 
-export function rollMentalEvent(state: PlayerState): MentalEvent | null {
-  // Ordenamos para que los eventos más raros/graves se evalúen primero
+export function rollMentalEvent(state: PlayerState, lang: "es" | "en" = "es"): { id: string; text: (s: PlayerState) => string; sanityChange: number; probability: (s: PlayerState) => number } | null {
   for (const e of mentalEvents) {
-    if (Math.random() < e.probability(state)) return e;
+    if (Math.random() < e.probability(state)) {
+      return { ...e, text: (s: PlayerState) => e.text(s, lang) };
+    }
   }
   return null;
 }

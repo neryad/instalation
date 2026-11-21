@@ -1,4 +1,5 @@
 import { CRTOverlay } from "@/components/game/CRTOverlay";
+import { useI18n } from "@/locales/I18nContext";
 import { clearSave } from "@/storage/gameState";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -7,6 +8,7 @@ import { GridBackground } from "../components/game/GridBackground";
 
 export default function IntroScreen() {
   const router = useRouter();
+  const { t } = useI18n();
   const [lines, setLines] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hasSkipped, setHasSkipped] = useState(false);
@@ -20,13 +22,13 @@ export default function IntroScreen() {
   };
 
   const introText = [
-    "> ESTABLECIENDO VÍNCULO NEURAL...",
-    "> CARGANDO PROTOCOLO S.A.N.I.T.Y. [v2.0.26]",
-    "> UBICACIÓN: INSTALACIÓN SUBTERRÁNEA - SECTOR 7",
-    "> ANALIZANDO INTEGRIDAD DEL SUJETO...",
-    "> ADVERTENCIA: INTERFERENCIA DETECTADA EN EL NÚCLEO.",
-    "> OBJETIVO: RECONEXIÓN TOTAL.",
-    "> INICIANDO SESIÓN...",
+    t("intro.line_1"),
+    t("intro.line_2"),
+    t("intro.line_3"),
+    t("intro.line_4"),
+    t("intro.line_5"),
+    t("intro.line_6"),
+    t("intro.line_7"),
   ];
 
   useEffect(() => {

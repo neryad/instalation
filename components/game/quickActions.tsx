@@ -1,4 +1,5 @@
 import React from "react";
+import { useI18n } from "@/locales/I18nContext";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface QuickActionsProps {
@@ -16,26 +17,27 @@ export function QuickActions({
   forceableDirections = [],
   onOpenMap,
 }: QuickActionsProps) {
+  const { t, lang } = useI18n();
   return (
     <View style={styles.container}>
       {/* Fila superior: Acciones principales */}
       <View style={styles.row}>
         <ActionButton
-          label="INVESTIGAR"
+          label={t("quickactions.investigate")}
           cmd="investigar"
           onPress={onAction}
           disabled={disabled}
           isMain
         />
         <ActionButton
-          label="MIRAR"
+          label={t("quickactions.look")}
           cmd="mirar"
           onPress={onAction}
           disabled={disabled}
         />
         {onOpenMap && (
           <ActionButton
-            label="MAPA"
+            label={t("quickactions.map")}
             cmd=""
             onPress={() => onOpenMap()}
             disabled={disabled}
@@ -48,7 +50,7 @@ export function QuickActions({
       <View style={styles.row}>
         <View style={{ width: 55 }} />
         <ActionButton
-          label="N"
+          label={t("quickactions.north")}
           cmd="norte"
           onPress={onAction}
           disabled={disabled}
@@ -57,7 +59,7 @@ export function QuickActions({
       </View>
       <View style={styles.row}>
         <ActionButton
-          label="O"
+          label={lang === "en" ? "W" : t("quickactions.west")}
           cmd="oeste"
           onPress={onAction}
           disabled={disabled}
@@ -68,7 +70,7 @@ export function QuickActions({
           </View>
         </View>
         <ActionButton
-          label="E"
+          label={t("quickactions.east")}
           cmd="este"
           onPress={onAction}
           disabled={disabled}
@@ -77,7 +79,7 @@ export function QuickActions({
       <View style={styles.row}>
         <View style={{ width: 55 }} />
         <ActionButton
-          label="S"
+          label={t("quickactions.south")}
           cmd="sur"
           onPress={onAction}
           disabled={disabled}
@@ -89,7 +91,7 @@ export function QuickActions({
       {hasSedative && (
         <View style={styles.row}>
           <ActionButton
-            label="USAR SEDANTE"
+            label={t("quickactions.use_sedative")}
             cmd="usar sedante"
             onPress={onAction}
             disabled={disabled}
@@ -103,7 +105,7 @@ export function QuickActions({
           {forceableDirections.map((dir) => (
             <ActionButton
               key={dir}
-              label={`FORZAR ${dir.toUpperCase().charAt(0)}`}
+              label={`${t("quickactions.force")} ${dir.toUpperCase().charAt(0)}`}
               cmd={`forzar ${dir}`}
               onPress={onAction}
               disabled={disabled}

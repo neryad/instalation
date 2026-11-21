@@ -1,4 +1,5 @@
 import { CRTOverlay } from "@/components/game/CRTOverlay";
+import { useI18n } from "@/locales/I18nContext";
 import { useRouter } from "expo-router";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -7,6 +8,7 @@ import { GridBackground } from "../components/game/GridBackground";
 export default function ManualScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useI18n();
 
   return (
     <View
@@ -18,53 +20,45 @@ export default function ManualScreen() {
       <GridBackground />
       <CRTOverlay />
 
-      <Text style={styles.header}>// PROTOCOLO_DE_SUPERVIVENCIA</Text>
+      <Text style={styles.header}>{t("manual.header")}</Text>
 
       <ScrollView contentContainerStyle={styles.content}>
         
         {/* SECCIÓN 1: MISIÓN */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>1. MISIÓN PRIORITARIA</Text>
+          <Text style={styles.sectionTitle}>{t("manual.mission_title")}</Text>
           <Text style={styles.text}>
-            Sujeto 00: Tu objetivo es llegar al NÚCLEO (Core) de la instalación y ejecutar el protocolo final.
-            {"\n\n"}
-            La IA que controla el lugar es hostil. No confíes en lo que ves. No confíes en lo que escuchas.
+            {t("manual.mission_text")}
           </Text>
         </View>
 
         {/* SECCIÓN 2: MECÁNICAS DE RIESGO */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>2. AMENAZAS SISTÉMICAS</Text>
+          <Text style={styles.sectionTitle}>{t("manual.threats_title")}</Text>
           
           <View style={styles.mechanicBox}>
-            <Text style={[styles.mechanicTitle, { color: "#0f0" }]}>CORDURA (Sanity)</Text>
+            <Text style={[styles.mechanicTitle, { color: "#0f0" }]}>{t("manual.sanity_title")}</Text>
             <Text style={styles.text}>
-              Tu mente se fragmenta con el tiempo y el horror.
-              {"\n"}- Si llega a 0, pierdes tu identidad.
-              {"\n"}- Mantente estable usando SEDANTES o evitando horrores.
-              {"\n"}- Alucinaciones visuales y auditivas aumentan con la locura.
+              {t("manual.sanity_text")}
             </Text>
           </View>
 
           <View style={styles.mechanicBox}>
-            <Text style={[styles.mechanicTitle, { color: "#f00" }]}>RUIDO (Awareness)</Text>
+            <Text style={[styles.mechanicTitle, { color: "#f00" }]}>{t("manual.awareness_title")}</Text>
             <Text style={styles.text}>
-              La IA te escucha. Cada acción ruidosa aumenta su atención.
-              {"\n"}- INVESTIGAR: +Riesgo moderado.
-              {"\n"}- FORZAR PUERTAS: +Riesgo CRÍTICO.
-              {"\n"}- Si llega al 100%, serás localizado y eliminado.
+              {t("manual.awareness_text")}
             </Text>
           </View>
         </View>
 
         {/* SECCIÓN 3: COMANDOS */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>3. COMANDOS DE INTERFAZ</Text>
-          <View style={styles.cmdRow}><Text style={styles.cmd}>N, S, E, W</Text><Text style={styles.desc}>Desplazamiento físico.</Text></View>
-          <View style={styles.cmdRow}><Text style={styles.cmd}>INVESTIGAR</Text><Text style={styles.desc}>Buscar ítems en la sala.</Text></View>
-          <View style={styles.cmdRow}><Text style={styles.cmd}>MIRAR</Text><Text style={styles.desc}>Analizar el entorno visible.</Text></View>
-          <View style={styles.cmdRow}><Text style={styles.cmd}>USAR [ITEM]</Text><Text style={styles.desc}>Utilizar objeto del inventario.</Text></View>
-          <View style={styles.cmdRow}><Text style={styles.cmd}>FORZAR [DIR]</Text><Text style={styles.desc}>Romper cerradura sin llave (-Cordura).</Text></View>
+          <Text style={styles.sectionTitle}>{t("manual.commands_title")}</Text>
+          <View style={styles.cmdRow}><Text style={styles.cmd}>N, S, E, W</Text><Text style={styles.desc}>{t("manual.cmd_move")}</Text></View>
+          <View style={styles.cmdRow}><Text style={styles.cmd}>INVESTIGAR</Text><Text style={styles.desc}>{t("manual.cmd_investigate")}</Text></View>
+          <View style={styles.cmdRow}><Text style={styles.cmd}>MIRAR</Text><Text style={styles.desc}>{t("manual.cmd_look")}</Text></View>
+          <View style={styles.cmdRow}><Text style={styles.cmd}>USAR [ITEM]</Text><Text style={styles.desc}>{t("manual.cmd_use")}</Text></View>
+          <View style={styles.cmdRow}><Text style={styles.cmd}>FORZAR [DIR]</Text><Text style={styles.desc}>{t("manual.cmd_force")}</Text></View>
         </View>
 
       </ScrollView>
@@ -74,7 +68,7 @@ export default function ManualScreen() {
           style={styles.backButton}
           onPress={() => router.replace("/")}
         >
-          <Text style={styles.backText}>CERRAR ARCHIVO</Text>
+          <Text style={styles.backText}>{t("manual.close")}</Text>
         </Pressable>
       </View>
     </View>

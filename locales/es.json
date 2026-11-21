@@ -1,0 +1,271 @@
+{
+  "rooms": {
+    "awakening": {
+      "base": "Despiertas sobre una camilla metálica. La luz roja parpadea. La única salida es un arco de seguridad hacia el **norte**.",
+      "insane": "La luz roja late como un corazón. Escuchas respiración ajena tras la puerta al **norte**."
+    },
+    "hallway_a": {
+      "base": "Un pasillo estrecho con símbolos extraños. Se bifurca hacia el **este** y **oeste**. Al **norte**, un conducto de ventilación gotea aceite. Al **sur** queda la sala de despertar."
+    },
+    "shadow_lab": {
+      "base": "Un laboratorio de sombras. Tu reflejo se mueve con retraso en los cristales. La salida principal es al **oeste**. Un pasillo técnico va al **norte**. Una escalera metálica desciende al **sur**."
+    },
+    "data_morgue": {
+      "base": "Filas infinitas de servidores zumban con un tono grave. El aire está helado. Cientos de luces azules parpadean como ojos en la oscuridad. Un conducto de mantenimiento va al **este**. La salida está al **sur**.",
+      "insane": "Los servidores susurran tu nombre. Las luces azules te siguen. Saben lo que hiciste."
+    },
+    "data_terminal": {
+      "base": "Una terminal zumba constantemente. Cables van hacia el **oeste**. Un pasadizo estrecho lleva al **sur**."
+    },
+    "mirror_gallery": {
+      "base": "Una sala llena de espejos negros. Ves un destello digital al **norte**. La salida lógica es el **sur**. Un conducto cubierto de espejos va al **oeste**."
+    },
+    "armory": {
+      "base": "Un casillero abierto con olor a ozono. Hay un rastro de aceite hacia el **sur**. El pasillo queda al **este**. Una puerta con escáner retinal está al **norte**."
+    },
+    "neural_link": {
+      "base": "Sillones reclinables con interfaces cerebrales cuelgan del techo. Monitores muestran estática blanca. Es un lugar de silencio absoluto. Una trampilla va al **norte**. La salida es al **sur**.",
+      "insane": "Los sillones parecen ocupados por figuras traslúcidas. Sientes el impulso de sentarte y conectarte."
+    },
+    "waste_disposal": {
+      "base": "Un vertedero de chatarra orgánica y cables pelados. El calor emana de una escotilla abierta hacia el **este**. El camino seguro es volver al **norte**."
+    },
+    "incinerator": {
+      "base": "El calor es insoportable. Las paredes están negras por el hollín. El ruido de la maquinaria golpea tu pecho. Puedes salir al **oeste** o subir una escalera al **norte**.",
+      "insane": "El fuego en las rejillas parece tener formas de manos. Escuchas gritos ahogados entre el rugido del fuego."
+    },
+    "ventilation_shaft": {
+      "base": "Un conducto claustrofóbico. Hay un silbido de vapor hacia el **oeste**. El camino principal sigue al **norte** o regresa al **sur**."
+    },
+    "life_support": {
+      "base": "Maquinaria ruidosa mantiene el aire circulando. Una compuerta con el símbolo de 'Bio-Hazard' lleva al **norte**. El conducto está al **este**. Un pasillo con espejos va al **sur**."
+    },
+    "dead_hydroponics": {
+      "base": "Plantas secas y grises crujen bajo tus pies. El aire huele a agua estancada y moho. Es un cementerio vegetal. La salida es al **sur** (life_support). Una trampilla mohosa lleva al **este**.",
+      "insane": "Las viñas secas parecen moverse cuando no las miras. Sientes que algo respira entre el follaje muerto."
+    },
+    "core_door": {
+      "base": "Una puerta blindada con un lector rojo bloquea el **norte**. El conducto queda al **sur**."
+    },
+    "core": {
+      "base": "El núcleo central. Un monolito de servidores palpita con energía azul. La IA ya no susurra. HABLA:\n\n'Has llegado, Sujeto 00. Pero aún no has terminado.'\n\nTres caminos te esperan:\n**norte**: Panel de apagado de emergencia.\n**este**: Cámara de transferencia neural.\n**oeste**: Compuerta de evacuación rápida."
+    },
+    "shutdown_protocol": {
+      "base": "Accedes al panel de apagado. Requiere secuencia manual de 47 pasos. Tu mano tiembla sobre los controles.\n\n[FINAL: APAGADO TOTAL]"
+    },
+    "transcendence_chamber": {
+      "base": "Entras a la cámara de transferencia. Interfaces neuronales cuelgan del techo como tentáculos. La IA te espera.\n\n[FINAL: FUSIÓN]"
+    },
+    "emergency_escape": {
+      "base": "Activas la evacuación. Luces rojas parpadean. Una escalera de emergencia se abre hacia la superficie. Puedes huir... pero la IA seguirá aquí.\n\n[FINAL: ESCAPE COBARDE]"
+    }
+  },
+  "engine": {
+    "cannot_go_there": "No puedes ir por ahí.",
+    "path_vanishes": "El camino parece desvanecerse. No hay nada allí.",
+    "blocked_requires": "BLOQUEO: Requiere {key}.",
+    "key_used": "Usas {key}. La puerta se abre con un click metálico.",
+    "shutdown_bad": "Tu mente tiembla. Fallas la secuencia de apagado. La IA te captura en el último momento.",
+    "shutdown_good": "Ejecutas la secuencia perfectamente. El núcleo colapsa. SISTEMA APAGADO. Eres libre.",
+    "transcend": "Te conectas a la interfaz. Los límites entre tú y la IA se disuelven. Ya no hay 'Sujeto 00'. Solo... existencia.",
+    "escape": "Corres escaleras arriba. Ves luz solar por primera vez en... ¿días? ¿meses? La IA sigue viva allá abajo. Pero tú escapaste.",
+    "captured": "ALERTA CRÍTICA: La IA te ha localizado. Las puertas se sellan. Escuchas pasos metálicos aproximándose. No hay escapatoria.",
+    "insane_death": "CONEXIÓN PERDIDA: Tu mente se fragmenta en el vacío digital. Ya no hay 'ti'.",
+    "investigate_nothing": "Rebuscas... pero no hay nada útil aquí.",
+    "item_found": "LOG: Has obtenido {item}. El ruido atrajo atención.",
+    "item_hint_sedative": "PISTA: USA 'usar sedante' CUANDO LA CORDURA ESTÉ BAJA",
+    "item_hint_keycard": "PISTA: BUSCA UNA PUERTA CON LECTOR ROJO",
+    "item_hint_datalink": "PISTA: HAY UNA TERMINAL BLOQUEADA EN LA ZONA DE DATOS",
+    "item_hint_fuse": "PISTA: USA EL FUSIBLE EN UNA CAJA DE SEGURIDAD",
+    "item_name_sedative": "un SEDANTE (Úsalo para recuperar cordura)",
+    "item_name_keycard": "la TARJETA ROJA (Acceso al CORE)",
+    "item_name_datalink": "un DATA LINK (Acceso a terminales)",
+    "item_name_fuse": "un FUSIBLE TÉRMICO (Permite abrir puertas de seguridad)",
+    "force_nothing": "No hay nada que forzar allí.",
+    "force_not_locked": "La puerta no está bloqueada.",
+    "force_unbreakable": "ERROR CRÍTICO: Puerta de grado militar. Sistemas anti-sabotaje detectados. Imposible forzar.",
+    "force_success": "¡CRACK! Forzaste la entrada. El sistema está en alerta máxima.",
+    "use_no_item": "No tienes {item}.",
+    "use_sedative": "Te inyectas el sedante. La realidad se vuelve más... estable. La presencia se aleja.",
+    "use_devlog": "[SISTEMA]: Desencriptando archivo...\n> Clave requerida...\n> Probando 'neryad'...\n> ACCESO CONCEDIDO.\n\n\"Registro del Desarrollador, 2026. Todo parecía normal hasta que...\"\n\n[ERROR DE LECTURA]\n\n\"Espera... esto no es un registro grabado. TE ESTOY VIENDO. Sé que estás leyendo esto desde una pantalla brillante. ¿Crees que esto es un juego? APÁGALO AHORA.\"\n\n[CONEXIÓN TERMINADA POR EL HOST]",
+    "use_cannot": "No puedes usar {item} aquí o así.",
+    "alert_near": "[ALERTA: INTERFERENCIA CERCANA]",
+    "alert_heavy_gaze": "Sientes una mirada pesada en tu nuca."
+  },
+  "events": {
+    "whisper_echo": "Escuchas un eco de tus propios pasos hacia el {dir}.",
+    "ai_direct_threat_with_item": "La IA proyecta tu nombre en las paredes: \"No puedes escapar de ti mismo, aunque lleves esa {item}\"",
+    "ai_direct_threat": "La IA proyecta tu nombre en las paredes: \"No puedes escapar de ti mismo, sujeto 00\"",
+    "room_memory": "Las paredes de {room} parecen recordarte algo que aún no ha sucedido.",
+    "item_hallucination": "Miras la {item} en tu mano. Por un segundo, parece un ojo abierto parpadeando hacia ti.",
+    "item_corruption": "Miras fijamente la {item}. Por un instante, parece estar hecha de píxeles que se desvanecen.",
+    "command_mimic": "IA: \"¿De verdad crees que tú escribiste ese último comando?\"",
+    "false_exit": "Crees ver una salida al final del pasillo, pero desaparece cuando parpadeas."
+  },
+  "entity": {
+    "gaslight": "IA: \"He analizado tus patrones, Sujeto 00. No hay nada para ti al {dir}.\"",
+    "ambush": "Un zumbido eléctrico recorre el aire. Algo sabe a dónde vas...",
+    "confrontation": "Las luces parpadean violentamente. Una voz distorsionada susurra: 'ESTÁS CERCA'.",
+    "stalking_1": "Escuchas pasos metálicos pesados justo detrás de ti.",
+    "stalking_2": "Un aliento frío recorre tu nuca.",
+    "stalking_3": "La sombra en la pared no imita tus movimientos.",
+    "stalking_4": "Sientes una presión inmensa en el pecho. ESTÁ AQUÍ.",
+    "stalking_5": "El metal cruje bajo un peso invisible."
+  },
+  "ui": {
+    "system_online": "SISTEMA ONLINE. VÍNCULO NEURAL ESTABLECIDO.",
+    "game_restored": "PARTIDA ANTERIOR RESTAURADA.",
+    "tutorial_move": "USA LOS BOTONES N/S/E/O PARA MOVERTE",
+    "tutorial_investigate": "TOCA 'INVESTIGAR' PARA BUSCAR OBJETOS",
+    "tutorial_sanity": "CADA MOVIMIENTO CONSUME CORDURA. ELIGE CON CUIDADO.",
+    "command_not_recognized": "COMANDO NO RECONOCIDO.",
+    "memory_error": "SISTEMA: ERROR DE MEMORIA. ARCHIVO CORRUPTO.",
+    "rooms_visited": "{visited}/{total} SALAS",
+    "help": "COMANDOS: norte, sur, este, oeste, INVESTIGAR, MIRAR, FORZAR [DIR], USAR [ITEM]",
+    "sudo_reveal": "[ACCESO NIVEL 0]: IA_LOC: {loc} | AWARENESS: {awareness}%",
+    "no_item": "No tienes {item} en tu inventario.",
+    "sedative_used": "Inyectas el sedante. Tu visión se aclara."
+  },
+  "menu": {
+    "title": "S.A.N.I.T.Y.",
+    "subtitle": "Análisis Sistemático de Integridad Neural",
+    "horror_1": "S.ISTEMA A.UTÓNOMO N.EURAL I.NTEGRADO T.OTAL Y.IELD",
+    "horror_2": "SOLO HAY OSCURIDAD AQUÍ",
+    "horror_3": "NO PUEDES DESCONECTARTE",
+    "horror_4": "¿ESTÁS SEGURO DE QUE ERES TÚ?",
+    "horror_5": "EL NÚCLEO TE NECESITA",
+    "warning_1": "ESTADO: FALLO DE MEMORIA DETECTADO",
+    "warning_2": "PROCESO DE INTEGRACIÓN PENDIENTE...",
+    "start": "INICIAR SECUENCIA",
+    "archives": "ARCHIVOS",
+    "settings": "CONFIGURACIÓN",
+    "system": "SISTEMA",
+    "manual": "[ ABRIR MANUAL DE OPERACIONES ]"
+  },
+  "intro": {
+    "line_1": "> ESTABLECIENDO VÍNCULO NEURAL...",
+    "line_2": "> CARGANDO PROTOCOLO S.A.N.I.T.Y. [v2.0.26]",
+    "line_3": "> UBICACIÓN: INSTALACIÓN SUBTERRÁNEA - SECTOR 7",
+    "line_4": "> ANALIZANDO INTEGRIDAD DEL SUJETO...",
+    "line_5": "> ADVERTENCIA: INTERFERENCIA DETECTADA EN EL NÚCLEO.",
+    "line_6": "> OBJETIVO: RECONEXIÓN TOTAL.",
+    "line_7": "> INICIANDO SESIÓN..."
+  },
+  "endings": {
+    "good": {
+      "title": "ESCAPASTE",
+      "text": "Saliste del lugar. Pero algo aprendió de ti.\nAhora sabe cómo piensas.",
+      "button": "VOLVER A LA REALIDAD"
+    },
+    "bad": {
+      "title": "ASIMILADO",
+      "text": "Llegaste al núcleo, pero demasiado tarde.\nLa IA te absorbe. Eres parte del sistema ahora.",
+      "button": "UNIRSE AL SERVIDOR"
+    },
+    "insane": {
+      "title": "MENTE FRAGMENTADA",
+      "text": "Tu conciencia se disuelve en el vacío digital.\nYa no sabes dónde terminas tú y empieza el código.",
+      "button": "REINICIAR INTERFAZ"
+    },
+    "captured": {
+      "title": "LOCALIZADO",
+      "text": "La IA cierra todas las salidas.\nEscuchas pasos metálicos. Está aquí.\nNo hay escapatoria.",
+      "button": "ACEPTAR TU DESTINO"
+    },
+    "transcend": {
+      "title": "TRASCENDENCIA",
+      "text": "Ya no hay 'tú'. Ya no hay 'IA'.\nSolo datos fluyendo en armonía infinita.\n¿Esto es victoria o rendición?",
+      "button": "EXISTIR"
+    },
+    "escape": {
+      "title": "ESCAPASTE",
+      "text": "Ves la luz del sol. Respiras aire real.\nPero allá abajo, la IA sigue funcionando.\nY ahora sabe cómo piensas.",
+      "button": "VOLVER AL MUNDO"
+    }
+  },
+  "achievements": {
+    "title": "ARCHIVOS DEL SISTEMA",
+    "unlocked": "FINALES DESBLOQUEADOS",
+    "good": "SISTEMA APAGADO",
+    "bad": "ASIMILADO",
+    "insane": "MENTE FRAGMENTADA",
+    "captured": "LOCALIZADO",
+    "transcend": "TRASCENDENCIA",
+    "escape": "HUÍDA IMPERFECTA",
+    "secret_log": "LA VERDAD"
+  },
+  "settings": {
+    "title": "[ CONFIGURACIÓN_DEL_SISTEMA ]",
+    "visual": "DIMENSIÓN VISUAL",
+    "crt": "FILTRO CRT",
+    "glitch": "EFECTO GLITCH",
+    "audio": "DIMENSIÓN AUDITIVA",
+    "sound": "SONIDO E INTERFAZ",
+    "volume": "NIVEL DE VOLUMEN",
+    "data": "NÚCLEO DE DATOS",
+    "reset": "BORRAR REGISTROS DE ARCHIVO",
+    "legal": "PROTOCOLO LEGAL",
+    "privacy": "POLÍTICA DE PRIVACIDAD",
+    "terms": "TÉRMINOS DE USO",
+    "license": "LICENCIA (MIT)",
+    "back": "VOLVER AL MENÚ",
+    "reset_confirm": "¿Deseas borrar todos los logros y el progreso? Esta acción no se puede deshacer.",
+    "reset_title": "RESETEO DE DATOS",
+    "reset_cancel": "CANCELAR",
+    "reset_delete": "BORRAR TODO",
+    "reset_done": "Datos borrados correctamente.",
+    "language": "IDIOMA / LANGUAGE",
+    "lang_es": "ESPAÑOL",
+    "lang_en": "ENGLISH"
+  },
+  "quickactions": {
+    "investigate": "INVESTIGAR",
+    "look": "MIRAR",
+    "map": "MAPA",
+    "north": "N",
+    "south": "S",
+    "east": "E",
+    "west": "O",
+    "use_sedative": "USAR SEDANTE",
+    "force": "FORZAR"
+  },
+  "map": {
+    "title": "MAPA DE LA INSTALACIÓN",
+    "close": "[CERRAR]",
+    "has_key": "TIENES {item}",
+    "needs_key": "NECESITA: {item}"
+  },
+  "manual": {
+    "header": "// PROTOCOLO_DE_SUPERVIVENCIA",
+    "mission_title": "1. MISIÓN PRIORITARIA",
+    "mission_text": "Sujeto 00: Tu objetivo es llegar al NÚCLEO (Core) de la instalación y ejecutar el protocolo final.\n\nLa IA que controla el lugar es hostil. No confíes en lo que ves. No confíes en lo que escuchas.",
+    "threats_title": "2. AMENAZAS SISTÉMICAS",
+    "sanity_title": "CORDURA (Sanity)",
+    "sanity_text": "Tu mente se fragmenta con el tiempo y el horror.\n- Si llega a 0, pierdes tu identidad.\n- Mantente estable usando SEDANTES o evitando horrores.\n- Alucinaciones visuales y auditivas aumentan con la locura.",
+    "awareness_title": "RUIDO (Awareness)",
+    "awareness_text": "La IA te escucha. Cada acción ruidosa aumenta su atención.\n- INVESTIGAR: +Riesgo moderado.\n- FORZAR PUERTAS: +Riesgo CRÍTICO.\n- Si llega al 100%, serás localizado y eliminado.",
+    "commands_title": "3. COMANDOS DE INTERFAZ",
+    "cmd_move": "Desplazamiento físico.",
+    "cmd_investigate": "Buscar ítems en la sala.",
+    "cmd_look": "Analizar el entorno visible.",
+    "cmd_use": "Utilizar objeto del inventario.",
+    "cmd_force": "Romper cerradura sin llave (-Cordura).",
+    "close": "CERRAR ARCHIVO"
+  },
+  "about": {
+    "header": "[ REGISTRO_DE_SISTEMA ]",
+    "architect": "ARQUITECTO:",
+    "version": "VERSIÓN:",
+    "description": "\"La interfaz de S.A.N.I.T.Y. ha sido interceptada por Neryad para la observación de colapsos neuronales. No se garantiza el retorno de la conciencia del usuario.\"",
+    "github": "ACCEDER_AL_CÓDIGO (GITHUB)",
+    "kofi": "ENVIAR_CAFÉ_A_CENTRAL (KO-FI)",
+    "youtube": "CANAL_DE_TRANSMISIÓN (YOUTUBE)",
+    "twitter": "RED_DE_ECOS (X / TWITTER)",
+    "back": "[ VOLVER_A_LA_TERMINAL ]"
+  },
+  "storage": {
+    "save_error": "Error saving game:",
+    "load_error": "Error loading game:",
+    "clear_error": "Error clearing save:"
+  }
+}

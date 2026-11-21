@@ -22,10 +22,15 @@ El proyecto explora cómo la lógica de estado y la "cordura" del jugador pueden
 
 ---
 
-## ✨ v1.1.0 — Novedades
+## ✨ v1.2.0 — Novedades
 
 | Característica | Descripción |
 |---|---|
+| 🎨 **Ilustraciones de salas** | 23 imágenes visuales (18 salas + 5 variantes de baja cordura) que cambian según tu estado mental |
+| 🎒 **Items visuales** | Sprites PNG en el inventario para cada objeto coleccionable |
+| 🖼️ **Splash screen** | Pantalla de intro con imagen profesional y animación fade-in |
+| 🌐 **Traducción al inglés** | Juego completo en español e inglés, selector en CONFIGURACIÓN > IDIOMA |
+| 📦 **Assets promocionales** | Icono, screenshots, banner y thumbnail listos para tiendas y redes |
 | 🗺️ **Mapa interactivo** | Visualiza la instalación completa, habitaciones visitadas, items disponibles y ubicación de la IA |
 | 🏆 **Logros** | Desbloquea finales y secretos, con notificaciones en pantalla |
 | 🔊 **Paisaje sonoro** | Música ambiental dinámica, SFX de movimiento, sedante, IA y puertas |

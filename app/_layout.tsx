@@ -1,9 +1,10 @@
+import { I18nProvider } from "@/locales/I18nContext";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   return (
-    <>
+    <I18nProvider>
       <StatusBar style="light" />
       <Stack
         screenOptions={{
@@ -12,6 +13,6 @@ export default function RootLayout() {
           animation: "fade",
         }}
       />
-    </>
+    </I18nProvider>
   );
 }

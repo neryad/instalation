@@ -362,56 +362,128 @@ assets/
 mkdir -p assets/images/{rooms,textures,items,ui,promo}
 ```
 
+# Plan de Traducción al Inglés
+
+### Contexto
+
+El juego está completamente en español. Para triplicar la audiencia potencial, se necesita soporte para inglés. Los textos están distribuidos en:
+
+**Engine (lógica del juego):**
+- `engine/rooms.ts` — 18 salas con `baseDescription` y `sanityVariants`
+- `engine/engine.ts` — Mensajes de movimiento, bloqueos, finales, y eventos
+- `engine/events.ts` — 7 eventos mentales con textos dinámicos
+- `engine/entity.ts` — Mensajes de la IA (gaslighting, emboscada, persecución)
+
+**UI (interfaz):**
+- `app/game.tsx` — HUD, tutorial, comandos, mensajes del sistema
+- `app/index.tsx` — Menú principal (botones, subtítulos, advertencias)
+- `app/intro.tsx` — 7 líneas de texto de carga
+- `app/FinalScreen.tsx` — 6 finales con título, texto y botón
+- `app/SettingsScreen.tsx` — Configuración (secciones, toggles, alertas)
+- `components/game/quickActions.tsx` — Botones (INVESTIGAR, MIRAR, MAPA, N/S/E/O, etc.)
+- `components/game/MapModal.tsx` — Leyendas del mapa
+- `components/game/inventoryHud.tsx` — Textos de items
+- `storage/achievements.ts` — Títulos de logros/finales
+- `constants/roomPositions.ts` — ROOM_LABELS (ya en inglés)
+
+### Arquitectura
+
+**Enfoque:** Archivos JSON de traducción + contexto React para la UI, traducción directa en el engine.
+
+**Estructura de archivos:**
+```
+locales/
+├── es.json          # Español (texto original)
+├── en.json          # Inglés (traducción)
+└── I18nContext.tsx  # Contexto React para cambiar idioma
+```
+
+**GameSettings extensión:**
+```
+export interface GameSettings {
+  crtEnabled: boolean;
+  glitchEnabled: boolean;
+  soundEnabled: boolean;
+  volume: number;
+  language: 'es' | 'en';  // NUEVO
+}
+```
+
+**Selector de idioma:** En `app/SettingsScreen.tsx` — toggle ES/EN que guarda en AsyncStorage.
+
+### Estrategia de traducción
+
+**Engine (rooms, engine, events, entity):**
+- Cada archivo del engine tendrá una versión traducida en `locales/`
+- Se usa una función `t(key, params)` que lee del archivo JSON según el idioma activo
+- Los textos se reemplazan con llamadas a `t()` en lugar de strings literales
+
+**UI (game.tsx, index.tsx, intro.tsx, etc.):**
+- Los componentes usan `useI18n()` del contexto para obtener la función `t()`
+- Los textos hardcodeados se reemplazan con `t('key')`
+- El contexto se actualiza automáticamente cuando el usuario cambia idioma en Settings
+
+### Notas
+
+- El español seguirá siendo el idioma por defecto
+- El cambio de idioma se aplica inmediatamente sin recargar la app
+- Los textos del engine se traducen en tiempo real al leer las descripciones
+- Los comandos aceptarán ambas versiones (ej: "norte" y "north")
+
+# Resumen del Plan
+
+**Estado: COMPLETADO** ✅
+
+Todo el plan de assets visuales y traducción al inglés ha sido implementado:
+- 23 ilustraciones de salas integradas con variantes insane
+- 5 sprites de items en el inventario
+- Splash screen en la intro
+- Traducción bilingüe ES/EN completa (~200 cadenas)
+- Modo 3D eliminado
+- Assets promocionales documentados
+- README y CHANGELOG actualizados a v1.2.0
+
 # Delivery Steps
 
 ### ✓ Step 1: Crear rama git y estructura de directorios
-Preparar el terreno para los nuevos assets.
-- Crear la rama `feature/visual-assets` desde main
-- Ejecutar el script para crear los directorios: `assets/images/rooms/`, `textures/`, `items/`, `ui/`, `promo/`
-- Actualizar `.gitignore` si es necesario para excluir archivos temporales de generación de IA
-- Crear un archivo `assets/ASSETS_README.md` con instrucciones de cómo generar los assets con los prompts
+- Rama `feature/visual-assets` creada, directorios organizados, `.gitignore` actualizado, `assets/ASSETS_README.md` creado.
 
 ### ✓ Step 2: Documentar prompts y generar assets de habitaciones
-Crear el documento maestro de prompts y generar las 18 ilustraciones de salas + 5 variantes de baja cordura.
-- Crear `docs/ASSET_PROMPTS.md` con todos los prompts organizados por categoría
-- El usuario ejecuta los prompts en Midjourney/DALL-E para generar las 23 imágenes (18 salas + 5 variantes insane)
-- Las imágenes se guardan en `assets/images/rooms/` con los nombres especificados
-- Validar que todas las imágenes mantengan coherencia visual (paleta de colores, estilo, resolución)
+- `docs/ASSET_PROMPTS.md` con 45 prompts. 23 imágenes generadas por el usuario (18 salas + 5 insane).
 
 ### ✓ Step 3: Generar texturas 3D, items y puertas adicionales
-Crear los assets funcionales para el motor de juego.
-- Generar 4 texturas tileables (wall_type1, wall_type2, floor, ceiling) y guardar en `assets/images/textures/`
-- Generar 5 sprites de items (sedative, keycard_red, data_link, thermal_fuse, dev_log_aes) y guardar en `assets/images/items/`
-- Generar 2 puertas adicionales (retinal_scanner, biohazard_gate) y guardar en `assets/images/doors/`
-- Validar que las texturas sean tileables (sin bordes visibles al repetir)
+- 4 texturas tileables, 5 sprites de items, 2 puertas adicionales generadas y organizadas.
 
 ### ✓ Step 4: Integrar assets en el código del juego
-Hacer que los nuevos assets visuales se muestren en el juego.
-- Crear `components/game/RoomVisual.tsx` para mostrar ilustraciones de habitaciones como fondo
-- Integrar RoomVisual en `app/game.tsx` — ilustraciones visibles en contenedor con aspectRatio 16:9
-- Las variantes insane se activan automáticamente cuando cordura < 30
-- Integrar texturas 3D en `components/game3d/RaycastCanvas.tsx` — paredes, suelo y techo usan texturas tileables con overlays de niebla
-- Los assets de items, UI y promo están listos para uso futuro en el motor 3D y marketing
+- `components/game/RoomVisual.tsx` creado, integrado en `app/game.tsx`. Variantes insane activas con cordura < 30.
 
-###   Step 5: Mejorar motor 3D (MODO 3D) — ELIMINADO
-El modo 3D fue eliminado del proyecto porque no se veía bien. Se borraron `app/game3d.tsx`, `components/game3d/`, y `engine3d/` completos. El botón del menú principal también fue removido.
+###   Step 5: Motor 3D — ELIMINADO
+- `app/game3d.tsx`, `components/game3d/`, `engine3d/` borrados. Botón del menú removido.
 
-### ✓ Stage 6: Mostrar items visuales en el inventario
-Reemplazar los badges de texto del inventario con los sprites de items generados.
-- Modificar `components/game/inventoryHud.tsx` para mostrar la imagen del item en lugar de solo texto
-- Mapear los nombres de items (`sedative`, `keycard_red`, `data_link`, `thermal_fuse`, `dev_log_aes`) a los archivos PNG en `assets/images/items/`
-- Cada item se mostrará como un sprite cuadrado (64x64) con borde verde terminal
-- Mantener el texto como tooltip o debajo de la imagen para accesibilidad
+### ✓ Stage 6: Items visuales en el inventario
+- `components/game/inventoryHud.tsx` muestra sprites PNG (48x48) de cada item.
 
-### ✓ Stage 7: Mejorar la pantalla de intro con splash screen
-Usar el `splash_screen.png` generado para reemplazar la intro de texto puro.
-- Modificar `app/intro.tsx` para mostrar el splash screen como fondo con la imagen de `assets/images/ui/splash_screen.png`
-- Mantener las líneas de texto de carga como overlay encima de la imagen
-- Añadir fade-in de la imagen para una transición suave
-- El botón de saltar (skip) seguirá funcionando
+### ✓ Stage 7: Splash screen en la intro
+- `app/intro.tsx` muestra `splash_screen.png` con fade-in de 1.5s.
 
 ### ✓ Stage 8: Organizar assets promocionales
-Preparar los assets de `assets/images/promo/` para subir a tiendas y redes.
-- Verificar que los 6 assets promocionales existen y tienen las dimensiones correctas
-- `app_icon.png` (1024x1024), `screenshot_game.png`, `screenshot_horror.png`, `screenshot_map.png` (1080x1920), `banner_horizontal.png` (1920x600), `video_thumbnail.png` (1280x720)
-- Crear `docs/PROMO_ASSETS.md` con instrucciones de cómo usarlos en App Store, Google Play, itch.io, y redes sociales
+- `docs/PROMO_ASSETS.md` creado con guía para tiendas.
+
+### ✓ Traducción Step 1: Archivos JSON de traducción
+- `locales/es.json` y `locales/en.json` con ~200 cadenas.
+
+### ✓ Traducción Step 2: Contexto React de i18n
+- `locales/I18nContext.tsx` con `t(key, params)`, GameSettings extendido con `language`.
+
+### ✓ Traducción Step 3: Engine traducido
+- `engine/rooms.ts`, `engine.ts`, `events.ts`, `entity.ts` usan `tSync()` con `lang`.
+
+### ✓ Traducción Step 4: UI traducida
+- `app/game.tsx`, `index.tsx`, `intro.tsx`, `FinalScreen.tsx`, `SettingsScreen.tsx`, `ManualScreen.tsx`, `AboutScreen.tsx`, `AchievementsScreen.tsx`, `quickActions.tsx`, `MapModal.tsx` traducidos.
+
+### ✓ Traducción Step 5: Verificar y probar
+- `npx tsc --noEmit --skipLibCheck` pasa limpio. Comandos bilingües funcionales.
+
+### ✓ Documentación actualizada
+- `README.md` actualizado a v1.2.0 con nuevas características.
+- `CHANGELOG.md` actualizado con sección [1.2.0] detallando todos los cambios.

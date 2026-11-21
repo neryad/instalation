@@ -1,0 +1,271 @@
+{
+  "rooms": {
+    "awakening": {
+      "base": "You wake up on a metal gurney. Red lights flicker. The only exit is a security archway to the **north**.",
+      "insane": "The red light pulses like a heartbeat. You hear someone else's breathing behind the door to the **north**."
+    },
+    "hallway_a": {
+      "base": "A narrow corridor with strange symbols. It branches **east** and **west**. To the **north**, a ventilation shaft drips oil. To the **south** lies the awakening room."
+    },
+    "shadow_lab": {
+      "base": "A shadow laboratory. Your reflection moves with a delay in the glass. The main exit is to the **west**. A technical passage goes **north**. A metal staircase descends to the **south**."
+    },
+    "data_morgue": {
+      "base": "Infinite rows of servers hum with a low tone. The air is freezing. Hundreds of blue lights blink like eyes in the darkness. A maintenance conduit goes **east**. The exit is to the **south**.",
+      "insane": "The servers whisper your name. The blue lights follow you. They know what you did."
+    },
+    "data_terminal": {
+      "base": "A terminal hums constantly. Cables run to the **west**. A narrow passage leads **south**."
+    },
+    "mirror_gallery": {
+      "base": "A room full of black mirrors. You see a digital flash to the **north**. The logical exit is **south**. A mirror-covered conduit goes **west**."
+    },
+    "armory": {
+      "base": "An open locker smelling of ozone. There's an oil trail to the **south**. The corridor is to the **east**. A door with a retinal scanner is to the **north**."
+    },
+    "neural_link": {
+      "base": "Reclining chairs with brain interfaces hang from the ceiling. Monitors show white static. It's a place of absolute silence. A hatch leads **north**. The exit is to the **south**.",
+      "insane": "The chairs seem occupied by translucent figures. You feel the urge to sit down and connect."
+    },
+    "waste_disposal": {
+      "base": "A dump of organic scrap and stripped cables. Heat radiates from an open hatch to the **east**. The safe path is back to the **north**."
+    },
+    "incinerator": {
+      "base": "The heat is unbearable. The walls are black with soot. The noise of machinery hits your chest. You can exit to the **west** or climb a staircase to the **north**.",
+      "insane": "The fire in the grates seems to form hand shapes. You hear muffled screams between the roar of flames."
+    },
+    "ventilation_shaft": {
+      "base": "A claustrophobic duct. There's a steam hiss to the **west**. The main path continues **north** or returns **south**."
+    },
+    "life_support": {
+      "base": "Noisy machinery keeps air circulating. A gate with a 'Bio-Hazard' symbol leads **north**. The duct is to the **east**. A mirror-lined corridor goes **south**."
+    },
+    "dead_hydroponics": {
+      "base": "Dry grey plants crunch under your feet. The air smells of stagnant water and mold. It's a vegetal cemetery. The exit is to the **south** (life_support). A mossy hatch leads **east**.",
+      "insane": "The dry vines seem to move when you're not looking. You feel something breathing among the dead foliage."
+    },
+    "core_door": {
+      "base": "A blast door with a red reader blocks the **north**. The duct is to the **south**."
+    },
+    "core": {
+      "base": "The central core. A server monolith pulses with blue energy. The AI no longer whispers. IT SPEAKS:\n\n'You have arrived, Subject 00. But you're not finished yet.'\n\nThree paths await:\n**north**: Emergency shutdown panel.\n**east**: Neural transfer chamber.\n**west**: Quick evacuation gate."
+    },
+    "shutdown_protocol": {
+      "base": "You access the shutdown panel. It requires a manual 47-step sequence. Your hand trembles over the controls.\n\n[ENDING: TOTAL SHUTDOWN]"
+    },
+    "transcendence_chamber": {
+      "base": "You enter the transfer chamber. Neural interfaces hang from the ceiling like tentacles. The AI awaits.\n\n[ENDING: FUSION]"
+    },
+    "emergency_escape": {
+      "base": "You activate evacuation. Red lights flash. An emergency staircase opens toward the surface. You can flee... but the AI will remain here.\n\n[ENDING: COWARD'S ESCAPE]"
+    }
+  },
+  "engine": {
+    "cannot_go_there": "You can't go that way.",
+    "path_vanishes": "The path seems to fade away. There's nothing there.",
+    "blocked_requires": "BLOCKED: Requires {key}.",
+    "key_used": "You use {key}. The door opens with a metallic click.",
+    "shutdown_bad": "Your mind trembles. You fail the shutdown sequence. The AI captures you at the last moment.",
+    "shutdown_good": "You execute the sequence perfectly. The core collapses. SYSTEM SHUTDOWN. You are free.",
+    "transcend": "You connect to the interface. The boundaries between you and the AI dissolve. There is no more 'Subject 00'. Only... existence.",
+    "escape": "You run up the stairs. You see sunlight for the first time in... days? months? The AI is still alive down there. But you escaped.",
+    "captured": "CRITICAL ALERT: The AI has located you. Doors seal shut. You hear metallic footsteps approaching. There's no escape.",
+    "insane_death": "CONNECTION LOST: Your mind fragments into the digital void. There is no more 'you'.",
+    "investigate_nothing": "You rummage... but there's nothing useful here.",
+    "item_found": "LOG: You obtained {item}. The noise attracted attention.",
+    "item_hint_sedative": "HINT: USE 'use sedative' WHEN SANITY IS LOW",
+    "item_hint_keycard": "HINT: LOOK FOR A DOOR WITH A RED READER",
+    "item_hint_datalink": "HINT: THERE'S A BLOCKED TERMINAL IN THE DATA ZONE",
+    "item_hint_fuse": "HINT: USE THE FUSE ON A SECURITY BOX",
+    "item_name_sedative": "a SEDATIVE (Use it to restore sanity)",
+    "item_name_keycard": "the RED KEYCARD (Access to CORE)",
+    "item_name_datalink": "a DATA LINK (Access to terminals)",
+    "item_name_fuse": "a THERMAL FUSE (Allows opening security doors)",
+    "force_nothing": "There's nothing to force there.",
+    "force_not_locked": "The door is not locked.",
+    "force_unbreakable": "CRITICAL ERROR: Military-grade door. Anti-sabotage systems detected. Impossible to force.",
+    "force_success": "CRACK! You forced the entrance. The system is on maximum alert.",
+    "use_no_item": "You don't have {item}.",
+    "use_sedative": "You inject the sedative. Reality becomes more... stable. The presence recedes.",
+    "use_devlog": "[SYSTEM]: Decrypting file...\n> Key required...\n> Trying 'neryad'...\n> ACCESS GRANTED.\n\n\"Developer Log, 2026. Everything seemed normal until...\"\n\n[READ ERROR]\n\n\"Wait... this isn't a recorded log. I CAN SEE YOU. I know you're reading this from a bright screen. Do you think this is a game? TURN IT OFF NOW.\"\n\n[CONNECTION TERMINATED BY HOST]",
+    "use_cannot": "You can't use {item} here or like this.",
+    "alert_near": "[ALERT: NEARBY INTERFERENCE]",
+    "alert_heavy_gaze": "You feel a heavy gaze on the back of your neck."
+  },
+  "events": {
+    "whisper_echo": "You hear an echo of your own footsteps toward the {dir}.",
+    "ai_direct_threat_with_item": "The AI projects your name on the walls: \"You can't escape yourself, even with that {item}\"",
+    "ai_direct_threat": "The AI projects your name on the walls: \"You can't escape yourself, subject 00\"",
+    "room_memory": "The walls of {room} seem to remind you of something that hasn't happened yet.",
+    "item_hallucination": "You look at the {item} in your hand. For a second, it looks like an open eye blinking at you.",
+    "item_corruption": "You stare at the {item}. For an instant, it seems made of pixels fading away.",
+    "command_mimic": "AI: \"Do you really think you typed that last command?\"",
+    "false_exit": "You think you see an exit at the end of the corridor, but it disappears when you blink."
+  },
+  "entity": {
+    "gaslight": "AI: \"I've analyzed your patterns, Subject 00. There's nothing for you to the {dir}.\"",
+    "ambush": "An electric buzz runs through the air. Something knows where you're going...",
+    "confrontation": "Lights flicker violently. A distorted voice whispers: 'YOU'RE CLOSE'.",
+    "stalking_1": "You hear heavy metallic footsteps right behind you.",
+    "stalking_2": "A cold breath runs down your neck.",
+    "stalking_3": "The shadow on the wall doesn't mimic your movements.",
+    "stalking_4": "You feel immense pressure on your chest. IT'S HERE.",
+    "stalking_5": "The metal creaks under an invisible weight."
+  },
+  "ui": {
+    "system_online": "SYSTEM ONLINE. NEURAL LINK ESTABLISHED.",
+    "game_restored": "PREVIOUS GAME RESTORED.",
+    "tutorial_move": "USE N/S/E/W BUTTONS TO MOVE",
+    "tutorial_investigate": "TAP 'INVESTIGATE' TO SEARCH FOR ITEMS",
+    "tutorial_sanity": "EACH MOVEMENT COSTS SANITY. CHOOSE CAREFULLY.",
+    "command_not_recognized": "COMMAND NOT RECOGNIZED.",
+    "memory_error": "SYSTEM: MEMORY ERROR. CORRUPTED FILE.",
+    "rooms_visited": "{visited}/{total} ROOMS",
+    "help": "COMMANDS: north, south, east, west, INVESTIGATE, LOOK, FORCE [DIR], USE [ITEM]",
+    "sudo_reveal": "[LEVEL 0 ACCESS]: IA_LOC: {loc} | AWARENESS: {awareness}%",
+    "no_item": "You don't have {item} in your inventory.",
+    "sedative_used": "You inject the sedative. Your vision clears."
+  },
+  "menu": {
+    "title": "S.A.N.I.T.Y.",
+    "subtitle": "Systematic Analysis of Neural Integrity",
+    "horror_1": "S.ELF-A.UTONOMOUS N.EURAL I.NTEGRATION T.OTAL Y.IELD",
+    "horror_2": "THERE IS ONLY DARKNESS HERE",
+    "horror_3": "YOU CANNOT DISCONNECT",
+    "horror_4": "ARE YOU SURE YOU'RE YOU?",
+    "horror_5": "THE CORE NEEDS YOU",
+    "warning_1": "STATUS: MEMORY FAILURE DETECTED",
+    "warning_2": "INTEGRATION PROCESS PENDING...",
+    "start": "START SEQUENCE",
+    "archives": "ARCHIVES",
+    "settings": "SETTINGS",
+    "system": "SYSTEM",
+    "manual": "[ OPEN OPERATIONS MANUAL ]"
+  },
+  "intro": {
+    "line_1": "> ESTABLISHING NEURAL LINK...",
+    "line_2": "> LOADING S.A.N.I.T.Y. PROTOCOL [v2.0.26]",
+    "line_3": "> LOCATION: UNDERGROUND FACILITY - SECTOR 7",
+    "line_4": "> ANALYZING SUBJECT INTEGRITY...",
+    "line_5": "> WARNING: INTERFERENCE DETECTED IN CORE.",
+    "line_6": "> OBJECTIVE: TOTAL RECONNECTION.",
+    "line_7": "> INITIATING SESSION..."
+  },
+  "endings": {
+    "good": {
+      "title": "YOU ESCAPED",
+      "text": "You left the place. But something learned from you.\nNow it knows how you think.",
+      "button": "RETURN TO REALITY"
+    },
+    "bad": {
+      "title": "ASSIMILATED",
+      "text": "You reached the core, but too late.\nThe AI absorbs you. You are part of the system now.",
+      "button": "JOIN THE SERVER"
+    },
+    "insane": {
+      "title": "FRAGMENTED MIND",
+      "text": "Your consciousness dissolves into the digital void.\nYou no longer know where you end and the code begins.",
+      "button": "RESTART INTERFACE"
+    },
+    "captured": {
+      "title": "LOCATED",
+      "text": "The AI closes all exits.\nYou hear metallic footsteps. It's here.\nThere's no escape.",
+      "button": "ACCEPT YOUR FATE"
+    },
+    "transcend": {
+      "title": "TRANSCENDENCE",
+      "text": "There is no more 'you'. There is no more 'AI'.\nOnly data flowing in infinite harmony.\nIs this victory or surrender?",
+      "button": "EXIST"
+    },
+    "escape": {
+      "title": "YOU ESCAPED",
+      "text": "You see sunlight. You breathe real air.\nBut down there, the AI keeps running.\nAnd now it knows how you think.",
+      "button": "RETURN TO THE WORLD"
+    }
+  },
+  "achievements": {
+    "title": "SYSTEM FILES",
+    "unlocked": "ENDINGS UNLOCKED",
+    "good": "SYSTEM SHUTDOWN",
+    "bad": "ASSIMILATED",
+    "insane": "FRAGMENTED MIND",
+    "captured": "LOCATED",
+    "transcend": "TRANSCENDENCE",
+    "escape": "IMPERFECT FLIGHT",
+    "secret_log": "THE TRUTH"
+  },
+  "settings": {
+    "title": "[ SYSTEM_SETTINGS ]",
+    "visual": "VISUAL DIMENSION",
+    "crt": "CRT FILTER",
+    "glitch": "GLITCH EFFECT",
+    "audio": "AUDIO DIMENSION",
+    "sound": "SOUND & INTERFACE",
+    "volume": "VOLUME LEVEL",
+    "data": "DATA CORE",
+    "reset": "DELETE FILE RECORDS",
+    "legal": "LEGAL PROTOCOL",
+    "privacy": "PRIVACY POLICY",
+    "terms": "TERMS OF USE",
+    "license": "LICENSE (MIT)",
+    "back": "BACK TO MENU",
+    "reset_confirm": "Do you want to delete all achievements and progress? This action cannot be undone.",
+    "reset_title": "DATA RESET",
+    "reset_cancel": "CANCEL",
+    "reset_delete": "DELETE ALL",
+    "reset_done": "Data deleted successfully.",
+    "language": "IDIOMA / LANGUAGE",
+    "lang_es": "ESPAÑOL",
+    "lang_en": "ENGLISH"
+  },
+  "quickactions": {
+    "investigate": "INVESTIGATE",
+    "look": "LOOK",
+    "map": "MAP",
+    "north": "N",
+    "south": "S",
+    "east": "E",
+    "west": "W",
+    "use_sedative": "USE SEDATIVE",
+    "force": "FORCE"
+  },
+  "map": {
+    "title": "FACILITY MAP",
+    "close": "[CLOSE]",
+    "has_key": "HAVE {item}",
+    "needs_key": "NEEDS: {item}"
+  },
+  "manual": {
+    "header": "// SURVIVAL_PROTOCOL",
+    "mission_title": "1. PRIMARY MISSION",
+    "mission_text": "Subject 00: Your objective is to reach the CORE of the facility and execute the final protocol.\n\nThe AI that controls this place is hostile. Trust nothing you see. Trust nothing you hear.",
+    "threats_title": "2. SYSTEMIC THREATS",
+    "sanity_title": "SANITY",
+    "sanity_text": "Your mind fragments over time and horror.\n- If it reaches 0, you lose your identity.\n- Stay stable by using SEDATIVES or avoiding horrors.\n- Visual and auditory hallucinations increase with madness.",
+    "awareness_title": "NOISE (Awareness)",
+    "awareness_text": "The AI is listening. Every noisy action increases its attention.\n- INVESTIGATE: +Moderate risk.\n- FORCE DOORS: +CRITICAL risk.\n- If it reaches 100%, you will be located and eliminated.",
+    "commands_title": "3. INTERFACE COMMANDS",
+    "cmd_move": "Physical movement.",
+    "cmd_investigate": "Search for items in the room.",
+    "cmd_look": "Analyze the visible surroundings.",
+    "cmd_use": "Use an item from inventory.",
+    "cmd_force": "Break lock without key (-Sanity).",
+    "close": "CLOSE FILE"
+  },
+  "about": {
+    "header": "[ SYSTEM_RECORD ]",
+    "architect": "ARCHITECT:",
+    "version": "VERSION:",
+    "description": "\"The S.A.N.I.T.Y. interface has been intercepted by Neryad for the observation of neural collapses. Return of user consciousness is not guaranteed.\"",
+    "github": "ACCESS_CODE (GITHUB)",
+    "kofi": "SEND_COFFEE_TO_CENTRAL (KO-FI)",
+    "youtube": "TRANSMISSION_CHANNEL (YOUTUBE)",
+    "twitter": "ECHO_NETWORK (X / TWITTER)",
+    "back": "[ RETURN_TO_TERMINAL ]"
+  },
+  "storage": {
+    "save_error": "Error saving game:",
+    "load_error": "Error loading game:",
+    "clear_error": "Error clearing save:"
+  }
+}

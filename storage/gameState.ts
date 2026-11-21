@@ -23,7 +23,7 @@ export async function saveGame(state: PlayerState): Promise<void> {
 
     await AsyncStorage.setItem(SAVE_KEY, JSON.stringify(toSave));
   } catch (e) {
-    console.error("Error saving game:", e);
+    console.error("[S.A.N.I.T.Y.] Error saving game:", e);
   }
 }
 
@@ -41,7 +41,7 @@ export async function loadGame(): Promise<PlayerState | null> {
 
     return parsed as PlayerState;
   } catch (e) {
-    console.error("Error loading game:", e);
+    console.error("[S.A.N.I.T.Y.] Error loading game:", e);
     return null;
   }
 }
@@ -50,6 +50,6 @@ export async function clearSave(): Promise<void> {
   try {
     await AsyncStorage.removeItem(SAVE_KEY);
   } catch (e) {
-    console.error("Error clearing save:", e);
+    console.error("[S.A.N.I.T.Y.] Error clearing save:", e);
   }
 }

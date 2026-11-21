@@ -1,3 +1,4 @@
+import { useI18n } from "@/locales/I18nContext";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
@@ -15,6 +16,7 @@ import { GridBackground } from "../components/game/GridBackground";
 export default function AboutScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { t } = useI18n();
 
   const openLink = (url: string) => {
     Linking.openURL(url).catch((err) =>
@@ -33,36 +35,34 @@ export default function AboutScreen() {
       <CRTOverlay isGlitchActive={false} />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.header}>[ REGISTRO_DE_SISTEMA ]</Text>
+        <Text style={styles.header}>{t("about.header")}</Text>
 
         <View style={styles.section}>
-          <Text style={styles.label}>ARQUITECTO:</Text>
+          <Text style={styles.label}>{t("about.architect")}</Text>
           <Text style={styles.value}>NERYAD</Text>
-          <Text style={styles.label}>VERSIÓN:</Text>
+          <Text style={styles.label}>{t("about.version")}</Text>
           <Text style={styles.value}>1.0.4-STABLE</Text>
         </View>
 
         <Text style={styles.description}>
-          "La interfaz de S.A.N.I.T.Y. ha sido interceptada por Neryad para la
-          observación de colapsos neuronales. No se garantiza el retorno de la
-          conciencia del usuario."
+          {t("about.description")}
         </Text>
 
         <View style={styles.linkContainer}>
           <AboutButton
-            label="ACCEDER_AL_CÓDIGO (GITHUB)"
+            label={t("about.github")}
             onPress={() => openLink("https://github.com/neryad/instalation")}
           />
           <AboutButton
-            label="ENVIAR_CAFÉ_A_CENTRAL (KO-FI)"
+            label={t("about.kofi")}
             onPress={() => openLink("https://ko-fi.com/neryad")}
           />
           <AboutButton
-            label="CANAL_DE_TRANSMISIÓN (YOUTUBE)"
+            label={t("about.youtube")}
             onPress={() => openLink("https://www.youtube.com/@neryad")}
           />
           <AboutButton
-            label="RED_DE_ECOS (X / TWITTER)"
+            label={t("about.twitter")}
             onPress={() => openLink("https://x.com/NeryadG")}
           />
         </View>
@@ -73,7 +73,7 @@ export default function AboutScreen() {
             router.back();
           }}
         >
-          <Text style={styles.backText}>[ VOLVER_A_LA_TERMINAL ]</Text>
+          <Text style={styles.backText}>{t("about.back")}</Text>
         </Pressable>
       </ScrollView>
     </View>
