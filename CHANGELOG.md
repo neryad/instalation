@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.3.0] — 2026-11-21 🚀 PUBLICADO
+
+**🎉 Lanzamiento oficial en itch.io:** [Juega ahora](https://neryad.itch.io/sanity)
+
+### Added
+- 📖 **Fragmentos de lore**: 16 salas con texto oculto que se revela al investigar, contando la historia del Proyecto S.A.N.I.T.Y., los Sujetos 01-46, y la Dr. Elena Vasquez
+- 🎯 **Contexto narrativo en items**: El thermal_fuse y data_link ahora revelan notas y logs al usarlos, conectando la historia
+- 🧠 **5 eventos mentales con narrativa**: Grabaciones de voz, logs del Día 1, advertencias de Vasquez, números de sujetos, y nombre del proyecto
+- 📊 **Balance de IA por 4 fases**: Fase 1 (0-30): exploración libre. Fase 2 (30-60): gaslighting ocasional. Fase 3 (60-85): emboscadas frecuentes. Fase 4 (85-100): persecución activa
+- 📢 **Documentación de marketing**: `docs/MARKETING.md` con guía completa para itch.io, Reddit, Twitter, WhatsApp e Instagram
+- 🎨 **Prompts para assets promocionales**: `docs/PROMO_PROMPTS.md` con prompts actualizados para regenerar screenshots verticales (9:16) y banner horizontal (3:1)
+- 🌐 **Publicación en itch.io**: Juego publicado como HTML5, jugable directamente en el navegador
+
+### Changed
+- ⚖️ **IA más justa**: La awareness sube +2 por movimiento en Fase 1 (antes +5 siempre), dando tiempo al jugador para explorar y disfrutar la historia
+- 📝 **thermal_fuse funcional**: Usar el fusible revela una nota de la Dr. Vasquez sobre el sistema de ventilación
+- 📝 **data_link funcional**: Usar el data link revela un log del Día 12 sobre la IA y el Sujeto 00
+
 ## [1.2.0] — 2026-07
 
 ### Added

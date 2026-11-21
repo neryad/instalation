@@ -70,9 +70,10 @@ npx expo start
 
 ---
 
-## 🕹️ Demo en Vivo
+## 🕹️ Jugar Ahora
 
-**Juega ahora:** [https://sanity-demo.netlify.app/](https://sanity-demo.netlify.app/)
+**itch.io:** [S.A.N.I.T.Y. en itch.io](https://neryad.itch.io/sanity) ← **Juega directamente en el navegador**
+**Demo web:** [https://sanity-demo.netlify.app/](https://sanity-demo.netlify.app/)
 
 ---
 
