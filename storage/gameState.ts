@@ -17,6 +17,7 @@ export async function saveGame(state: PlayerState): Promise<void> {
       visitedRooms: state.visitedRooms,
       roomHistory: state.roomHistory,
       collectedItems: state.collectedItems,
+      loreDiscovered: state.loreDiscovered,
       gameOver: state.gameOver,
       hasSeenTutorial: state.hasSeenTutorial,
     };

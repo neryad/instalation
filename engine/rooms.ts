@@ -14,6 +14,7 @@ export interface Room {
   lockedBy?: string;
   unbreakable?: boolean;
   fakeConnections?: Partial<Record<Direction, string>>;
+  loreFragment?: string; // Key for lore text revealed when investigating
 }
 
 export const rooms: Record<string, Room> = {
@@ -29,6 +30,7 @@ export const rooms: Record<string, Room> = {
           "La luz roja late como un corazón. Escuchas respiración ajena tras la puerta al **norte**.",
       },
     ],
+    loreFragment: "lore.awakening",
   },
 
   hallway_a: {
@@ -45,6 +47,7 @@ export const rooms: Record<string, Room> = {
       { maxSanity: 30, connections: { este: "awakening" } },
       { maxSanity: 15, connections: { norte: "mirror_gallery" } },
     ],
+    loreFragment: "lore.hallway_a",
   },
 
   // ELIMINADA: observation_ward
@@ -59,6 +62,7 @@ export const rooms: Record<string, Room> = {
       sur: "incinerator" // NUEVO: acceso directo
     },
     // Ya no requiere thermal_fuse para entrar
+    loreFragment: "lore.shadow_lab",
   },
 
   data_morgue: {
@@ -77,6 +81,7 @@ export const rooms: Record<string, Room> = {
       },
     ],
     item: "keycard_red",
+    loreFragment: "lore.data_morgue",
   },
 
   data_terminal: {
@@ -89,6 +94,7 @@ export const rooms: Record<string, Room> = {
     },
     lockedBy: "data_link",
     item: "DEV_LOG.aes",
+    loreFragment: "lore.data_terminal",
   },
 
   mirror_gallery: {
@@ -109,6 +115,7 @@ export const rooms: Record<string, Room> = {
         },
       },
     ],
+    loreFragment: "lore.mirror_gallery",
   },
 
   armory: {
@@ -120,6 +127,7 @@ export const rooms: Record<string, Room> = {
       sur: "waste_disposal",
       norte: "neural_link", // Cambio: neural_link al norte
     },
+    loreFragment: "lore.armory",
   },
 
   neural_link: {
@@ -137,6 +145,7 @@ export const rooms: Record<string, Room> = {
           "Los sillones parecen ocupados por figuras traslúcidas. Sientes el impulso de sentarte y conectarte.",
       },
     ],
+    loreFragment: "lore.neural_link",
   },
 
   waste_disposal: {
@@ -148,6 +157,7 @@ export const rooms: Record<string, Room> = {
       este: "incinerator" // Cambio: ahora es al este
     },
     item: "data_link",
+    loreFragment: "lore.waste_disposal",
   },
 
   incinerator: {
@@ -166,6 +176,7 @@ export const rooms: Record<string, Room> = {
           "El fuego en las rejillas parece tener formas de manos. Escuchas gritos ahogados entre el rugido del fuego.",
       },
     ],
+    loreFragment: "lore.incinerator",
   },
 
   ventilation_shaft: {
@@ -177,6 +188,7 @@ export const rooms: Record<string, Room> = {
       norte: "core_door",
       oeste: "life_support",
     },
+    loreFragment: "lore.ventilation_shaft",
   },
 
   life_support: {
@@ -188,6 +200,7 @@ export const rooms: Record<string, Room> = {
       norte: "dead_hydroponics",
       sur: "mirror_gallery" // NUEVO: atajo desde mirror_gallery
     },
+    loreFragment: "lore.life_support",
   },
 
   dead_hydroponics: {
@@ -206,6 +219,7 @@ export const rooms: Record<string, Room> = {
           "Las viñas secas parecen moverse cuando no las miras. Sientes que algo respira entre el follaje muerto.",
       },
     ],
+    loreFragment: "lore.dead_hydroponics",
   },
 
   core_door: {
@@ -218,6 +232,7 @@ export const rooms: Record<string, Room> = {
     },
     lockedBy: "keycard_red",
     unbreakable: true,
+    loreFragment: "lore.core_door",
   },
 
   core: {
@@ -230,6 +245,7 @@ export const rooms: Record<string, Room> = {
       este: "transcendence_chamber",
       oeste: "emergency_escape",
     },
+    loreFragment: "lore.core",
   },
 
   shutdown_protocol: {

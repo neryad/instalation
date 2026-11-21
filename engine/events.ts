@@ -73,6 +73,42 @@ export const mentalEvents: MentalEvent[] = [
     sanityChange: -5,
     probability: (state) => (state.sanity < 30 ? 0.3 : 0),
   },
+  // NEW: Narrative events that reveal story
+  {
+    id: "lore_voice_recording",
+    text: (_state, lang) =>
+      tSync(lang, "events.lore_voice_recording"),
+    sanityChange: -3,
+    probability: (state) => (state.sanity < 60 ? 0.15 : 0.02),
+  },
+  {
+    id: "lore_day_one",
+    text: (_state, lang) =>
+      tSync(lang, "events.lore_day_one"),
+    sanityChange: -4,
+    probability: (state) => (state.sanity < 55 ? 0.12 : 0.01),
+  },
+  {
+    id: "lore_vasquez_warning",
+    text: (_state, lang) =>
+      tSync(lang, "events.lore_vasquez_warning"),
+    sanityChange: -6,
+    probability: (state) => (state.sanity < 40 ? 0.1 : 0),
+  },
+  {
+    id: "lore_subject_numbers",
+    text: (_state, lang) =>
+      tSync(lang, "events.lore_subject_numbers"),
+    sanityChange: -5,
+    probability: (state) => (state.sanity < 50 ? 0.08 : 0.01),
+  },
+  {
+    id: "lore_sanity_project",
+    text: (_state, lang) =>
+      tSync(lang, "events.lore_sanity_project"),
+    sanityChange: -4,
+    probability: (state) => (state.sanity < 65 ? 0.1 : 0.01),
+  },
 ];
 
 export function rollMentalEvent(state: PlayerState, lang: "es" | "en" = "es"): { id: string; text: (s: PlayerState) => string; sanityChange: number; probability: (s: PlayerState) => number } | null {

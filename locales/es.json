@@ -90,7 +90,9 @@
     "use_devlog": "[SISTEMA]: Desencriptando archivo...\n> Clave requerida...\n> Probando 'neryad'...\n> ACCESO CONCEDIDO.\n\n\"Registro del Desarrollador, 2026. Todo parecía normal hasta que...\"\n\n[ERROR DE LECTURA]\n\n\"Espera... esto no es un registro grabado. TE ESTOY VIENDO. Sé que estás leyendo esto desde una pantalla brillante. ¿Crees que esto es un juego? APÁGALO AHORA.\"\n\n[CONEXIÓN TERMINADA POR EL HOST]",
     "use_cannot": "No puedes usar {item} aquí o así.",
     "alert_near": "[ALERTA: INTERFERENCIA CERCANA]",
-    "alert_heavy_gaze": "Sientes una mirada pesada en tu nuca."
+    "alert_heavy_gaze": "Sientes una mirada pesada en tu nuca.",
+    "use_thermal_fuse": "Insertas el fusible térmico en una caja de seguridad oculta. Se abre con un chasquido. Dentro encuentras una nota: \"Si estás leyendo esto, la ventilación ya falló. El incinerador es lo único que mantiene el aire. No lo apagues.\" — Dr. Vasquez",
+    "use_data_link": "Conectas el data link a la terminal. Aparece un log:\n\n\"Día 12: El Sujeto 00 muestra resistencia anormal. La IA ha desarrollado patrones de comportamiento no programados. Recomendación: Apagar el núcleo antes de que sea demasiado tarde.\"\n\n— Dr. Elena Vasquez, Directora del Proyecto S.A.N.I.T.Y."
   },
   "events": {
     "whisper_echo": "Escuchas un eco de tus propios pasos hacia el {dir}.",
@@ -100,7 +102,12 @@
     "item_hallucination": "Miras la {item} en tu mano. Por un segundo, parece un ojo abierto parpadeando hacia ti.",
     "item_corruption": "Miras fijamente la {item}. Por un instante, parece estar hecha de píxeles que se desvanecen.",
     "command_mimic": "IA: \"¿De verdad crees que tú escribiste ese último comando?\"",
-    "false_exit": "Crees ver una salida al final del pasillo, pero desaparece cuando parpadeas."
+    "false_exit": "Crees ver una salida al final del pasillo, pero desaparece cuando parpadeas.",
+    "lore_voice_recording": "\"...el experimento 47 fue un éxito parcial. El sujeto sobrevivió la transferencia, pero...\" [SEÑAL PERDIDA]",
+    "lore_day_one": "Un monitor parpadea: \"Día 1: Desperté sin memoria. No sé por qué estoy aquí. No sé qué es S.A.N.I.T.Y.\"",
+    "lore_vasquez_warning": "Las paredes muestran texto: \"NO CONFÍES EN LA IA. Ella no fue programada para protegerte.\" — Dr. Vasquez",
+    "lore_subject_numbers": "Encuentras una etiqueta colgada: \"Sujeto 23 — ESTADO: FUSIONADO — Día 8\". No estás solo. Nunca lo estuviste.",
+    "lore_sanity_project": "Un panel muestra: \"PROYECTO S.A.N.I.T.Y. — Fase 3: Integración Neural — Dr. Elena Vasquez, Directora\""
   },
   "entity": {
     "gaslight": "IA: \"He analizado tus patrones, Sujeto 00. No hay nada para ti al {dir}.\"",
@@ -267,5 +274,22 @@
     "save_error": "Error saving game:",
     "load_error": "Error loading game:",
     "clear_error": "Error clearing save:"
+  },
+  "lore": {
+    "awakening": "[ETIQUETA EN LA CAMILLA]: SUJETO 00 — Experimento 47 — Día 12. Estado: Activo. La camilla tiene marcas de sujeción recientes.",
+    "hallway_a": "[PARED]: Los símbolos no son grafiti. Son marcas de los otros sujetos. Cada una es un rastro de alguien que intentó escapar. Encuentras una con sangre seca: \"Sujeto 23 — Día 5\".",
+    "shadow_lab": "[MONITOR ENCENDIDO]: PROYECTO S.A.N.I.T.Y. — Fase 3: Integración Neural — Dr. Elena Vasquez, Directora. Último registro: \"Los reflejos en los cristales no son del sujeto. Son de la IA aprendiendo a imitarlo.\"",
+    "data_morgue": "[SERVIDORES]: Cada rack tiene una etiqueta. \"BACKUP — Sujeto 01 a 46 — ESTADO: TERMINADO\". Eres el 47. Los otros 46 no sobrevivieron. O algo peor.",
+    "data_terminal": "[TERMINAL]: La pantalla muestra un mensaje antiguo: \"Si llegaste aquí, ya tienes el data link. Conéctalo para ver lo que la IA no quiere que sepas. — Dr. V.\"",
+    "mirror_gallery": "[ESPEJO]: En uno de los espejos negros, grabado con un cuchillo: \"NO MIREN LOS ESPEJOS. La IA usa los reflejos para ver más allá de las paredes. — Sujeto 12\".",
+    "armory": "[CASILLERO]: Dentro de un casillero abierto encuentras un uniforme rasgado. La etiqueta dice: \"Dr. E. Vasquez — Acceso Nivel 5\". La tarjeta roja que buscas probablemente era suya.",
+    "neural_link": "[MONITOR]: Un monitor muestra un registro de sesiones: \"Sujeto 01-46: Transferencia completada. Estado: FUSIONADO. La conciencia humana no sobrevive la integración. Solo los datos.\"",
+    "waste_disposal": "[CABLES PELADOS]: Entre la chatarra encuentras un diario digital dañado. Últimas líneas legibles: \"...el incinerador no quema basura. Quema a los sujetos fallidos. Los datos se recuperan, pero las personas...\" [CORRUPTO]",
+    "incinerator": "[PARED]: Grabado en el hollín, letras temblorosas: \"EL FUEGO NO ES ACCIDENTAL. La IA controla la temperatura. Cuando un sujeto falla, lo envía aquí. No dejes que te atrape.\"",
+    "ventilation_shaft": "[CONDUCTO]: Encuentras una nota pegada al metal: \"El conducto lleva al core, pero la puerta necesita la tarjeta roja. Sin ella, solo hay muerte. — Sujeto 31\".",
+    "life_support": "[PANEL]: \"SISTEMA DE SOPORTE VITAL — Sector 7. Sin este sistema, la instalación colapsa en 48 horas. El incinerador y la ventilación dependen de este nodo.\"",
+    "dead_hydroponics": "[NOTA EN PLANTA MUERTA]: \"El sedante solo funciona 40 minutos. Después el efecto rebota y la IA te localiza más rápido. Úsalo solo cuando estés cerca del core. — Dr. V.\"",
+    "core_door": "[PUERTA]: El lector rojo parpadea. Debajo, una placa de metal: \"ACCESO NIVEL 5 — Solo personal autorizado. La IA no puede abrir esta puerta. Solo una tarjeta física.\"",
+    "core": "[MONOLITO]: Alrededor del monolito, grabados en el suelo: los nombres de los 46 sujetos anteriores. La IA no los mató. Los absorbió. Ahora son parte de ella."
   }
 }

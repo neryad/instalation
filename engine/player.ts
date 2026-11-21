@@ -11,6 +11,7 @@ export interface PlayerState {
   visitedRooms: string[];
   roomHistory: string[];
   collectedItems: string[];
+  loreDiscovered: string[];
   gameOver?: boolean;
   endingType?: "good" | "bad" | "insane" | "captured" | "transcend" | "escape";
   hasSeenTutorial?: boolean;
@@ -25,5 +26,6 @@ export const initialPlayerState: PlayerState = {
   visitedRooms: ["awakening"],
   roomHistory: ["awakening"],
   collectedItems: [],
+  loreDiscovered: [],
   gameOver: false,
 };

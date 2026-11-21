@@ -138,13 +138,26 @@ export function move(state: PlayerState, dir: Direction, lang: "es" | "en" = "es
 export function investigate(state: PlayerState, lang: "es" | "en" = "es"): PlayerState {
   const room = rooms[state.currentRoom];
 
+  // Construir mensaje de lore si existe
+  let loreText = "";
+  if (room.loreFragment && !state.loreDiscovered.includes(room.loreFragment)) {
+    const lore = tSync(lang, room.loreFragment);
+    if (lore && lore !== room.loreFragment) {
+      loreText = `\n${lore}`;
+    }
+  }
+
   // Si no hay nada o ya lo tenemos, la IA se acerca por el ruido
   if (!room.item || state.inventory.includes(room.item)) {
-    return moveEntity({
+    const newState: PlayerState = {
       ...state,
       entityAwareness: state.entityAwareness + 5,
-      lastEvent: tSync(lang, "engine.investigate_nothing"),
-    }, lang);
+      loreDiscovered: room.loreFragment && !state.loreDiscovered.includes(room.loreFragment)
+        ? [...state.loreDiscovered, room.loreFragment]
+        : state.loreDiscovered,
+      lastEvent: tSync(lang, "engine.investigate_nothing") + loreText,
+    };
+    return moveEntity(newState, lang);
   }
 
   const foundItem = room.item;
@@ -156,7 +169,10 @@ export function investigate(state: PlayerState, lang: "es" | "en" = "es"): Playe
     inventory: [...state.inventory, foundItem],
     collectedItems: [...state.collectedItems, foundItem],
     entityAwareness: state.entityAwareness + 10,
-    lastEvent: tSync(lang, "engine.item_found", { item: itemName }) + (hint && hint !== hintKey ? `\n${hint}` : ""),
+    loreDiscovered: room.loreFragment && !state.loreDiscovered.includes(room.loreFragment)
+      ? [...state.loreDiscovered, room.loreFragment]
+      : state.loreDiscovered,
+    lastEvent: tSync(lang, "engine.item_found", { item: itemName }) + (hint && hint !== hintKey ? `\n${hint}` : "") + loreText,
   };
 
   return moveEntity(newState, lang);
@@ -274,7 +290,28 @@ export function useItem(state: PlayerState, item: string, lang: "es" | "en" = "e
     };
   }
 
-  // Lógica del esteER EGG: DEV_LOG.aes
+  // Lógica del THERMAL FUSE: Abre la caja de seguridad en el incinerador
+  if (item === "thermal_fuse") {
+    // El fusible se consume al usarlo
+    const newInventory = state.inventory.filter((i) => i !== "thermal_fuse");
+    return {
+      ...state,
+      inventory: newInventory,
+      lastEvent: tSync(lang, "engine.use_thermal_fuse"),
+      sanity: Math.max(0, state.sanity - 5),
+    };
+  }
+
+  // Lógica del DATA LINK: Revela información en la terminal
+  if (item === "data_link") {
+    return {
+      ...state,
+      lastEvent: tSync(lang, "engine.use_data_link"),
+      sanity: Math.max(0, state.sanity - 3),
+    };
+  }
+
+  // Lógica del EASTER EGG: DEV_LOG.aes
   if (item === "DEV_LOG.aes") {
     // No se consume, es un archivo
     // Simulamos un delay narrativo en el texto

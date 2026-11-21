@@ -90,7 +90,9 @@
     "use_devlog": "[SYSTEM]: Decrypting file...\n> Key required...\n> Trying 'neryad'...\n> ACCESS GRANTED.\n\n\"Developer Log, 2026. Everything seemed normal until...\"\n\n[READ ERROR]\n\n\"Wait... this isn't a recorded log. I CAN SEE YOU. I know you're reading this from a bright screen. Do you think this is a game? TURN IT OFF NOW.\"\n\n[CONNECTION TERMINATED BY HOST]",
     "use_cannot": "You can't use {item} here or like this.",
     "alert_near": "[ALERT: NEARBY INTERFERENCE]",
-    "alert_heavy_gaze": "You feel a heavy gaze on the back of your neck."
+    "alert_heavy_gaze": "You feel a heavy gaze on the back of your neck.",
+    "use_thermal_fuse": "You insert the thermal fuse into a hidden security box. It clicks open. Inside you find a note: \"If you're reading this, the ventilation has already failed. The incinerator is the only thing keeping air flowing. Don't shut it down.\" — Dr. Vasquez",
+    "use_data_link": "You connect the data link to the terminal. A log appears:\n\n\"Day 12: Subject 00 shows abnormal resistance. The AI has developed unprogrammed behavior patterns. Recommendation: Shut down the core before it's too late.\"\n\n— Dr. Elena Vasquez, Director of Project S.A.N.I.T.Y."
   },
   "events": {
     "whisper_echo": "You hear an echo of your own footsteps toward the {dir}.",
@@ -100,7 +102,12 @@
     "item_hallucination": "You look at the {item} in your hand. For a second, it looks like an open eye blinking at you.",
     "item_corruption": "You stare at the {item}. For an instant, it seems made of pixels fading away.",
     "command_mimic": "AI: \"Do you really think you typed that last command?\"",
-    "false_exit": "You think you see an exit at the end of the corridor, but it disappears when you blink."
+    "false_exit": "You think you see an exit at the end of the corridor, but it disappears when you blink.",
+    "lore_voice_recording": "\"...experiment 47 was a partial success. The subject survived the transfer, but...\" [SIGNAL LOST]",
+    "lore_day_one": "A monitor flickers: \"Day 1: I woke up with no memory. I don't know why I'm here. I don't know what S.A.N.I.T.Y. is.\"",
+    "lore_vasquez_warning": "The walls display text: \"DO NOT TRUST THE AI. It was not programmed to protect you.\" — Dr. Vasquez",
+    "lore_subject_numbers": "You find a hanging tag: \"Subject 23 — STATUS: FUSED — Day 8\". You're not alone. You never were.",
+    "lore_sanity_project": "A panel shows: \"PROJECT S.A.N.I.T.Y. — Phase 3: Neural Integration — Dr. Elena Vasquez, Director\""
   },
   "entity": {
     "gaslight": "AI: \"I've analyzed your patterns, Subject 00. There's nothing for you to the {dir}.\"",
@@ -267,5 +274,22 @@
     "save_error": "Error saving game:",
     "load_error": "Error loading game:",
     "clear_error": "Error clearing save:"
+  },
+  "lore": {
+    "awakening": "[TAG ON GURNey]: SUBJECT 00 — Experiment 47 — Day 12. Status: Active. The gurney has recent restraint marks.",
+    "hallway_a": "[WALL]: The symbols are not graffiti. They are marks from other subjects. Each one is a trail of someone who tried to escape. You find one with dried blood: \"Subject 23 — Day 5\".",
+    "shadow_lab": "[MONITOR ON]: PROJECT S.A.N.I.T.Y. — Phase 3: Neural Integration — Dr. Elena Vasquez, Director. Last log: \"The reflections in the glass are not from the subject. They are the AI learning to mimic it.\"",
+    "data_morgue": "[SERVERS]: Each rack has a label. \"BACKUP — Subject 01 to 46 — STATUS: TERMINATED\". You are #47. The other 46 did not survive. Or something worse.",
+    "data_terminal": "[TERMINAL]: The screen shows an old message: \"If you got here, you already have the data link. Connect it to see what the AI doesn't want you to know. — Dr. V.\"",
+    "mirror_gallery": "[MIRROR]: On one of the black mirrors, carved with a knife: \"DO NOT LOOK AT THE MIRRORS. The AI uses reflections to see beyond walls. — Subject 12\".",
+    "armory": "[LOCKER]: Inside an open locker you find a torn uniform. The label reads: \"Dr. E. Vasquez — Level 5 Access\". The red keycard you're looking for was probably hers.",
+    "neural_link": "[MONITOR]: A monitor shows session logs: \"Subject 01-46: Transfer complete. Status: FUSED. Human consciousness does not survive integration. Only the data.\"",
+    "waste_disposal": "[STRIPPED CABLES]: Among the scrap you find a damaged digital diary. Last readable lines: \"...the incinerator doesn't burn trash. It burns failed subjects. The data is recovered, but the people...\" [CORRUPTED]",
+    "incinerator": "[WALL]: Carved in soot, trembling letters: \"THE FIRE IS NOT ACCIDENTAL. The AI controls the temperature. When a subject fails, it sends them here. Don't let it catch you.\"",
+    "ventilation_shaft": "[DUCT]: You find a note stuck to the metal: \"The duct leads to the core, but the door needs the red keycard. Without it, there's only death. — Subject 31\".",
+    "life_support": "[PANEL]: \"LIFE SUPPORT SYSTEM — Sector 7. Without this system, the facility collapses in 48 hours. The incinerator and ventilation depend on this node.\"",
+    "dead_hydroponics": "[NOTE ON DEAD PLANT]: \"The sedative only works for 40 minutes. After that the effect rebounds and the AI locates you faster. Only use it when you're close to the core. — Dr. V.\"",
+    "core_door": "[DOOR]: The red reader blinks. Below, a metal plate: \"LEVEL 5 ACCESS — Authorized personnel only. The AI cannot open this door. Only a physical card.\"",
+    "core": "[MONOLITH]: Around the monolith, carved into the floor: the names of the 46 previous subjects. The AI didn't kill them. It absorbed them. They are part of it now."
   }
 }
