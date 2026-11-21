@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1] — 2026-11-21
+
+### Fixed
+- 🔧 **Build de Android**: 47 archivos PNG convertidos de JPEG a PNG real. Los assets generados con IA tenían extensión `.png` pero eran JPEGs con datos Exif, incompatible con Android AAPT2.
+- 🔧 **Build de iOS**: Plugin `with-pod-deployment-target.js` creado para elevar el deployment target de todos los CocoaPods a 15.0, resolviendo errores con `RNCAsyncStorage` y `SDWebImage`.
+- 🔧 **app.json**: Nombre cambiado a `"SANITY"` (Gradle no acepta puntos), `deploymentTarget: 15.0` para iOS, SDK versions explícitos para Android.
+
 ## [1.3.0] — 2026-11-21 🚀 PUBLICADO
 
 **🎉 Lanzamiento oficial en itch.io:** [Juega ahora](https://neryad.itch.io/sanity)
