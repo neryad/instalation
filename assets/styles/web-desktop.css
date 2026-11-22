@@ -1,0 +1,207 @@
+/* ============================================
+   S.A.N.I.T.Y. — Web Desktop Styles
+   Terminal retro aesthetic, CRT atmosphere
+   ============================================ */
+
+/* --- CSS Variables (Palette) --- */
+:root {
+  --green: #00ff00;
+  --green-dim: #00cc00;
+  --green-dark: #004400;
+  --green-darker: #002200;
+  --green-faint: #335533;
+  --green-text: #ccffcc;
+  --green-system: #668866;
+  --bg: #050805;
+  --bg-panel: rgba(0, 10, 0, 0.85);
+  --bg-terminal: rgba(0, 5, 0, 0.9);
+  --danger: #ff3300;
+  --danger-dim: #cc2200;
+  --warning: #ffcc00;
+  --warning-dim: #cc9900;
+  --amber: #ffaa00;
+  --blue: #0066ff;
+  --blue-dim: #0044cc;
+  --white: #e0ffe0;
+  --gray: #445544;
+  --gray-dark: #223322;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", "SF Mono", "Fira Code", "Consolas", monospace;
+  --font-size-base: 16px;
+  --font-size-small: 13px;
+  --font-size-tiny: 11px;
+  --line-height: 1.6;
+  --border-radius: 4px;
+  --glow-green: 0 0 8px rgba(0, 255, 0, 0.3);
+  --glow-danger: 0 0 8px rgba(255, 51, 0, 0.4);
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+}
+
+/* --- Global Reset for Web --- */
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: var(--font-mono);
+  color: var(--green-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Scanlines Overlay --- */
+@keyframes scanlines {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 4px; }
+}
+
+.scanlines-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  animation: scanlines 0.5s linear infinite;
+}
+
+/* --- CRT Vignette --- */
+.crt-vignette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+
+/* --- Glitch Effect (sanity < 50%) --- */
+@keyframes glitch-1 {
+  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  20% { clip-path: inset(20% 0 60% 0); transform: translate(-2px, 1px); }
+  40% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+  60% { clip-path: inset(40% 0 30% 0); transform: translate(-1px, 2px); }
+  80% { clip-path: inset(10% 0 70% 0); transform: translate(1px, -2px); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+  40% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 1px); }
+  60% { clip-path: inset(30% 0 40% 0); transform: translate(1px, -2px); }
+  80% { clip-path: inset(70% 0 5% 0); transform: translate(-1px, 2px); }
+}
+
+.glitch-active {
+  animation: glitch-1 0.3s infinite linear;
+}
+
+.glitch-active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  animation: glitch-2 0.3s infinite linear;
+  opacity: 0.3;
+  mix-blend-mode: screen;
+}
+
+/* --- Chromatic Aberration (sanity < 50%) --- */
+@keyframes chromatic-shift {
+  0%, 100% { text-shadow: 0 0 0 transparent; }
+  25% { text-shadow: -1px 0 #ff0000, 1px 0 #00ffff; }
+  50% { text-shadow: 1px 0 #ff0000, -1px 0 #00ffff; }
+  75% { text-shadow: 0 1px #ff0000, 0 -1px #00ffff; }
+}
+
+.chromatic-aberration {
+  animation: chromatic-shift 2s infinite;
+}
+
+/* --- Typewriter Effect --- */
+@keyframes typewriter-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  color: var(--green);
+  animation: typewriter-blink 1s step-end infinite;
+}
+
+/* --- Fade Transition --- */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.fade-in {
+  animation: fade-in var(--transition-normal) ease forwards;
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .scanlines-overlay {
+    animation: none;
+  }
+  .glitch-active,
+  .glitch-active::after,
+  .chromatic-aberration {
+    animation: none !important;
+  }
+}
+
+/* --- Focus Visible --- */
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* --- Scrollbar Styling --- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--green-dark);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-dim);
+}
