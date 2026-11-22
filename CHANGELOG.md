@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.3.4] — 2026-11-21
+
+### Fixed
+- 🖥️ **Error 404 en itch.io**: Cambiado `"output": "static"` a `"output": "single"` en `app.json`. Expo Router ahora empaqueta todo en un solo `index.html` con hash routing, resolviendo las rutas rotas al navegar entre páginas.
+- 🎨 **Menú principal adaptado para web**: Layout horizontal en pantallas grandes (título izquierda, botones derecha). Layout vertical mantenido para móvil.
+
+### Technical
+- 📦 **dist.zip** (66MB): Nuevo build con hash routing y menú responsive, listo para itch.io HTML5
+
+## [1.3.2] — 2026-11-21
+
+### Added
+- 🖥️ **Rediseño UI web**: Layout CSS Grid para escritorio (terminal 60% izquierda, ilustración + panel lateral 40% derecha)
+- ⌨️ **Soporte de teclado web**: WASD/flechas para moverse, I para investigar, L para mirar, M para mapa
+- 📋 **Panel lateral web**: Objetivo actual, inventario visual con imágenes, y barra de detección de IA
+- 🎨 **Efectos CRT web**: Scanlines, viñeta, glitch y aberración cromática con `prefers-reduced-motion`
+- 📄 **web-desktop.css**: Variables CSS, paleta de colores, tipografía JetBrains Mono/IBM Plex Mono
+
+### Changed
+- 🎯 **Botones uniformes**: Todos los botones de acción con mínimo 56px de alto, atajos de teclado visibles en web
+- 📝 **Markdown renderizado**: `**negrita**` en el log ahora se muestra resaltada en verde brillante
+- 🧹 **SanityBar**: Eliminado porcentaje "100%" duplicado
+
+### Technical
+- 📦 **dist.zip** (66MB): Exportado con layout responsive, listo para itch.io HTML5
+
 ## [1.3.1] — 2026-11-21
 
 ### Fixed

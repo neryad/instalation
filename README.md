@@ -22,22 +22,23 @@ El proyecto explora cómo la lógica de estado y la "cordura" del jugador pueden
 
 ---
 
-## ✨ v1.2.0 — Novedades
+## ✨ v1.3.3 — Novedades
 
 | Característica | Descripción |
 |---|---|
+| 📖 **Fragmentos de lore** | 16 salas con historia oculta que se revela al investigar: Proyecto S.A.N.I.T.Y., Sujetos 01-46, Dr. Vasquez |
+| 🧠 **IA balanceada por fases** | 4 fases de dificultad progresiva: exploración libre → persecución activa |
+| 🎙️ **Eventos mentales narrativos** | Grabaciones, logs y advertencias que revelan la historia del experimento |
 | 🎨 **Ilustraciones de salas** | 23 imágenes visuales (18 salas + 5 variantes de baja cordura) que cambian según tu estado mental |
 | 🎒 **Items visuales** | Sprites PNG en el inventario para cada objeto coleccionable |
 | 🖼️ **Splash screen** | Pantalla de intro con imagen profesional y animación fade-in |
 | 🌐 **Traducción al inglés** | Juego completo en español e inglés, selector en CONFIGURACIÓN > IDIOMA |
-| 📦 **Assets promocionales** | Icono, screenshots, banner y thumbnail listos para tiendas y redes |
 | 🗺️ **Mapa interactivo** | Visualiza la instalación completa, habitaciones visitadas, items disponibles y ubicación de la IA |
 | 🏆 **Logros** | Desbloquea finales y secretos, con notificaciones en pantalla |
 | 🔊 **Paisaje sonoro** | Música ambiental dinámica, SFX de movimiento, sedante, IA y puertas |
 | 🌫️ **Atmósfera reactiva** | Efectos visuales y de sonido que cambian según tu cordura y la proximidad de la IA |
-| 📜 **Tutorial** | Guía inicial con 3 mensajes para nuevos jugadores |
-| 🐞 **Correcciones iOS** | Eliminadas franjas blancas en dispositivos con notch |
-| ⚙️ **Optimizaciones** | Motor más estable, feedback visual mejorado al forzar puertas |
+| 📱 **Builds de tiendas** | Android (.aab) listo para Google Play, iOS (.ipa) en proceso para App Store |
+| 🐞 **Correcciones UI** | Parser de texto corregido, botones uniformes, layout responsive para web y móvil |
 
 👉 [Ver CHANGELOG completo](./CHANGELOG.md)
 
