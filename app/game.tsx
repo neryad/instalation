@@ -361,7 +361,7 @@ import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
 import { GridBackground, ScanWave, StaticNoise } from "../components/game/GridBackground";
@@ -661,6 +661,8 @@ export default function GameScreen() {
     }
   };
 
+  const isWeb = Platform.OS === "web";
+
   return (
     <View style={styles.root}>
       <GridBackground sanity={state.sanity} />
@@ -675,6 +677,7 @@ export default function GameScreen() {
       <View
         style={[
           styles.container,
+          isWeb && styles.containerWeb,
           {
             paddingTop: Math.max(insets.top, 20),
             paddingBottom: Math.max(insets.bottom, 20),
@@ -692,15 +695,20 @@ export default function GameScreen() {
           </View>
         </View>
 
-        {/* Ilustración de la sala - contenedor fijo */}
-        <RoomVisual roomId={state.currentRoom} sanity={state.sanity} />
+        {/* Contenido principal: horizontal en web, vertical en móvil */}
+        <View style={[styles.mainContent, isWeb && styles.mainContentWeb]}>
+          {/* TERMINAL: Texto del juego */}
+          <View style={[styles.terminalContainer, isWeb && styles.terminalContainerWeb]}>
+            <TerminalLog
+              messages={logMessages}
+              onDirectionPress={(dir) => handleCommand(dir)}
+            />
+          </View>
 
-        {/* TERMINAL: Texto del juego */}
-        <View style={styles.terminalContainer}>
-          <TerminalLog
-            messages={logMessages}
-            onDirectionPress={(dir) => handleCommand(dir)}
-          />
+          {/* Ilustración de la sala - a la derecha en web, arriba en móvil */}
+          <View style={[styles.visualContainer, isWeb && styles.visualContainerWeb]}>
+            <RoomVisual roomId={state.currentRoom} sanity={state.sanity} />
+          </View>
         </View>
 
         {/* ACCIONES: Solo botones, sin input */}
@@ -774,6 +782,30 @@ const styles = StyleSheet.create({
     shadowColor: "#00ff00",
     shadowOpacity: 0.1,
     shadowRadius: 8,
+  },
+  terminalContainerWeb: {
+    flex: 1,
+    minWidth: 0,
+  },
+  mainContent: {
+    flex: 1,
+    minHeight: 0,
+  },
+  mainContentWeb: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  visualContainer: {
+    marginBottom: 8,
+  },
+  visualContainerWeb: {
+    width: "35%",
+    marginBottom: 0,
+    flexShrink: 0,
+  },
+  containerWeb: {
+    maxWidth: 1400,
+    height: "100%",
   },
   controlsContainer: {
     paddingBottom: 10,
