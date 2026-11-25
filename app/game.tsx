@@ -712,7 +712,7 @@ export default function GameScreen() {
         </View>
 
         {/* ACCIONES: Solo botones, sin input */}
-        <View style={styles.controlsContainer}>
+        <View style={[styles.controlsContainer, isWeb && styles.controlsContainerWeb]}>
           <QuickActions
             onAction={handleCommand}
             disabled={state.gameOver}
@@ -786,6 +786,8 @@ const styles = StyleSheet.create({
   terminalContainerWeb: {
     flex: 1,
     minWidth: 0,
+    marginTop: 2,
+    marginBottom: 6,
   },
   mainContent: {
     flex: 1,
@@ -799,7 +801,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   visualContainerWeb: {
-    width: "35%",
+    width: "30%",
     marginBottom: 0,
     flexShrink: 0,
   },
@@ -810,5 +812,8 @@ const styles = StyleSheet.create({
   controlsContainer: {
     paddingBottom: 10,
     // Aquí podrías añadir un fondo sutil para los botones
+  },
+  controlsContainerWeb: {
+    paddingBottom: 2,
   },
 });

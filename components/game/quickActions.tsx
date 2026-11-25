@@ -1,7 +1,8 @@
 import * as Haptics from "expo-haptics";
 import React from "react";
 import { useI18n } from "@/locales/I18nContext";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { getGameActionsLayout } from "@/assets/styles/web-layout";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 interface QuickActionsProps {
   onAction: (cmd: string) => void;
@@ -19,90 +20,66 @@ export function QuickActions({
   onOpenMap,
 }: QuickActionsProps) {
   const { t, lang } = useI18n();
+  const isCompactWeb = getGameActionsLayout(Platform.OS) === "compact";
   return (
-    <View style={styles.container}>
-      {/* Fila superior: Acciones principales */}
-      <View style={styles.row}>
-        <ActionButton
-          label={t("quickactions.investigate")}
-          cmd="investigar"
-          onPress={onAction}
-          disabled={disabled}
-          isMain
-        />
-        <ActionButton
-          label={t("quickactions.look")}
-          cmd="mirar"
-          onPress={onAction}
-          disabled={disabled}
-        />
-        {onOpenMap && (
+    <View style={[styles.container, isCompactWeb && styles.webContainer]}>
+      {isCompactWeb ? (
+        <View style={styles.webActions}>
           <ActionButton
-            label={t("quickactions.map")}
-            cmd=""
-            onPress={() => onOpenMap()}
-            disabled={disabled}
-            style={styles.mapButton}
-          />
-        )}
-      </View>
-
-      {/* Cruzeta de movimiento */}
-      <View style={styles.row}>
-        <View style={{ width: 55 }} />
-        <ActionButton
-          label={t("quickactions.north")}
-          cmd="norte"
-          onPress={onAction}
-          disabled={disabled}
-        />
-        <View style={{ width: 55 }} />
-      </View>
-      <View style={styles.row}>
-        <ActionButton
-          label={lang === "en" ? "W" : t("quickactions.west")}
-          cmd="oeste"
-          onPress={onAction}
-          disabled={disabled}
-        />
-        <View style={styles.dpadCenter}>
-          <View style={styles.compassRing}>
-            <View style={styles.compassNub} />
-          </View>
-        </View>
-        <ActionButton
-          label={t("quickactions.east")}
-          cmd="este"
-          onPress={onAction}
-          disabled={disabled}
-        />
-      </View>
-      <View style={styles.row}>
-        <View style={{ width: 55 }} />
-        <ActionButton
-          label={t("quickactions.south")}
-          cmd="sur"
-          onPress={onAction}
-          disabled={disabled}
-        />
-        <View style={{ width: 55 }} />
-      </View>
-
-      {/* Contextuales */}
-      {hasSedative && (
-        <View style={styles.row}>
-          <ActionButton
-            label={t("quickactions.use_sedative")}
-            cmd="usar sedante"
+            label={t("quickactions.investigate")}
+            cmd="investigar"
             onPress={onAction}
             disabled={disabled}
-            style={styles.useButton}
+            isMain
           />
-        </View>
-      )}
-
-      {forceableDirections.length > 0 && (
-        <View style={styles.row}>
+          <ActionButton
+            label={t("quickactions.look")}
+            cmd="mirar"
+            onPress={onAction}
+            disabled={disabled}
+          />
+          {onOpenMap && (
+            <ActionButton
+              label={t("quickactions.map")}
+              cmd=""
+              onPress={onOpenMap}
+              disabled={disabled}
+              style={styles.mapButton}
+            />
+          )}
+          <ActionButton
+            label={t("quickactions.north")}
+            cmd="norte"
+            onPress={onAction}
+            disabled={disabled}
+          />
+          <ActionButton
+            label={lang === "en" ? "W" : t("quickactions.west")}
+            cmd="oeste"
+            onPress={onAction}
+            disabled={disabled}
+          />
+          <ActionButton
+            label={t("quickactions.east")}
+            cmd="este"
+            onPress={onAction}
+            disabled={disabled}
+          />
+          <ActionButton
+            label={t("quickactions.south")}
+            cmd="sur"
+            onPress={onAction}
+            disabled={disabled}
+          />
+          {hasSedative && (
+            <ActionButton
+              label={t("quickactions.use_sedative")}
+              cmd="usar sedante"
+              onPress={onAction}
+              disabled={disabled}
+              style={styles.useButton}
+            />
+          )}
           {forceableDirections.map((dir) => (
             <ActionButton
               key={dir}
@@ -114,6 +91,103 @@ export function QuickActions({
             />
           ))}
         </View>
+      ) : (
+        <>
+          {/* Fila superior: Acciones principales */}
+          <View style={styles.row}>
+            <ActionButton
+              label={t("quickactions.investigate")}
+              cmd="investigar"
+              onPress={onAction}
+              disabled={disabled}
+              isMain
+            />
+            <ActionButton
+              label={t("quickactions.look")}
+              cmd="mirar"
+              onPress={onAction}
+              disabled={disabled}
+            />
+            {onOpenMap && (
+              <ActionButton
+                label={t("quickactions.map")}
+                cmd=""
+                onPress={onOpenMap}
+                disabled={disabled}
+                style={styles.mapButton}
+              />
+            )}
+          </View>
+
+          {/* Cruzeta de movimiento */}
+          <View style={styles.row}>
+            <View style={{ width: 55 }} />
+            <ActionButton
+              label={t("quickactions.north")}
+              cmd="norte"
+              onPress={onAction}
+              disabled={disabled}
+            />
+            <View style={{ width: 55 }} />
+          </View>
+          <View style={styles.row}>
+            <ActionButton
+              label={lang === "en" ? "W" : t("quickactions.west")}
+              cmd="oeste"
+              onPress={onAction}
+              disabled={disabled}
+            />
+            <View style={styles.dpadCenter}>
+              <View style={styles.compassRing}>
+                <View style={styles.compassNub} />
+              </View>
+            </View>
+            <ActionButton
+              label={t("quickactions.east")}
+              cmd="este"
+              onPress={onAction}
+              disabled={disabled}
+            />
+          </View>
+          <View style={styles.row}>
+            <View style={{ width: 55 }} />
+            <ActionButton
+              label={t("quickactions.south")}
+              cmd="sur"
+              onPress={onAction}
+              disabled={disabled}
+            />
+            <View style={{ width: 55 }} />
+          </View>
+
+          {/* Contextuales */}
+          {hasSedative && (
+            <View style={styles.row}>
+              <ActionButton
+                label={t("quickactions.use_sedative")}
+                cmd="usar sedante"
+                onPress={onAction}
+                disabled={disabled}
+                style={styles.useButton}
+              />
+            </View>
+          )}
+
+          {forceableDirections.length > 0 && (
+            <View style={styles.row}>
+              {forceableDirections.map((dir) => (
+                <ActionButton
+                  key={dir}
+                  label={`${t("quickactions.force")} ${dir.toUpperCase().charAt(0)}`}
+                  cmd={`forzar ${dir}`}
+                  onPress={onAction}
+                  disabled={disabled}
+                  style={styles.forceButton}
+                />
+              ))}
+            </View>
+          )}
+        </>
       )}
     </View>
   );
@@ -133,7 +207,9 @@ function ActionButton({ label, cmd, onPress, disabled, isMain, style }: any) {
       disabled={disabled}
       style={({ pressed }) => [
         styles.button,
+        Platform.OS === "web" && styles.webButton,
         isMain && styles.mainButton,
+        Platform.OS === "web" && isMain && styles.webMainButton,
         style,
         pressed && styles.pressed,
         disabled && styles.disabled,
@@ -181,6 +257,14 @@ function ActionButton({ label, cmd, onPress, disabled, isMain, style }: any) {
 
 const styles = StyleSheet.create({
   container: { alignItems: "center" },
+  webContainer: { width: "100%" },
+  webActions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 6,
+  },
   row: { flexDirection: "row", gap: 10, marginBottom: 10, alignItems: "center" },
   dpadCenter: {
     width: 55,
@@ -215,6 +299,14 @@ const styles = StyleSheet.create({
     minWidth: 55,
     alignItems: "center",
     borderRadius: 4,
+  },
+  webButton: {
+    minWidth: 48,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  webMainButton: {
+    minWidth: 110,
   },
   mainButton: {
     borderColor: "#008800",

@@ -1,18 +1,29 @@
 import { Link, useRouter } from "expo-router";
 import { useI18n } from "@/locales/I18nContext";
 import { useEffect, useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CRTOverlay } from "../components/game/CRTOverlay";
 import { GridBackground } from "../components/game/GridBackground";
+import { getMenuLayoutForWidth } from "../assets/styles/web-layout";
 
 export default function Home() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
   const { t } = useI18n();
   const [glitch, setGlitch] = useState(false);
   const [currentSubtitle, setCurrentSubtitle] = useState("menu.subtitle");
   const isWeb = Platform.OS === "web";
+  const isHorizontalWebMenu =
+    isWeb && getMenuLayoutForWidth(width) === "horizontal";
 
   const horrorMessages = [
     "menu.horror_1",
@@ -68,7 +79,7 @@ export default function Home() {
             isWeb && styles.buttonWeb,
           ]}
         >
-          <Text style={[styles.buttonText, { color: "#00aa00", fontSize: 14 }]}>
+          <Text style={[styles.buttonText, { color: "#00aa00", fontSize: 14 }, isWeb && styles.buttonTextWeb]}>
             {t("menu.archives")}
           </Text>
         </Pressable>
@@ -83,7 +94,7 @@ export default function Home() {
             isWeb && styles.buttonWeb,
           ]}
         >
-          <Text style={[styles.buttonText, { color: "#0f0", fontSize: 14 }]}>
+          <Text style={[styles.buttonText, { color: "#0f0", fontSize: 14 }, isWeb && styles.buttonTextWeb]}>
             {t("menu.settings")}
           </Text>
         </Pressable>
@@ -98,7 +109,7 @@ export default function Home() {
             isWeb && styles.buttonWeb,
           ]}
         >
-          <Text style={[styles.buttonText, { color: "#005500", fontSize: 12 }]}>
+          <Text style={[styles.buttonText, { color: "#005500", fontSize: 12 }, isWeb && styles.buttonTextWeb]}>
             {t("menu.system")}
           </Text>
         </Pressable>
@@ -117,8 +128,8 @@ export default function Home() {
       <GridBackground />
       <CRTOverlay isGlitchActive={glitch} />
 
-      {isWeb ? (
-        /* WEB LAYOUT: Horizontal — título izquierda, botones derecha */
+      {isHorizontalWebMenu ? (
+        /* WEB LAYOUT: título centrado, botones en una barra horizontal */
         <View style={styles.webLayout}>
           <View style={styles.webLeft}>
             <View style={styles.titleWrapper}>
@@ -136,13 +147,13 @@ export default function Home() {
                 ]}
               />
             </View>
-            <Text style={[styles.version, { marginTop: 15 }]}>v2.0.26_CORE</Text>
-            <View style={styles.subtitleContainer}>
+            <Text style={[styles.version, styles.versionWeb]}>v2.0.26_CORE</Text>
+            <View style={[styles.subtitleContainer, styles.subtitleContainerWeb]}>
               <Text style={[styles.subtitle, glitch && styles.glitchSubtitle]}>
                 {t(currentSubtitle)}
               </Text>
             </View>
-            <View style={[styles.warningBox, { marginBottom: 0, marginTop: 30 }]}>
+            <View style={[styles.warningBox, styles.warningBoxWeb]}>
               <View style={styles.warningLine} />
               <Text style={styles.warningText}>
                 {t("menu.warning_1")}
@@ -232,36 +243,58 @@ const styles = StyleSheet.create({
   containerWeb: {
     maxWidth: "100%" as any,
     width: "100%" as any,
-    paddingHorizontal: 60,
+    paddingHorizontal: 24,
     justifyContent: "center" as any,
   },
   webLayout: {
     flex: 1,
-    flexDirection: "row" as any,
+    flexDirection: "column" as any,
     alignItems: "center",
-    justifyContent: "space-between",
-    gap: 40,
+    justifyContent: "center",
+    gap: 22,
     width: "100%",
   },
   webLeft: {
-    flex: 2,
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
   webRight: {
-    flex: 1,
-    alignItems: "center",
+    width: "100%",
+    maxWidth: 1024,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "stretch",
     justifyContent: "center",
+    gap: 10,
   },
   titleWeb: {
-    fontSize: 56,
+    fontSize: 54,
   },
   buttonWeb: {
-    width: "100%",
-    maxWidth: 320,
+    width: "auto" as any,
+    minWidth: 150,
+    maxWidth: 240,
+    flexGrow: 1,
+    flexBasis: 180,
+    marginTop: 0,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
   buttonTextWeb: {
-    fontSize: 18,
+    fontSize: 12,
+    letterSpacing: 1,
+  },
+  versionWeb: {
+    marginTop: 8,
+  },
+  subtitleContainerWeb: {
+    height: 32,
+    marginTop: 4,
+  },
+  warningBoxWeb: {
+    marginBottom: 0,
+    marginTop: 12,
   },
   header: {
     alignItems: "center",
