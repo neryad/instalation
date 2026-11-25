@@ -4,6 +4,7 @@
   "version": "1.3.0",
   "scripts": {
     "start": "expo start",
+    "build:itch": "expo export --platform web && node scripts/prepare-itch-build.js && cd dist && zip -rqFS ../itchio-build.zip *",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.5] — 2026-11-21
+
+### Fixed
+- 🖥️ **Inicio en itch.io**: La ruta dinámica del iframe se normaliza antes de iniciar Expo Router, conservando la carpeta base para cargar recursos.
+- 🎨 **Menú responsive**: Layout horizontal en web (título izquierda, botones derecha), vertical en móvil.
+
+### Technical
+- 📦 **dist.zip** (67MB, 79 archivos): Build con `index.html` en la raíz y recursos relativos, listo para itch.io HTML5
+
 ## [1.3.4] — 2026-11-21
 
 ### Fixed

@@ -37,6 +37,14 @@ eas whoami
 
 ## 🚀 Builds rápidos
 
+### Build web para itch.io
+
+```bash
+npm run build:itch
+```
+
+Esto genera `itchio-build.zip` con `index.html` en la raíz. El build conserva la ruta relativa de los recursos y normaliza la ruta inicial que itch.io asigna al iframe para que Expo Router abra el menú en lugar de mostrar `Unmatched Route`. Sube el ZIP como juego HTML5 y selecciona que se ejecute en el navegador.
+
 ### Build de Android (Google Play)
 
 ```bash
